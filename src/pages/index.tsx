@@ -1,9 +1,10 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
+import { Layout } from "../components/Layout";
 
 const Home: FC = () => {
   return (
-    <div>
+    <Layout>
       <div>
         <h1>Home Page</h1>
         <Link to="/login">
@@ -13,7 +14,7 @@ const Home: FC = () => {
           <h1>Go to Register page</h1>
         </Link>
       </div>
-    </div>
+    </Layout>
   );
 };
 

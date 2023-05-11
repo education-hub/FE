@@ -1,7 +1,5 @@
 import { FC } from "react";
 
-const Navbar: FC = () => {
-  return <div className="h-screen">Navbar</div>;
+export const Navbar: FC = () => {
+  return <div>Navbar</div>;
 };
-
-export default Navbar;
