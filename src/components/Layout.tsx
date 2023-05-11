@@ -1,20 +1,18 @@
 import { FC, ReactNode } from "react";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import { Navbar } from "./Navbar";
+import { Footer } from "./Footer";
 
-interface ChildrenType {
+interface Props {
   children: ReactNode;
 }
 
-const Layout: FC<ChildrenType> = (props) => {
+export const Layout: FC<Props> = (props) => {
   const { children } = props;
   return (
     <div className="h-screen">
       <Navbar />
-      <div>{children}</div>
+      <div className="z-10">{children}</div>
       <Footer />
     </div>
   );
 };
-
-export default Layout;

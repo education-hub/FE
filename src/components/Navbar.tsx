@@ -69,4 +69,3 @@ const Navbar: FC = () => {
 };
 
 export default Navbar;
-// return <div className="h-screen">Navbar</div>;
