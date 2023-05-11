@@ -7,7 +7,22 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const ButtonSubmit: FC<Props> = (props) => {
   const { label } = props;
   return (
-    <button className="" {...props}>
+    <button
+      className="bg-@blue hover:bg-@orange hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
+      {...props}
+    >
+      {label}
+    </button>
+  );
+};
+
+export const ButtonCancelDelete: FC<Props> = (props) => {
+  const { label } = props;
+  return (
+    <button
+      className="bg-@orange hover:bg-@blue hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
+      {...props}
+    >
       {label}
     </button>
   );
