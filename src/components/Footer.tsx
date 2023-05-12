@@ -3,7 +3,7 @@ import { FC } from "react";
 export const Footer: FC = () => {
   return (
     <footer>
-      <div className="bg-@blue grid grid-cols-3 gap-10 p-10 text-white">
+      <div className="bg-@blue grid sm:grid-cols-2 md:grid-cols-3 gap-10 p-10 text-white">
         <div className="flex flex-col gap-5">
           <h1 className="font-bold text-lg">Education Hub</h1>
           <p>
@@ -29,18 +29,15 @@ export const Footer: FC = () => {
             hand, you can already find your dream school.
           </p>
         </div>
-        <div className="flex flex-col gap-5">
-          <h1 className="font-bold text-lg">Education Hub</h1>
-          <p>
-            Education Hub is a digital platform that aims to be a social media
-            for interaction between schools and students who want to find their
-            dream school.
-          </p>
-          <p>
-            With this platform, students will no longer have trouble finding and
-            studying schools that are right for them. With just a finger on your
-            hand, you can already find your dream school.
-          </p>
+        <div className="flex flex-col gap-5 col-span-2 md:col-span-1">
+          <h1 className="font-bold text-lg">Stay Connected</h1>
+          <p>Get exclusive promotions & updates straight to your inbox.</p>
+          <div className="flex flex-col xl:flex-row mr-5">
+            <input type="text" className=" text-@dark p-5 outline-none" />
+            <button className="bg-@orange hover:bg-orange-700 px-12 py-5">
+              Subscribe
+            </button>
+          </div>
         </div>
       </div>
       <div className="bg-@dark grid grid-cols-2 py-7 px-10 text-white">
