@@ -27,3 +27,15 @@ export const ButtonCancelDelete: FC<Props> = (props) => {
     </button>
   );
 };
+
+export const ButtonCheckout: FC<Props> = (props) => {
+  const { label } = props;
+  return (
+    <button
+      className="bg-fuchsia-500 hover:bg-indigo-600 hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
+      {...props}
+    >
+      {label}
+    </button>
+  );
+};
