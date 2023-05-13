@@ -118,25 +118,25 @@ export const NavbarAdmin: FC = () => {
       <div className="flex justify-end">
         <Link
           to="/profile"
-          className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
         >
           PROFILE
         </Link>
         <Link
           to="/transactions"
-          className="text-white text-md hover:text-@dark font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
         >
           TRANSACTIONS
         </Link>
         <Link
           to="/register-school"
-          className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
         >
           REGISTER-SCHOOL
         </Link>
         <Link
           to="/logout"
-          className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
         >
           LOGOUT
         </Link>
@@ -160,25 +160,25 @@ export const NavbarIndex: FC = () => {
       <div className="flex justify-end">
         <Link
           to="/profile"
-          className="text-white text-md  hover:scale-110 hover:bg-@blue hover:rounded-xl hover:p-2  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
         >
           PROFILE
         </Link>
         <Link
           to="/transactions"
-          className="text-white text-md hover:text-@dark font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
+          className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
         >
           TRANSACTIONS
         </Link>
         <Link
           to="/register-school"
-          className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+          className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold mr-[6%] transition-all duration-500 ease-in-out"
         >
           REGISTER-SCHOOL
         </Link>
         <Link
           to="/logout"
-          className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+          className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold mr-[6%] transition-all duration-500 ease-in-out"
         >
           LOGOUT
         </Link>

@@ -33,7 +33,7 @@ const Admin: FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSchool(true);
+    setSchool(false);
   }, []);
 
   return (
