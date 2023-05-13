@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { ButtonHTMLAttributes, FC } from "react";
 import { ButtonSubmit, ButtonCancelDelete } from "./Button";
 import { Disclosure, Transition } from "@headlessui/react";
 import { TbArrowUp } from "react-icons/tb";
@@ -6,10 +6,12 @@ import { TbArrowUp } from "react-icons/tb";
 interface AddFAQType {
   question: string;
   answer: string;
+  onClick1: React.MouseEventHandler<HTMLButtonElement>;
+  onClick2: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export const AccordionFAQ: FC<AddFAQType> = (props) => {
-  const { question, answer } = props;
+  const { question, answer, onClick1, onClick2 } = props;
   return (
     <>
       <div className="py-10">
@@ -45,8 +47,8 @@ export const AccordionFAQ: FC<AddFAQType> = (props) => {
         </Disclosure>
       </div>
       <div className="flex space-x-10 justify-end">
-        <ButtonCancelDelete label="Delete" />
-        <ButtonSubmit label="Edit" />
+        <ButtonCancelDelete label="Delete" onClick={onClick1} />
+        <ButtonSubmit label="Edit" onClick={onClick2} />
       </div>
     </>
   );

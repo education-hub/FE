@@ -16,10 +16,6 @@ export const CardCost: FC<AddCostType> = (props) => {
         <p className="mt-10">{title}</p>
         <p className="mt-5 text-@orange">Rp {price.toLocaleString("id")}</p>
       </div>
-      <div className="flex flex-col gap-5 bg-gray-200">
-        <ButtonSubmit label="Edit" />
-        <ButtonCancelDelete label="Delete" />
-      </div>
     </div>
   );
 };
@@ -31,10 +27,21 @@ interface AddQuizType {
   option3: string;
   option4: string;
   answer: number;
+  onClick1: React.MouseEventHandler<HTMLButtonElement>;
+  onClick2: React.MouseEventHandler<HTMLButtonElement>;
 }
 
 export const CardAddQuiz: FC<AddQuizType> = (props) => {
-  const { question, option1, option2, option3, option4, answer } = props;
+  const {
+    question,
+    option1,
+    option2,
+    option3,
+    option4,
+    answer,
+    onClick1,
+    onClick2,
+  } = props;
   return (
     <>
       <div className="flex flex-col gap-1 my-10">
@@ -77,8 +84,8 @@ export const CardAddQuiz: FC<AddQuizType> = (props) => {
           </div>
         </div>
         <div className="flex gap-10 mt-5 justify-end items-end">
-          <ButtonCancelDelete label="Delete" />
-          <ButtonSubmit label="Edit" />
+          <ButtonCancelDelete label="Delete" onClick={onClick1} />
+          <ButtonSubmit label="Edit" onClick={onClick2} />
         </div>
       </div>
     </>
