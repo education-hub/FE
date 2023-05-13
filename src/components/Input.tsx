@@ -22,7 +22,7 @@ export const InputLightBlue: FC<InputHTMLAttributes<HTMLInputElement>> = (
   );
 };
 
-export const TextArea: FC<
+export const TextAreaLightBlue: FC<
   React.DetailedHTMLProps<
     React.TextareaHTMLAttributes<HTMLTextAreaElement>,
     HTMLTextAreaElement
@@ -30,7 +30,21 @@ export const TextArea: FC<
 > = (props) => {
   return (
     <textarea
-      className="h-16 text-md sm:text-lg md:text-xl rounded-2xl text-black font-semibold px-4 focus:outline-none  w-full"
+      className="bg-@light-blue h-32 pt-5 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full"
+      {...props}
+    />
+  );
+};
+
+export const TextAreaWhite: FC<
+  React.DetailedHTMLProps<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    HTMLTextAreaElement
+  >
+> = (props) => {
+  return (
+    <textarea
+      className="bg-white h-32 pt-5 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full"
       {...props}
     />
   );
