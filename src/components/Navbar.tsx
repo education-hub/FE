@@ -117,7 +117,7 @@ export const NavbarAdmin: FC = () => {
       </div>
       <div className="flex justify-end">
         <Link
-          to="/profile"
+          to="/admin/profile"
           className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
         >
           PROFILE
@@ -159,7 +159,7 @@ export const NavbarIndex: FC = () => {
       </div>
       <div className="flex justify-end">
         <Link
-          to="/profile"
+          to="/admin/profile"
           className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
         >
           PROFILE
