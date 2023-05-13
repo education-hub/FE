@@ -4,6 +4,7 @@ import { Disclosure, Transition, Combobox } from "@headlessui/react";
 import { TbArrowsMoveVertical, TbCheck } from "react-icons/tb";
 
 interface ComboBoxType {
+  defaultFill: string | undefined;
   title: string;
   data: any[];
   selected: {
@@ -29,7 +30,7 @@ interface Location {
 }
 
 export const ComboBox: FC<Partial<ComboBoxType>> = (props) => {
-  const { title, data, selected, setSelected } = props;
+  const { title, data, selected, setSelected, defaultFill } = props;
 
   const [query, setQuery] = useState("");
   const filteredProvinces = data?.filter((data) =>
@@ -44,7 +45,9 @@ export const ComboBox: FC<Partial<ComboBoxType>> = (props) => {
           <div className="relative z-10 w-full flex items-center cursor-default bg-white h-16 pl-3 text-left focus:outline-none text-lg text-@dark ">
             <Combobox.Input
               className="w-full relative border-none py-2 pl-3 px-10 leading-5 text-@dark focus:outline-none focus:ring-0"
-              displayValue={(location: Location) => location?.nama}
+              displayValue={(location: Location) =>
+                location?.nama || defaultFill
+              }
               onChange={(event) => setQuery(event.target.value)}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
