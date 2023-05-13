@@ -33,7 +33,7 @@ const Admin: FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSchool(false);
+    setSchool(true);
   }, []);
 
   return (
@@ -133,7 +133,10 @@ const Admin: FC = () => {
               </div>
               <div className="flex space-x-10">
                 <ButtonCancelDelete label="Delete School" />
-                <ButtonSubmit label="Edit School" />
+                <ButtonSubmit
+                  label="Edit School"
+                  onClick={() => navigate("/admin/edit-school")}
+                />
               </div>
             </div>
             {/* Section 3 */}

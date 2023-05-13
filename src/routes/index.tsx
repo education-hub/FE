@@ -5,6 +5,7 @@ import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
 import Admin from "../pages/admin";
 import AddSchool from "../pages/admin/AddSchool";
+import EditSchool from "../pages/admin/EditSchool";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -24,6 +25,14 @@ const Router = () => {
     {
       path: "/admin",
       element: <Admin />,
+    },
+    {
+      path: "/admin/profile",
+      element: <Admin />,
+    },
+    {
+      path: "/admin/edit-school",
+      element: <EditSchool />,
     },
     {
       path: "/admin/add-school",
