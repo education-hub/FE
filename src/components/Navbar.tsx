@@ -43,3 +43,87 @@ export const Navbar: FC = () => {
     </nav>
   );
 };
+
+export const NavbarAdmin: FC = () => {
+  return (
+    <nav className="items-center grid grid-cols-2 bg-@orange py-3 px-20 w-auto">
+      <div className="flex">
+        <Link to="/admin">
+          <img
+            src={Logo}
+            alt="Logo"
+            className="h-16 w-full mr-2 hover:scale-105 duration-500"
+          />
+        </Link>
+      </div>
+      <div className="flex justify-end">
+        <Link
+          to="/admin/profile"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+        >
+          PROFILE
+        </Link>
+        <Link
+          to="/transactions"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+        >
+          TRANSACTIONS
+        </Link>
+        <Link
+          to="/register-school"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+        >
+          REGISTER-SCHOOL
+        </Link>
+        <Link
+          to="/logout"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+        >
+          LOGOUT
+        </Link>
+      </div>
+    </nav>
+  );
+};
+
+export const NavbarIndex: FC = () => {
+  return (
+    <nav className="absolute z-40 bg-@orange opacity-50 hover:opacity-90 duration-500 items-center grid grid-cols-2  py-3 px-20 w-full">
+      <div className="flex">
+        <Link to="/">
+          <img
+            src={Logo}
+            alt="Logo"
+            className="h-16 w-full mr-2 hover:scale-105 duration-500"
+          />
+        </Link>
+      </div>
+      <div className="flex justify-end">
+        <Link
+          to="/admin/profile"
+          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+        >
+          PROFILE
+        </Link>
+        <Link
+          to="/transactions"
+          className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
+        >
+          TRANSACTIONS
+        </Link>
+        <Link
+          to="/register-school"
+          className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+        >
+          REGISTER-SCHOOL
+        </Link>
+        <Link
+          to="/logout"
+          className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+        >
+          LOGOUT
+        </Link>
+      </div>
+    </nav>
+  );
+};
