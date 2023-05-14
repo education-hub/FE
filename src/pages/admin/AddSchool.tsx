@@ -1,4 +1,4 @@
-import { FC, useEffect, useState, Fragment } from "react";
+import { FC, useEffect, useState } from "react";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
@@ -42,7 +42,7 @@ const AddSchool: FC = () => {
   const [src, setSrc] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber] = useState(1);
   const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
@@ -133,15 +133,6 @@ const AddSchool: FC = () => {
         const subDistrictData = response.data;
         setSubDistricts(subDistrictData.kelurahan);
       });
-  };
-
-  const handleAddVideo = (event: any) => {
-    event.preventDefault();
-    setVideo(event.target.value);
-  };
-
-  const handleChangeVideo = (event: any) => {
-    setVideo(event.target.value);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
