@@ -134,9 +134,13 @@ const Admin: FC = () => {
                 <div className=" flex space-x-3">
                   <TbWorldWww className="text-2xl" />
                   <p className="text-lg">
-                    School Website :
+                    School Website:
                     <span className="hover:text-@orange">
-                      <Link to="https://sma3jogja.sch.id/">
+                      <Link
+                        to="https://sma3jogja.sch.id/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         https://sma3jogja.sch.id/
                       </Link>
                     </span>
