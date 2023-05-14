@@ -29,7 +29,7 @@ interface Location {
 }
 
 export const ComboBox: FC<Partial<ComboBoxType>> = (props) => {
-  const { title, data, selected, setSelected, defaultFill } = props;
+  const { title, data, selected, setSelected } = props;
 
   const [query, setQuery] = useState("");
   const filteredProvinces = data?.filter((data) =>

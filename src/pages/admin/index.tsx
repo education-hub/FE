@@ -16,7 +16,7 @@ import {
   InputWhite,
   TextAreaLightBlue,
 } from "../../components/Input";
-import { Listbox, Transition, Disclosure, Dialog } from "@headlessui/react";
+import { Listbox, Transition, Dialog } from "@headlessui/react";
 import { CardAddQuiz, CardCost } from "../../components/Card";
 import { AccordionFAQ } from "../../components/Accordion";
 

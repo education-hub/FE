@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../pages";
 import Register from "../pages/auth/Register";
