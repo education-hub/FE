@@ -50,6 +50,7 @@ export const NavbarAdmin: FC = () => {
   const [checkToken, setCheckToken] = useState<boolean>(true);
   const handleLogout = () => {
     alert("logout");
+    setCheckToken(false);
   };
   return (
     <Disclosure as="nav" className="bg-@orange z-50">
@@ -96,12 +97,12 @@ export const NavbarAdmin: FC = () => {
                       >
                         TEST RESULT
                       </Link>
-                      <Link
-                        to="/logout"
+                      <button
                         className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        onClick={() => handleLogout()}
                       >
                         LOGOUT
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -159,12 +160,12 @@ export const NavbarAdmin: FC = () => {
                     >
                       TEST RESULT
                     </Link>
-                    <Link
-                      to="/logout"
+                    <button
                       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      onClick={() => handleLogout()}
                     >
                       REGISTER
-                    </Link>
+                    </button>
                   </div>
                 </nav>
               ) : (
@@ -197,6 +198,11 @@ export const NavbarAdmin: FC = () => {
 
 export const NavbarIndex: FC = () => {
   const [checkToken, setCheckToken] = useState<boolean>(true);
+  const handleLogout = () => {
+    alert("logout");
+    setCheckToken(false);
+  };
+
   return (
     <Disclosure as="nav" className="bg-@orange z-50">
       {({ open }) => (
@@ -242,12 +248,12 @@ export const NavbarIndex: FC = () => {
                       >
                         TEST RESULT
                       </Link>
-                      <Link
-                        to="/logout"
+                      <button
                         className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        onClick={() => handleLogout()}
                       >
                         LOGOUT
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -305,12 +311,12 @@ export const NavbarIndex: FC = () => {
                     >
                       TEST RESULT
                     </Link>
-                    <Link
-                      to="/logout"
+                    <button
                       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      onClick={() => handleLogout()}
                     >
                       LOGOUT
-                    </Link>
+                    </button>
                   </div>
                 </nav>
               ) : (
