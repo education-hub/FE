@@ -33,7 +33,7 @@ export const Navbar: FC = () => {
           to="/register-school"
           className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
         >
-          REGISTER-SCHOOL
+          REGISTER SCHOOL
         </Link>
         <Link
           to="/logout"
@@ -91,7 +91,7 @@ export const NavbarAdmin: FC = () => {
                         STUDENT ADMISSION
                       </Link>
                       <Link
-                        to="/admin/profile"
+                        to="/admin/result"
                         className="text-white text-md flex items-center justify-center w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
                         TEST RESULT
@@ -109,17 +109,17 @@ export const NavbarAdmin: FC = () => {
                     <div className="flex space-x-4">
                       <Link
                         to="/login"
-                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700 hover:rounded-3xl duration-700 py-2 rounded-md text-md font-medium"
+                        className="text-white text-md flex gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiLogIn />
-                        Login
+                        LOGIN
                       </Link>
                       <Link
                         to="/register"
-                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700 hover:rounded-3xl duration-700 py-2 rounded-md text-md font-medium"
+                        className="text-white text-md flex  gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiUserPlus className="text-xl" />
-                        Register
+                        REGISTER
                       </Link>
                     </div>
                   </div>
@@ -154,7 +154,7 @@ export const NavbarAdmin: FC = () => {
                       STUDENT ADMISSION
                     </Link>
                     <Link
-                      to="/register-school"
+                      to="/admin/result"
                       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                     >
                       TEST RESULT
@@ -163,7 +163,7 @@ export const NavbarAdmin: FC = () => {
                       to="/logout"
                       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                     >
-                      LOGOUT
+                      REGISTER
                     </Link>
                   </div>
                 </nav>
@@ -237,7 +237,7 @@ export const NavbarIndex: FC = () => {
                         STUDENT ADMISSION
                       </Link>
                       <Link
-                        to="/admin/profile"
+                        to="/admin/result"
                         className="text-white text-md flex items-center justify-center w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
                         TEST RESULT
@@ -300,7 +300,7 @@ export const NavbarIndex: FC = () => {
                       STUDENT ADMISSION
                     </Link>
                     <Link
-                      to="/register-school"
+                      to="/admin/result"
                       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                     >
                       TEST RESULT
@@ -338,43 +338,5 @@ export const NavbarIndex: FC = () => {
         </>
       )}
     </Disclosure>
-
-    // <nav className="absolute z-40 bg-@orange opacity-50 hover:opacity-90 duration-500 items-center grid grid-cols-2  py-3 px-20 w-full">
-    //   <div className="flex">
-    //     <Link to="/">
-    //       <img
-    //         src={Logo}
-    //         alt="Logo"
-    //         className="h-16 w-full mr-2 hover:scale-105 duration-500"
-    //       />
-    //     </Link>
-    //   </div>
-    //   <div className="flex justify-end">
-    //     <Link
-    //       to="/admin/profile"
-    //       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-    //     >
-    //       PROFILE
-    //     </Link>
-    //     <Link
-    //       to="/transactions"
-    //       className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
-    //     >
-    //       STUDENT ADDMISSION
-    //     </Link>
-    //     <Link
-    //       to="/register-school"
-    //       className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-    //     >
-    //       TEST RESULT
-    //     </Link>
-    //     <Link
-    //       to="/logout"
-    //       className="text-white text-md flex items-center hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3 font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-    //     >
-    //       LOGOUT
-    //     </Link>
-    //   </div>
-    // </nav>
   );
 };
