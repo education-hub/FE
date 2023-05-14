@@ -1,22 +1,9 @@
 import { FC, useState } from "react";
 import { LayoutAdmin } from "../../components/Layout";
-import { Table, Head, Body, Row, Cell } from "@headlessui/react";
-import { InputLightBlue, RadioLightBlue } from "../../components/Input";
+import { RadioLightBlue } from "../../components/Input";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
 const UpdateProgress: FC = () => {
-  const [users, setUsers] = useState<User[]>([
-    { id: 1, name: "John", email: "john@example.com" },
-    { id: 2, name: "Jane", email: "jane@example.com" },
-    { id: 3, name: "Bob", email: "bob@example.com" },
-  ]);
-
   const [selectedStep, setSelectedStep] = useState<string>("");
   const [status, setStatus] = useState<string>("");
 
