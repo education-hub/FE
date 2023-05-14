@@ -147,7 +147,7 @@ export const NavbarAdmin: FC = () => {
                         to="/admin/admission"
                         className="text-white text-md flex justify-center items-center w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
-                        STUDDENT ADDMISSION
+                        STUDENT ADMISSION
                       </Link>
                       <Link
                         to="/admin/profile"
@@ -210,7 +210,7 @@ export const NavbarAdmin: FC = () => {
                       to="/admin/admission"
                       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                     >
-                      STUDENT ADDMISSON
+                      STUDENT ADMISSION
                     </Link>
                     <Link
                       to="/register-school"
@@ -293,7 +293,7 @@ export const NavbarIndex: FC = () => {
                         to="/admin/admission"
                         className="text-white text-md flex justify-center items-center w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
-                        STUDDENT ADDMISSION
+                        STUDENT ADMISSION
                       </Link>
                       <Link
                         to="/admin/profile"
@@ -356,7 +356,7 @@ export const NavbarIndex: FC = () => {
                       to="/admin/admission"
                       className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                     >
-                      STUDENT ADDMISSON
+                      STUDENT ADMISSION
                     </Link>
                     <Link
                       to="/register-school"
