@@ -17,7 +17,7 @@ export const Navbar: FC = () => {
       <div className="flex justify-end">
         <Link
           to="/profile"
-          className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+          className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out"
         >
           PROFILE
         </Link>
@@ -40,43 +40,6 @@ export const Navbar: FC = () => {
           LOGOUT
         </Link>
       </div>
-      {/* <div className="flex items-center text-white">
-        <Link to="/">
-          <img
-            src={Logo}
-            alt="Logo"
-            className="h-16 w-full mr-2 hover:scale-105"
-          />
-        </Link>
-      </div>
-      <div className="flex-grow flex items-center">
-        <div className="text-sm lg:flex-grow">
-          <Link
-            to="/profile"
-            className="block mt-4 lg:inline-block lg:mt-0 text-white text-lg hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-          >
-            PROFILE
-          </Link>
-          <Link
-            to="/transactions"
-            className="block mt-4 lg:inline-block lg:mt-0 text-white text-lg hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-          >
-            TRANSACTIONS
-          </Link>
-          <Link
-            to="/register-school"
-            className="block mt-4 lg:inline-block lg:mt-0 text-white text-lg hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-          >
-            REGISTER SCHOOL
-          </Link>
-          <Link
-            to="/logout"
-            className="block mt-4 lg:inline-block lg:mt-0 text-white text-lg hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-          >
-            LOGOUT
-          </Link>
-        </div>
-      </div> */}
     </nav>
   );
 };
