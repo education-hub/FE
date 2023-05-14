@@ -29,6 +29,10 @@ const Router = () => {
       element: <Register />,
     },
     {
+      path: "/student",
+      element: <Student />,
+    },
+    {
       path: "/admin",
       element: <Admin />,
     },
@@ -47,10 +51,6 @@ const Router = () => {
     {
       path: "/admin/admission",
       element: <Admission />,
-    },
-    {
-      path: "/student",
-      element: <Student />,
     },
     {
       path: "/admin/admission/:student_id",
