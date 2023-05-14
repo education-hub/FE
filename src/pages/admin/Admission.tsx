@@ -1,8 +1,10 @@
 import { FC } from "react";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonSubmit } from "../../components/Button";
+import { useNavigate } from "react-router-dom";
 
 const Admission: FC = () => {
+  const navigate = useNavigate();
   return (
     <LayoutAdmin>
       <div className="p-20 flex flex-col gap-10">
@@ -23,7 +25,10 @@ const Admission: FC = () => {
             </div>
           </div>
           <div className="pt-6">
-            <ButtonSubmit label="Detail Admission" />
+            <ButtonSubmit
+              label="Detail Admission"
+              onClick={() => navigate("/admin/admission/1")}
+            />
           </div>
           <div className="pt-6">
             <ButtonSubmit label="Update Progress" />
@@ -46,7 +51,10 @@ const Admission: FC = () => {
             </div>
           </div>
           <div className="pt-6">
-            <ButtonSubmit label="Detail Admission" />
+            <ButtonSubmit
+              label="Detail Admission"
+              onClick={() => navigate("/admin/admission/1")}
+            />
           </div>
           <div className="pt-6">
             <ButtonSubmit label="Update Progress" />
@@ -69,7 +77,10 @@ const Admission: FC = () => {
             </div>
           </div>
           <div className="pt-6">
-            <ButtonSubmit label="Detail Admission" />
+            <ButtonSubmit
+              label="Detail Admission"
+              onClick={() => navigate("/admin/admission/1")}
+            />
           </div>
           <div className="pt-6">
             <ButtonSubmit label="Update Progress" />
