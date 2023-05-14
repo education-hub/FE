@@ -1,8 +1,8 @@
 import { FC } from "react";
 
 import { Layout } from "../../components/Layout";
-import BgLandingPage from "../../../public/carousel-1.jpg";
-import ImageCard from "../../../public/course-2.jpg";
+import BgLandingPage from "/carousel-1.jpg";
+import ImageCard from "/public/course-2.jpg";
 import Logo from "../../assets/eduhub-logo-black.png";
 
 const Student: FC = () => {
