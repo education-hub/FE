@@ -43,7 +43,7 @@ const EditSchool: FC = () => {
   const [src, setSrc] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber] = useState(1);
   const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
@@ -136,15 +136,6 @@ const EditSchool: FC = () => {
         const subDistrictData = response.data;
         setSubDistricts(subDistrictData.kelurahan);
       });
-  };
-
-  const handleAddVideo = (event: any) => {
-    event.preventDefault();
-    setVideo(event.target.value);
-  };
-
-  const handleChangeVideo = (event: any) => {
-    setVideo(event.target.value);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
