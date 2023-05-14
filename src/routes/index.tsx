@@ -9,6 +9,7 @@ import EditSchool from "../pages/admin/EditSchool";
 import AdminProfile from "../pages/admin/Profile";
 import Admission from "../pages/admin/Admission";
 import DetailAdmission from "../pages/admin/DetailAdmission";
+import UpdateProgress from "../pages/admin/UpdateProgress";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -48,6 +49,10 @@ const Router = () => {
     {
       path: "/admin/admission/:student_id",
       element: <DetailAdmission />,
+    },
+    {
+      path: "/admin/progress/:student_id",
+      element: <UpdateProgress />,
     },
   ]);
 

@@ -31,7 +31,10 @@ const Admission: FC = () => {
             />
           </div>
           <div className="pt-6">
-            <ButtonSubmit label="Update Progress" />
+            <ButtonSubmit
+              label="Update Progress"
+              onClick={() => navigate("/admin/progress/2")}
+            />
           </div>
         </div>
         <div className="grid grid-cols-6 gap-20">
@@ -57,7 +60,10 @@ const Admission: FC = () => {
             />
           </div>
           <div className="pt-6">
-            <ButtonSubmit label="Update Progress" />
+            <ButtonSubmit
+              label="Update Progress"
+              onClick={() => navigate("/admin/progress/2")}
+            />
           </div>
         </div>
         <div className="grid grid-cols-6 gap-20">
@@ -83,7 +89,10 @@ const Admission: FC = () => {
             />
           </div>
           <div className="pt-6">
-            <ButtonSubmit label="Update Progress" />
+            <ButtonSubmit
+              label="Update Progress"
+              onClick={() => navigate("/admin/progress/2")}
+            />
           </div>
         </div>
       </div>

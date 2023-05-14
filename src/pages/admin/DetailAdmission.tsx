@@ -2,7 +2,8 @@ import { FC, useState } from "react";
 import { LayoutAdmin } from "../../components/Layout";
 import { ComboBox } from "../../components/ComboBox";
 import { InputWhite, TextAreaWhite } from "../../components/Input";
-import { ButtonSubmit } from "../../components/Button";
+import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
+import { useNavigate } from "react-router-dom";
 
 interface ProvinceDataType {
   id: number;
@@ -62,6 +63,8 @@ const DetailAdmission: FC = () => {
     id_kecamatan: string;
     nama: string;
   } | null>(null);
+
+  const navigate = useNavigate();
   return (
     <LayoutAdmin>
       <div className="p-20">
@@ -330,7 +333,11 @@ const DetailAdmission: FC = () => {
             <p>Sochibul Wafa’</p>
           </div>
         </div>
-        <div className="flex justify-end mt-10">
+        <div className="flex justify-end mt-10 gap-10">
+          <ButtonCancelDelete
+            label="back"
+            onClick={() => navigate("/admin/admission")}
+          />
           <ButtonSubmit label="print" />
         </div>
       </div>

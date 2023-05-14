@@ -49,3 +49,14 @@ export const TextAreaWhite: FC<
     />
   );
 };
+
+export const RadioLightBlue: FC<InputHTMLAttributes<HTMLInputElement>> = (
+  props
+) => {
+  return (
+    <input
+      className="h-10 w-full flex items-center text-md sm:text-lg md:text-xl"
+      {...props}
+    />
+  );
+};
