@@ -1,14 +1,9 @@
 import { FC, Fragment, useState } from "react";
 import { LayoutAdmin } from "../../components/Layout";
-import { TbMapPin } from "react-icons/tb";
 import { BsFacebook, BsTwitter, BsInstagram } from "react-icons/bs";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { Transition, Dialog } from "@headlessui/react";
-import {
-  InputLightBlue,
-  InputWhite,
-  TextAreaLightBlue,
-} from "../../components/Input";
+import { InputLightBlue, TextAreaLightBlue } from "../../components/Input";
 
 const AdminProfile: FC = () => {
   const [isOpen, setIsOpen] = useState(false);

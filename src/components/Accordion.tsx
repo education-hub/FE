@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC } from "react";
+import { FC } from "react";
 import { ButtonSubmit, ButtonCancelDelete } from "./Button";
 import { Disclosure, Transition } from "@headlessui/react";
 import { TbArrowUp } from "react-icons/tb";

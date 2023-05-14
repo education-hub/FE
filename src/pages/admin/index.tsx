@@ -1,16 +1,15 @@
 import { Fragment, FC, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Layout, LayoutAdmin } from "../../components/Layout";
+import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { VideoBackground } from "../../components/videoBackground";
-import { Navbar, NavbarIndex } from "../../components/Navbar";
+import { NavbarIndex } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
 import {
   TbWorldWww,
   TbMapPin,
   TbArrowsMoveVertical,
   TbCheck,
-  TbArrowUp,
 } from "react-icons/tb";
 import {
   InputLightBlue,
@@ -93,7 +92,7 @@ const Admin: FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSchool(false);
+    setSchool(true);
   }, []);
 
   console.log(isOpenFAQ);
