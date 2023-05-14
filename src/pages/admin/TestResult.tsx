@@ -1,10 +1,7 @@
 import { FC } from "react";
 import { LayoutAdmin } from "../../components/Layout";
-import { ButtonSubmit } from "../../components/Button";
-import { useNavigate } from "react-router-dom";
 
 const TestResult: FC = () => {
-  const navigate = useNavigate();
   return (
     <LayoutAdmin>
       <div className="p-20 flex flex-col gap-10">

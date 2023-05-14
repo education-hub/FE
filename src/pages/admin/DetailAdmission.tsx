@@ -1,69 +1,9 @@
 import { FC, useState } from "react";
 import { LayoutAdmin } from "../../components/Layout";
-import { ComboBox } from "../../components/ComboBox";
-import { InputWhite, TextAreaWhite } from "../../components/Input";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 
-interface ProvinceDataType {
-  id: number;
-  nama: string;
-}
-
-interface CitiesDataType {
-  id: number;
-  id_provinsi: string;
-  name: string;
-}
-
-interface DistrictDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  name: string;
-}
-
-interface SubDistrictDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  name: string;
-}
-
 const DetailAdmission: FC = () => {
-  const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
-  const [cities, setCities] = useState<CitiesDataType[]>([]);
-  const [districts, setDistricts] = useState<DistrictDataType[]>([]);
-  const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
-  const [selectedProvince, setSelectedProvince] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedCities, setSelectedCities] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedDistrict, setSelectedDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedSubDistrict, setSelectedSubDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-
   const navigate = useNavigate();
   return (
     <LayoutAdmin>

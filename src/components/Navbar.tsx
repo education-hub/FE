@@ -1,7 +1,7 @@
 import { FC, useState, Fragment } from "react";
 import Logo from "../assets/eduhub-logo-black.png";
 import { Link } from "react-router-dom";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Disclosure, Transition } from "@headlessui/react";
 import { BiMenu, BiX, BiLogIn, BiUserPlus } from "react-icons/bi";
 
 export const Navbar: FC = () => {

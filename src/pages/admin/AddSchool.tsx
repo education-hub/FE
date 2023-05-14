@@ -1,5 +1,4 @@
 import { FC, useEffect, useState, Fragment } from "react";
-import { Link } from "react-router-dom";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
@@ -8,14 +7,6 @@ import {
   TextAreaLightBlue,
   TextAreaWhite,
 } from "../../components/Input";
-import { Listbox, Transition, Disclosure, Combobox } from "@headlessui/react";
-import {
-  TbWorldWww,
-  TbMapPin,
-  TbArrowsMoveVertical,
-  TbCheck,
-  TbArrowUp,
-} from "react-icons/tb";
 import axios from "axios";
 import { ComboBox } from "../../components/ComboBox";
 import { Document, Page } from "react-pdf";
