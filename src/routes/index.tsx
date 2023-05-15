@@ -15,6 +15,7 @@ import TestResult from "../pages/admin/TestResult";
 import RegistrationForm from "../pages/student/RegistrationForm";
 import RegisterSchool from "../pages/student/RegisterSchool";
 import Progress from "../pages/student/Progress";
+import FirstRegistration from "../pages/student/FirstRegistration";
 import Transaction from "../pages/student/Transaction";
 
 const Router = () => {
@@ -55,6 +56,10 @@ const Router = () => {
     {
       path: "/student/transaction",
       element: <Transaction />,
+    },
+    {
+      path: "/student/first-registration",
+      element: <FirstRegistration />,
     },
     {
       path: "/admin",
