@@ -1,8 +1,8 @@
-import React from "react";
+import { FC } from "react";
 import { Layout } from "../../components/Layout";
 import { ButtonSubmit } from "../../components/Button";
 
-const RegisterSchool = () => {
+const RegisterSchool: FC = () => {
   return (
     <Layout>
       <div className="p-20">
