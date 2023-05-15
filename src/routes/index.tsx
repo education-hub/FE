@@ -2,12 +2,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../pages";
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
+import Student from "../pages/student";
+import DetailSchool from "../pages/student/DetailSchool";
 import Admin from "../pages/admin";
 import AddSchool from "../pages/admin/AddSchool";
 import EditSchool from "../pages/admin/EditSchool";
 import AdminProfile from "../pages/admin/Profile";
 import Admission from "../pages/admin/Admission";
-import Student from "../pages/student";
 import DetailAdmission from "../pages/admin/DetailAdmission";
 import UpdateProgress from "../pages/admin/UpdateProgress";
 import TestResult from "../pages/admin/TestResult";
@@ -30,6 +31,10 @@ const Router = () => {
     {
       path: "/student",
       element: <Student />,
+    },
+    {
+      path: "/student/detail-school",
+      element: <DetailSchool />,
     },
     {
       path: "/admin",
