@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { VideoBackground } from "../../components/videoBackground";
-import { NavbarIndex } from "../../components/Navbar";
+import { NavbarIndexAdmin } from "../../components/Navbar";
 import { Footer } from "../../components/Footer";
 import {
   TbWorldWww,
@@ -660,7 +660,7 @@ const Admin: FC = () => {
                             label="Update"
                             onClick={() => {
                               alert("update");
-                              closeModal();
+                              setIsOpen(false);
                             }}
                           />
                         </div>
@@ -760,7 +760,7 @@ const Admin: FC = () => {
                             label="Update"
                             onClick={() => {
                               alert("update");
-                              closeModalAchievement();
+                              setIsOpenAchievement(false);
                             }}
                           />
                         </div>
@@ -1106,7 +1106,7 @@ const Admin: FC = () => {
         </LayoutAdmin>
       ) : (
         <>
-          <NavbarIndex />
+          <NavbarIndexAdmin />
           <VideoBackground videoSrc="/video.mp4">
             <div className="relative z-30 p-20 text-white  flex flex-col gap-5">
               <h1 className="text-5xl font-bold">EducationHub</h1>

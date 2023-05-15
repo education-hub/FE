@@ -87,11 +87,10 @@ const Register: FC = () => {
             "Content-Type": "application/json",
           },
         })
-        .then((response) => {
-          const { data } = response.data;
+        .then(() => {
           Swal.fire({
             icon: "success",
-            title: "Submit Success!!",
+            title: "Registration Success!!",
             text: "check e-mail inbox to verify email registrations",
             showCancelButton: false,
           }).then((result) => {
