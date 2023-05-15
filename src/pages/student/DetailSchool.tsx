@@ -1,24 +1,17 @@
 import { FC, useState, Fragment } from "react";
-
 import { Layout } from "../../components/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CardCost } from "../../components/Card";
-import { Listbox, Transition, Dialog } from "@headlessui/react";
-import { TextAreaLightBlue } from "../../components/Input";
+import { Transition, Dialog } from "@headlessui/react";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { AccordionFAQStudent } from "../../components/AccordionStudent";
-import {
-  TbWorldWww,
-  TbMapPin,
-  TbArrowsMoveVertical,
-  TbCheck,
-} from "react-icons/tb";
+import { TbWorldWww, TbMapPin } from "react-icons/tb";
 import { InputLightBlue } from "../../components/Input";
 
 const src = "https://www.youtube.com/embed/WrBQNImsV74";
 
 const DetailSchool: FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [, setIsOpen] = useState(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
 
   const openModalFAQ = () => {
@@ -30,8 +23,6 @@ const DetailSchool: FC = () => {
   const closeModal = () => {
     setIsOpen(false);
   };
-
-  const navigate = useNavigate();
 
   return (
     <Layout>

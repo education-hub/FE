@@ -1,7 +1,7 @@
-import React from "react";
+import { FC } from "react";
 import { Layout } from "../../components/Layout";
 
-const Progress = () => {
+const Progress: FC = () => {
   return (
     <Layout>
       <div className="flex flex-col justify-center items-center h-full bg-white p-20">
