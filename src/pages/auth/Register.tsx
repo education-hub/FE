@@ -1,10 +1,40 @@
-import { FC } from "react";
-import { Link } from "react-router-dom";
+import { FC, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import * as z from "zod";
+import Swal from "sweetalert2";
 
 import { ButtonSubmit } from "../../components/Button";
 import { InputLightBlue, TextAreaLightBlue } from "../../components/Input";
 import Logo from "../../assets/eduhub-logo-black.png";
 import BackGroundImage from "../../assets/eduhub-register.jpg";
+
+const roleOptions = z.enum(["administrator", "student"]);
+
+const schema = z
+  .object({
+    email: z.string().min(1, { message: "Email is required" }).email({
+      message: "Must be a valid email",
+    }),
+    first_name: z.string().min(1, { message: "First name is required" }),
+    last_name: z.string().min(1, { message: "First name is required" }),
+    username: z
+      .string()
+      .min(6, { message: "Username is must min 6 characters" }),
+    password: z
+      .string()
+      .min(6, { message: "Password must be atleast 6 characters" }),
+    retype_password: z
+      .string()
+      .min(1, { message: "Retyp Password is required" }),
+    role: roleOptions,
+  })
+  .refine((data) => data.password === data.retype_password, {
+    path: ["confirm Password"],
+    message: "Password dont match",
+  });
 
 const Register: FC = () => {
   return (
@@ -32,46 +62,49 @@ const Register: FC = () => {
             <form className="space-y-4 w-full">
               <div>
                 <label className="block text-gray-700 font-bold">Email</label>
-                <InputLightBlue type="email" />
+                <InputLightBlue type="email" name="email" />
               </div>
               <div>
                 <label className="block text-gray-700 font-bold">
                   First Name
                 </label>
-                <InputLightBlue type="text" />
+                <InputLightBlue type="text" name="first_name" />
               </div>
               <div>
                 <label className="block text-gray-700 font-bold">
                   Last Name
                 </label>
-                <InputLightBlue type="text" />
+                <InputLightBlue type="text" name="last_name" />
               </div>
               <div>
                 <label className="block text-gray-700 font-bold">
                   Username
                 </label>
-                <InputLightBlue type="text" />
+                <InputLightBlue type="text" name="username" />
               </div>
               <div>
                 <label className="block text-gray-700 font-bold">
                   Password
                 </label>
-                <InputLightBlue type="password" />
+                <InputLightBlue type="password" name="password" />
               </div>
               <div>
                 <label className="block text-gray-700 font-bold">
                   Retype Password
                 </label>
-                <InputLightBlue type="password" />
+                <InputLightBlue type="password" name="retype_password" />
               </div>
               <div>
                 <label className="block text-gray-700 font-bold">Address</label>
-                <TextAreaLightBlue />
+                <TextAreaLightBlue name="address" />
               </div>
               <div>
                 <label className="block text-gray-700 font-bold">Role</label>
                 <div className="relative">
-                  <select className="bg-@light-blue h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                  <select
+                    className="bg-@light-blue h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full"
+                    name="role"
+                  >
                     <option value="" selected disabled hidden>
                       Select your role
                     </option>

@@ -19,8 +19,16 @@ import FirstRegistration from "../pages/student/FirstRegistration";
 import Transaction from "../pages/student/Transaction";
 import HerRegistration from "../pages/student/HerRegistration";
 import Profile from "../pages/student/Profile";
+import ForgetPassword from "../pages/auth/ForgetPassword";
+import NewPassword from "../pages/auth/NewPassword";
+import axios from "axios";
+// import { useCookies } from "react-cookie";
 
+axios.defaults.baseURL =
+  "https://virtserver.swaggerhub.com/EventPlanning/Education_Hub_Restful_API/1.0.0";
 const Router = () => {
+  // const [cookie] = useCookies(["tkn"]);
+  // const checToken = cookie.tkn;
   const router = createBrowserRouter([
     {
       path: "/",
@@ -34,6 +42,14 @@ const Router = () => {
     {
       path: "/register",
       element: <Register />,
+    },
+    {
+      path: "/pwd-reset",
+      element: <ForgetPassword />,
+    },
+    {
+      path: "/pwd-new/:token",
+      element: <NewPassword />,
     },
     {
       path: "/student",
