@@ -101,7 +101,7 @@ const DetailSchool: FC = () => {
           </div>
           <div className="flex space-x-10 h-16">
             <img src="/org1.png" alt="" className="h- w-auto" />
-            <div className=" flex items-center bg-@light-blue w-full px-10 h-full">
+            <div className="flex items-center bg-@light-blue w-full px-10 h-full">
               <p>The school is good, the admin is also friendly</p>
             </div>
           </div>
