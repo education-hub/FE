@@ -1,5 +1,4 @@
 import { FC, useState, Fragment } from "react";
-
 import { Layout } from "../../components/Layout";
 import { Link } from "react-router-dom";
 import { CardCost } from "../../components/Card";
@@ -12,7 +11,7 @@ import { InputLightBlue } from "../../components/Input";
 const src = "https://www.youtube.com/embed/WrBQNImsV74";
 
 const DetailSchool: FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [, setIsOpen] = useState(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
 
   const openModalFAQ = () => {
