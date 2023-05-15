@@ -13,6 +13,7 @@ import DetailAdmission from "../pages/admin/DetailAdmission";
 import UpdateProgress from "../pages/admin/UpdateProgress";
 import TestResult from "../pages/admin/TestResult";
 import RegistrationForm from "../pages/student/RegistrationForm";
+import RegisterSchool from "../pages/student/RegisterSchool";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -40,6 +41,10 @@ const Router = () => {
     {
       path: "/student/registration-form",
       element: <RegistrationForm />,
+    },
+    {
+      path: "/student/register-school",
+      element: <RegisterSchool />,
     },
     {
       path: "/admin",
