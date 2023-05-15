@@ -12,6 +12,7 @@ import Admission from "../pages/admin/Admission";
 import DetailAdmission from "../pages/admin/DetailAdmission";
 import UpdateProgress from "../pages/admin/UpdateProgress";
 import TestResult from "../pages/admin/TestResult";
+import RegistrationForm from "../pages/student/RegistrationForm";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -35,6 +36,10 @@ const Router = () => {
     {
       path: "/student/detail-school",
       element: <DetailSchool />,
+    },
+    {
+      path: "/student/registration-form",
+      element: <RegistrationForm />,
     },
     {
       path: "/admin",
