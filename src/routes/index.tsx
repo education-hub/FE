@@ -18,6 +18,7 @@ import Progress from "../pages/student/Progress";
 import FirstRegistration from "../pages/student/FirstRegistration";
 import Transaction from "../pages/student/Transaction";
 import HerRegistration from "../pages/student/HerRegistration";
+import Profile from "../pages/student/Profile";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -65,6 +66,10 @@ const Router = () => {
     {
       path: "/student/herregistration",
       element: <HerRegistration />,
+    },
+    {
+      path: "/student/profile",
+      element: <Profile />,
     },
     {
       path: "/admin",
