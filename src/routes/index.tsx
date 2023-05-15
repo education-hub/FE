@@ -17,6 +17,7 @@ import RegisterSchool from "../pages/student/RegisterSchool";
 import Progress from "../pages/student/Progress";
 import FirstRegistration from "../pages/student/FirstRegistration";
 import Transaction from "../pages/student/Transaction";
+import HerRegistration from "../pages/student/HerRegistration";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -60,6 +61,10 @@ const Router = () => {
     {
       path: "/student/first-registration",
       element: <FirstRegistration />,
+    },
+    {
+      path: "/student/herregistration",
+      element: <HerRegistration />,
     },
     {
       path: "/admin",
