@@ -196,7 +196,7 @@ export const NavbarAdmin: FC = () => {
   );
 };
 
-export const NavbarIndex: FC = () => {
+export const NavbarIndexAdmin: FC = () => {
   const [checkToken, setCheckToken] = useState<boolean>(true);
   const handleLogout = () => {
     alert("logout");
