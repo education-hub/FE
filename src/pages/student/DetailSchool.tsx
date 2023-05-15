@@ -1,9 +1,12 @@
-import { FC } from "react";
+import { FC, useState, Fragment } from "react";
 
 import { Layout } from "../../components/Layout";
 import { Link, useNavigate } from "react-router-dom";
 import { CardCost } from "../../components/Card";
+import { Listbox, Transition, Dialog } from "@headlessui/react";
+import { TextAreaLightBlue } from "../../components/Input";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
+import { AccordionFAQStudent } from "../../components/AccordionStudent";
 import {
   TbWorldWww,
   TbMapPin,
@@ -15,6 +18,19 @@ import { InputLightBlue } from "../../components/Input";
 const src = "https://www.youtube.com/embed/WrBQNImsV74";
 
 const DetailSchool: FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenFAQ, setIsOpenFAQ] = useState(false);
+
+  const openModalFAQ = () => {
+    setIsOpenFAQ(true);
+  };
+  const closeModalFAQ = () => {
+    setIsOpenFAQ(false);
+  };
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
   const navigate = useNavigate();
 
   return (
@@ -112,7 +128,7 @@ const DetailSchool: FC = () => {
           <div className="grid grid-cols-3 gap-10">
             <ButtonSubmit label="Register" />
             <ButtonSubmit label="Brochure" />
-            <ButtonSubmit label="FAQ" />
+            <ButtonSubmit label="FAQ" onClick={openModalFAQ} />
           </div>
         </div>
         <div className="flex space-x-10 h-44">
@@ -222,6 +238,82 @@ const DetailSchool: FC = () => {
         </div>
         <p className="text-lg">Indramayu, 15/05/2023</p>
       </div>
+
+      <>
+        {/* modal FAQ */}
+        <Transition appear show={isOpenFAQ} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                    >
+                      FAQ
+                    </Dialog.Title>
+                    <div className="pb-10">
+                      <AccordionFAQStudent
+                        question={"Is the school accredited ?"}
+                        answer={
+                          "Of course , school is accreditation, and the accreditation is A"
+                        }
+                      />
+                      <AccordionFAQStudent
+                        question={"Any public transportation near school ?"}
+                        answer={"Yes , is F34 school bus"}
+                      />
+                      <AccordionFAQStudent
+                        question={"Is the school fee expensive there ?"}
+                        answer={
+                          "Relative, but student will guarante beacome success"
+                        }
+                      />
+                      <div className="grid grid-cols-3 gap-4 pb-20">
+                        <div className="col-span-2">
+                          <div className="flex items-center bg-@light-blue w-full px-3 h-full">
+                            <p>
+                              Didn’t find answer? Let’s talk to our Costumer
+                              Service
+                            </p>
+                          </div>
+                        </div>
+                        <ButtonSubmit label="Click Here" />
+                      </div>
+                    </div>
+                    <div className="mt-4 flex space-x-5 justify-end">
+                      <ButtonCancelDelete
+                        label="Close"
+                        onClick={closeModalFAQ}
+                      />
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+      </>
     </Layout>
   );
 };
