@@ -3,7 +3,6 @@ import { Layout } from "../../components/Layout";
 import { ComboBox } from "../../components/ComboBox";
 import {
   InputLightBlue,
-  TextAreaLightBlue,
   InputWhite,
   TextAreaWhite,
 } from "../../components/Input";
@@ -37,10 +36,10 @@ interface SubDistrictDataType {
 const RegistrationForm: FC = () => {
   const [image, setImage] = useState<File | null>(null);
 
-  const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
-  const [cities, setCities] = useState<CitiesDataType[]>([]);
-  const [districts, setDistricts] = useState<DistrictDataType[]>([]);
-  const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
+  const [provinces] = useState<ProvinceDataType[]>([]);
+  const [cities] = useState<CitiesDataType[]>([]);
+  const [districts] = useState<DistrictDataType[]>([]);
+  const [subDistricts] = useState<SubDistrictDataType[]>([]);
   const [selectedProvince, setSelectedProvince] = useState<{
     id: number;
     id_provinsi: string;
