@@ -15,6 +15,7 @@ import TestResult from "../pages/admin/TestResult";
 import RegistrationForm from "../pages/student/RegistrationForm";
 import RegisterSchool from "../pages/student/RegisterSchool";
 import Progress from "../pages/student/Progress";
+import Transaction from "../pages/student/transaction";
 
 const Router = () => {
   const router = createBrowserRouter([
@@ -50,6 +51,10 @@ const Router = () => {
     {
       path: "/student/progress",
       element: <Progress />,
+    },
+    {
+      path: "/student/transaction",
+      element: <Transaction />,
     },
     {
       path: "/admin",
