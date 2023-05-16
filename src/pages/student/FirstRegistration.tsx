@@ -44,7 +44,7 @@ const FirstRegistration: FC = () => {
       </div>
 
       <>
-        {/* modal FAQ */}
+        {/* Modal Payment */}
         <Transition appear show={isOpenPayment} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={closeModal}>
             <Transition.Child
