@@ -99,7 +99,7 @@ const ForgetPassword: FC = () => {
             register={register}
             error={errors.retype_password?.message}
           />
-          <div className="flex justify-end mt-10">
+          <div className="flex flex-col gap-3 mt-10">
             <ButtonSubmit label="Update Password" type="submit" />
             {loading ? <div>Loading..</div> : <></>}
           </div>
