@@ -1,11 +1,54 @@
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useState, useEffect } from "react";
 import { Layout } from "../../components/Layout";
 import { BsFacebook, BsTwitter, BsInstagram } from "react-icons/bs";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { Transition, Dialog } from "@headlessui/react";
 import { InputLightBlue, TextAreaLightBlue } from "../../components/Input";
+import { useCookies } from "react-cookie";
+import axios from "axios";
 
-const AdminProfile: FC = () => {
+interface user {
+  username: string;
+  fname: string;
+  sname: string;
+  email: string;
+  password: string;
+  address: string;
+  image: string;
+}
+
+const StudentProfile: FC = () => {
+  const [user, setUser] = useState<user>({
+    username: "",
+    fname: "",
+    sname: "",
+    email: "",
+    password: "",
+    address: "",
+    image: "",
+  });
+  const [cookie] = useCookies(["tkn"]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`https://go-event.online/users`, {
+        headers: {
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        setUser(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      });
+  }
+
   const [isOpen, setIsOpen] = useState(false);
   const [image, setImage] = useState<File | null>(null);
 
@@ -36,32 +79,32 @@ const AdminProfile: FC = () => {
             <div className="flex flex-col gap-1 mb-10">
               <p>First Name</p>
               <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-                <p>Sochibul</p>
+                <p>{user.fname}</p>
               </div>
             </div>
             <div className="flex flex-col gap-1 mb-10">
               <p>Last Name</p>
               <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-                <p>Wafa'</p>
+                <p>{user.sname}</p>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-1 mb-10">
             <p>Username</p>
             <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-              <p>sohek_jogorgi99</p>
+              <p>{user.username}</p>
             </div>
           </div>
           <div className="flex flex-col gap-1 mb-10">
             <p>Email</p>
             <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-              <p>sohek_aja@gmail.com</p>
+              <p>{user.email}</p>
             </div>
           </div>
           <div className="flex flex-col gap-1 mb-10">
             <p>Address</p>
             <div className="bg-@light-blue flex h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 py-4 focus:outline-none  w-full">
-              <p>Indramayu</p>
+              <p>{user.address}</p>
             </div>
           </div>
         </div>
@@ -208,4 +251,4 @@ const AdminProfile: FC = () => {
   );
 };
 
-export default AdminProfile;
+export default StudentProfile;
