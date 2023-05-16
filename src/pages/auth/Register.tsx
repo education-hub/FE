@@ -80,7 +80,6 @@ const Register: FC = () => {
         showCancelButton: false,
       });
     } else {
-      console.log(data);
       axios
         .post("https://go-event.online/register", data, {
           headers: {
@@ -240,59 +239,60 @@ const Register: FC = () => {
                 register={register}
                 error={errors.role?.message}
               />
-              <div className="pt-4 flex flex-col items-center justify-center">
-                {showCaptcha ? (
-                  <div className="flex flex-col gap-5">
-                    <div className="flex items-center space-x-5">
-                      {captchaImage && <img src={captchaImage} alt="Captcha" />}
-                      <RxReload
-                        className="text-3xl hover:font-bold hover:bg-@blue hover:rounded-full hover:p-1 hover:text-white"
-                        onClick={() => getCaptcha()}
-                      />
-                    </div>
-                    <div>
-                      <InputLightBlue
-                        label="You are not robot??!!"
-                        type="text"
-                        value={captchaValue}
-                        onChange={(e) => setCaptchaValue(e.target.value)}
-                      />
-                    </div>
-                    <ButtonSubmit
-                      label="Verify Captcha!!"
-                      onClick={() => handlePostCaptcha()}
+              {buttonSubmit ? (
+                <ButtonSubmit label="Sign up" type="submit" />
+              ) : (
+                <></>
+              )}
+            </form>
+            <div className="pt-4 flex flex-col items-center justify-center">
+              {showCaptcha ? (
+                <div className="flex flex-col gap-5">
+                  <div className="flex items-center space-x-5">
+                    {captchaImage && <img src={captchaImage} alt="Captcha" />}
+                    <RxReload
+                      className="text-3xl hover:font-bold hover:bg-@blue hover:rounded-full hover:p-1 hover:text-white"
+                      onClick={() => getCaptcha()}
                     />
                   </div>
-                ) : (
-                  <></>
-                )}
-                {buttonGetCapthca ? (
+                  <div>
+                    <InputLightBlue
+                      label="You are not robot??!!"
+                      type="text"
+                      value={captchaValue}
+                      onChange={(e) => setCaptchaValue(e.target.value)}
+                    />
+                  </div>
                   <ButtonSubmit
-                    label="Show Submit Button"
-                    onClick={() => getCaptcha()}
+                    label="Verify Captcha!!"
+                    onClick={() => handlePostCaptcha()}
                   />
-                ) : (
-                  <></>
-                )}
-                {buttonSubmit ? (
-                  <ButtonSubmit label="Sign up" type="submit" />
-                ) : (
-                  <></>
-                )}
-                {loading ? <div>loading...</div> : <></>}
-                <p className="text-center font-semibold text-base text-black pt-4">
-                  Already a member?{" "}
-                  {
-                    <Link
-                      className="text-@black underline text-base font-semibold"
-                      to={"/login"}
-                    >
-                      Sign in
-                    </Link>
-                  }
-                </p>
-              </div>
-            </form>
+                </div>
+              ) : (
+                <></>
+              )}
+              {buttonGetCapthca ? (
+                <ButtonSubmit
+                  label="Show Submit Button"
+                  onClick={() => getCaptcha()}
+                />
+              ) : (
+                <></>
+              )}
+
+              {loading ? <div>loading...</div> : <></>}
+              <p className="text-center font-semibold text-base text-black pt-4">
+                Already a member?{" "}
+                {
+                  <Link
+                    className="text-@black underline text-base font-semibold"
+                    to={"/login"}
+                  >
+                    Sign in
+                  </Link>
+                }
+              </p>
+            </div>
           </div>
         </div>
       </div>
