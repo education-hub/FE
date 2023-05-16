@@ -104,16 +104,22 @@ export const NavbarAdmin: FC = () => {
   const checkToken = cookie.tkn;
   // const checkRole = cookie.role;
 
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     Swal.fire({
+      title: "Are you sure to logout ?",
       icon: "warning",
-      text: "Are you sure to logout ??",
       showCancelButton: true,
-      confirmButtonText: "Yes, Sure!!",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Logout!",
     }).then((result) => {
       if (result.isConfirmed) {
+        Swal.fire("Log out!");
         removeCookie("tkn");
         removeCookie("role");
+        navigate("/");
       }
     });
   };
@@ -270,7 +276,6 @@ export const NavbarIndexAdmin: FC = () => {
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure to logout ?",
-      text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -278,7 +283,7 @@ export const NavbarIndexAdmin: FC = () => {
       confirmButtonText: "Yes, Logout!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Deleted!", "You are Logout.", "success");
+        Swal.fire("Log out!");
         removeCookie("tkn");
         removeCookie("role");
         navigate("/");
