@@ -144,11 +144,10 @@ const Register: FC = () => {
         });
       })
       .catch((error) => {
-        const { data } = error.response;
-        console.log(data);
+        const { message } = error.response.data;
         Swal.fire({
-          icon: "warning",
-          title: data,
+          icon: "error",
+          title: message,
           showCancelButton: false,
         });
       });

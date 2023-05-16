@@ -3,8 +3,26 @@ import Logo from "../assets/eduhub-logo-black.png";
 import { Link } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
 import { BiMenu, BiX, BiLogIn, BiUserPlus } from "react-icons/bi";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
 
 export const Navbar: FC = () => {
+  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
+  const checkToken = cookie.tkn;
+  const checkRole = cookie.role;
+
+  const handleLogout = () => {
+    Swal.fire({
+      icon: "warning",
+      text: "Are you sure to logout ??",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Sure!!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCookie("tkn");
+      }
+    });
+  };
   return (
     <nav className="items-center grid grid-cols-2 bg-@blue py-3 px-20 w-auto">
       <div className="flex">
@@ -17,40 +35,80 @@ export const Navbar: FC = () => {
         </Link>
       </div>
       <div className="flex justify-end">
-        <Link
-          to="/profile"
-          className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out"
-        >
-          PROFILE
-        </Link>
-        <Link
-          to="/transactions"
-          className="text-white text-md hover:text-@dark font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
-        >
-          TRANSACTIONS
-        </Link>
-        <Link
-          to="/register-school"
-          className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-        >
-          REGISTER SCHOOL
-        </Link>
-        <Link
-          to="/logout"
-          className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
-        >
-          LOGOUT
-        </Link>
+        {checkToken ? (
+          checkRole === "student" ? (
+            <>
+              <Link
+                to="/student/profile"
+                className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out"
+              >
+                PROFILE
+              </Link>
+              <Link
+                to="/student/transactions"
+                className="text-white text-md hover:text-@dark font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
+              >
+                TRANSACTIONS
+              </Link>
+              <Link
+                to="/student/register-school"
+                className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+              >
+                REGISTER SCHOOL
+              </Link>
+              <button
+                className="text-white text-md hover:text-@dark font-semibold mr-[6%] transition-all duration-500 ease-in-out"
+                onClick={() => handleLogout()}
+              >
+                LOGOUT
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out"
+              >
+                LOGIN WITH STUDENT ROLE
+              </Link>
+            </>
+          )
+        ) : (
+          <>
+            <Link
+              to="/login"
+              className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out"
+            >
+              LOGIN
+            </Link>
+            <Link
+              to="/register"
+              className="text-white text-md hover:text-@dark font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
+            >
+              REGISTER
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );
 };
 
 export const NavbarAdmin: FC = () => {
-  const [checkToken, setCheckToken] = useState<boolean>(true);
+  const [cookie, , removeCookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
+
   const handleLogout = () => {
-    alert("logout");
-    setCheckToken(false);
+    Swal.fire({
+      icon: "warning",
+      text: "Are you sure to logout ??",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Sure!!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCookie("tkn");
+      }
+    });
   };
   return (
     <Disclosure as="nav" className="bg-@orange z-50">
@@ -69,7 +127,7 @@ export const NavbarAdmin: FC = () => {
                 </Disclosure.Button>
               </div>
               <nav className="flex-1 flex items-center justify-between bg-@orange px-10 ">
-                <Link to="/admin">
+                <Link to="/">
                   <img
                     src={Logo}
                     alt="Logo"
@@ -220,7 +278,7 @@ export const NavbarIndexAdmin: FC = () => {
                 </Disclosure.Button>
               </div>
               <nav className="flex-1 flex items-center py-3  justify-between bg-@orange px-10 ">
-                <Link to="/admin">
+                <Link to="/">
                   <img
                     src={Logo}
                     alt="Logo"
@@ -347,11 +405,21 @@ export const NavbarIndexAdmin: FC = () => {
   );
 };
 
-export const NavbarIndexStudent: FC = () => {
-  const [checkToken, setCheckToken] = useState<boolean>(true);
+export const NavbarIndex: FC = () => {
+  const [cookie, , removeCookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
+
   const handleLogout = () => {
-    alert("logout");
-    setCheckToken(false);
+    Swal.fire({
+      icon: "warning",
+      text: "Are you sure to logout ??",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Sure!!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCookie("tkn");
+      }
+    });
   };
 
   return (
@@ -381,24 +449,6 @@ export const NavbarIndexStudent: FC = () => {
                 {checkToken ? (
                   <div className="hidden sm:block sm:ml-6">
                     <div className="flex space-x-4">
-                      <Link
-                        to="/profile"
-                        className="text-white text-md hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out"
-                      >
-                        PROFILE
-                      </Link>
-                      <Link
-                        to="/transactions"
-                        className="text-white text-md hover:text-@dark font-semibold transition-all  mr-[6%] duration-500 ease-in-out"
-                      >
-                        TRANSACTIONS
-                      </Link>
-                      <Link
-                        to="/register-school"
-                        className="text-white text-md flex items-center justify-center w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
-                      >
-                        REGISTER SCHOOL
-                      </Link>
                       <button
                         className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                         onClick={() => handleLogout()}
@@ -412,17 +462,15 @@ export const NavbarIndexStudent: FC = () => {
                     <div className="flex space-x-4">
                       <Link
                         to="/login"
-                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700 hover:rounded-3xl duration-700 py-2 rounded-md text-md font-medium"
+                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700  duration-700 py-2 rounded-md text-md font-medium"
                       >
-                        <BiLogIn />
-                        Login
+                        LOGIN
                       </Link>
                       <Link
                         to="/register"
-                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700 hover:rounded-3xl duration-700 py-2 rounded-md text-md font-medium"
+                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700  duration-700 py-2 rounded-md text-md font-medium"
                       >
-                        <BiUserPlus className="text-xl" />
-                        Register
+                        REGISTER
                       </Link>
                     </div>
                   </div>

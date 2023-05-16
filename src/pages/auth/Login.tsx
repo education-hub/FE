@@ -42,7 +42,6 @@ const Login: FC = () => {
       })
       .then((response) => {
         const { data } = response.data;
-        console.log(data);
         Swal.fire({
           icon: "success",
           title: "Login Success!!",
@@ -56,11 +55,10 @@ const Login: FC = () => {
         });
       })
       .catch((error) => {
-        const { data } = error.response;
-        console.log(data);
+        const { message } = error.response.data;
         Swal.fire({
-          icon: "warning",
-          title: data,
+          icon: "error",
+          title: message,
           showCancelButton: false,
         });
       })

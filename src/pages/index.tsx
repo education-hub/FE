@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 import { ButtonCancelDelete, ButtonSubmit } from "../components/Button";
-import { NavbarIndexStudent } from "../components/Navbar";
+import { NavbarIndex } from "../components/Navbar";
 import { VideoBackground } from "../components/videoBackground";
 import { Footer } from "../components/Footer";
 
@@ -9,7 +9,7 @@ const Home: FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <NavbarIndexStudent />
+      <NavbarIndex />
       <VideoBackground videoSrc="/video.mp4">
         <div className="relative z-30 p-20 text-white  flex flex-col gap-5">
           <h1 className="text-5xl font-bold">EducationHub</h1>
