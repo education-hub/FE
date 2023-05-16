@@ -37,34 +37,43 @@ const ForgetPassword: FC = () => {
     const { token } = params;
     console.log(data);
     setLoading(true);
-    axios
-      .post(`https://go-event.online/reset/${token}`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        const { message } = response.data;
-        Swal.fire({
-          icon: "success",
-          title: message,
-          text: "Check your email inbox",
-          showCancelButton: false,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/");
-          }
-        });
-      })
-      .catch((error) => {
-        const { message } = error.response.data;
-        Swal.fire({
-          icon: "error",
-          title: message,
-          showCancelButton: false,
-        });
-      })
-      .finally(() => setLoading(false));
+
+    if (data.password !== data.retype_password) {
+      Swal.fire({
+        icon: "warning",
+        title: "Password not match, please check!!",
+        showCancelButton: false,
+      });
+    } else {
+      axios
+        .post(`https://go-event.online/reset/${token}`, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          const { message } = response.data;
+          Swal.fire({
+            icon: "success",
+            title: message,
+            text: "Check your email inbox",
+            showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/");
+            }
+          });
+        })
+        .catch((error) => {
+          const { message } = error.response.data;
+          Swal.fire({
+            icon: "error",
+            title: message,
+            showCancelButton: false,
+          });
+        })
+        .finally(() => setLoading(false));
+    }
   };
 
   return (
