@@ -53,10 +53,11 @@ const ForgetPassword: FC = () => {
         })
         .then((response) => {
           const { message } = response.data;
+          console.log(response);
           Swal.fire({
             icon: "success",
             title: message,
-            text: "Check your email inbox",
+            text: "Update Sucessfully",
             showCancelButton: false,
           }).then((result) => {
             if (result.isConfirmed) {
