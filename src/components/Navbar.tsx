@@ -104,16 +104,22 @@ export const NavbarAdmin: FC = () => {
   const checkToken = cookie.tkn;
   // const checkRole = cookie.role;
 
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     Swal.fire({
+      title: "Are you sure to logout ?",
       icon: "warning",
-      text: "Are you sure to logout ??",
       showCancelButton: true,
-      confirmButtonText: "Yes, Sure!!",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Logout!",
     }).then((result) => {
       if (result.isConfirmed) {
+        Swal.fire("Log out!");
         removeCookie("tkn");
         removeCookie("role");
+        navigate("/");
       }
     });
   };
@@ -262,10 +268,27 @@ export const NavbarAdmin: FC = () => {
 };
 
 export const NavbarIndexAdmin: FC = () => {
-  const [checkToken, setCheckToken] = useState<boolean>(true);
+  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
+  const checkToken = cookie.tkn;
+
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    alert("logout");
-    setCheckToken(false);
+    Swal.fire({
+      title: "Are you sure to logout ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Logout!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Log out!");
+        removeCookie("tkn");
+        removeCookie("role");
+        navigate("/");
+      }
+    });
   };
 
   return (
@@ -413,18 +436,25 @@ export const NavbarIndexAdmin: FC = () => {
 };
 
 export const NavbarIndex: FC = () => {
-  const [cookie, , removeCookie] = useCookies(["tkn"]);
+  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
+
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     Swal.fire({
+      title: "Are you sure to logout ?",
       icon: "warning",
-      text: "Are you sure to logout ??",
       showCancelButton: true,
-      confirmButtonText: "Yes, Sure!!",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Logout!",
     }).then((result) => {
       if (result.isConfirmed) {
+        Swal.fire("Log out!");
         removeCookie("tkn");
+        removeCookie("role");
+        navigate("/");
       }
     });
   };
