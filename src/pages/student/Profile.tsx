@@ -6,8 +6,6 @@ import { Transition, Dialog } from "@headlessui/react";
 import { InputLightBlue, TextAreaLightBlue } from "../../components/Input";
 import { useCookies } from "react-cookie";
 import axios from "axios";
-import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 
 interface user {
   username: string;
@@ -29,19 +27,7 @@ const StudentProfile: FC = () => {
     address: "",
     image: "",
   });
-
-  const [cookie, removeCookie] = useCookies(["tkn"]);
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
-  const openModal = () => {
-    setIsOpen(true);
-  };
+  const [cookie] = useCookies(["tkn"]);
 
   useEffect(() => {
     fetchData();
@@ -63,50 +49,16 @@ const StudentProfile: FC = () => {
       });
   }
 
-  const handleDelete = () => {
-    Swal.fire({
-      title: "Are you sure want to delete your account?",
-      text: "This process cannot be undone!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#0BBBCC",
-      cancelButtonColor: "#E4572E",
-      confirmButtonText: "Delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`https://go-event.online/users`, {
-            headers: {
-              Authorization: `Bearer ${cookie.tkn}`,
-            },
-          })
-          .then((response) => {
-            const { message, code } = response.data;
-            Swal.fire({
-              icon: "info",
-              title: code,
-              text: message,
-              showCancelButton: false,
-            }).then((result) => {
-              if (result.isConfirmed) {
-                removeCookie("tkn", "id");
-                navigate("/");
-              }
-            });
-          })
-          .catch((error) => {
-            const { message, code } = error.response.data;
-            Swal.fire({
-              icon: "error",
-              title: code,
-              text: message,
-              showCancelButton: false,
-            });
-          });
-      }
-    });
+  const [isOpen, setIsOpen] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
+
+  const closeModal = () => {
+    setIsOpen(false);
   };
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
   return (
     <Layout>
       <div className="p-20 grid grid-cols-2 gap-20">
@@ -157,7 +109,7 @@ const StudentProfile: FC = () => {
           </div>
         </div>
         <div className="grid  grid-cols-2 gap-44">
-          <ButtonCancelDelete label="Delete" onClick={() => handleDelete()} />
+          <ButtonCancelDelete label="Delete" />
           <ButtonSubmit label="Edit" onClick={openModal} />
         </div>
       </div>
