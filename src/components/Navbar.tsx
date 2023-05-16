@@ -1,6 +1,6 @@
 import { FC, useState, Fragment } from "react";
 import Logo from "../assets/eduhub-logo-black.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
 import { BiMenu, BiX, BiLogIn, BiUserPlus } from "react-icons/bi";
 import { useCookies } from "react-cookie";
@@ -11,15 +11,20 @@ export const Navbar: FC = () => {
   const checkToken = cookie.tkn;
   const checkRole = cookie.role;
 
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     Swal.fire({
       icon: "warning",
       text: "Are you sure to logout ??",
       showCancelButton: true,
+      showConfirmButton: true,
       confirmButtonText: "Yes, Sure!!",
     }).then((result) => {
       if (result.isConfirmed) {
         removeCookie("tkn");
+        removeCookie("role");
+        navigate("/");
       }
     });
   };
@@ -95,8 +100,9 @@ export const Navbar: FC = () => {
 };
 
 export const NavbarAdmin: FC = () => {
-  const [cookie, , removeCookie] = useCookies(["tkn"]);
+  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
+  // const checkRole = cookie.role;
 
   const handleLogout = () => {
     Swal.fire({
@@ -107,6 +113,7 @@ export const NavbarAdmin: FC = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         removeCookie("tkn");
+        removeCookie("role");
       }
     });
   };
@@ -197,55 +204,55 @@ export const NavbarAdmin: FC = () => {
             leaveTo="transform opacity-0 scale-95"
           >
             <Disclosure.Panel className="sm:hidden">
-              {checkToken ? (
-                <nav className="items-center bg-@orange py-5 px-10 w-auto">
-                  <div className="flex flex-col justify-end gap-5">
-                    <Link
-                      to="/admin/profile"
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold w-full duration-500 ease-in-out    "
-                    >
-                      PROFILE
-                    </Link>
-                    <Link
-                      to="/admin/admission"
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-                    >
-                      STUDENT ADMISSION
-                    </Link>
-                    <Link
-                      to="/admin/result"
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-                    >
-                      TEST RESULT
-                    </Link>
-                    <button
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-                      onClick={() => handleLogout()}
-                    >
-                      REGISTER
-                    </button>
-                  </div>
-                </nav>
-              ) : (
-                <nav className="items-center bg-@orange py-5 px-10 w-auto">
-                  <div className="flex flex-col justify-end gap-5">
-                    <Link
-                      to="/login"
-                      className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-                    >
-                      <BiLogIn />
-                      LOGIN
-                    </Link>
-                    <Link
-                      to="/register"
-                      className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-                    >
-                      <BiUserPlus className="text-xl" />
-                      REGISTER
-                    </Link>
-                  </div>
-                </nav>
-              )}
+              <nav className="items-center bg-@orange py-5 px-10 w-auto">
+                <div className="flex flex-col justify-end gap-5">
+                  {checkToken ? (
+                    <>
+                      <Link
+                        to="/admin/profile"
+                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold w-full duration-500 ease-in-out    "
+                      >
+                        PROFILE
+                      </Link>
+                      <Link
+                        to="/admin/admission"
+                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      >
+                        STUDENT ADMISSION
+                      </Link>
+                      <Link
+                        to="/admin/result"
+                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      >
+                        TEST RESULT
+                      </Link>
+                      <button
+                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        onClick={() => handleLogout()}
+                      >
+                        REGISTER
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      >
+                        <BiLogIn />
+                        LOGIN
+                      </Link>
+                      <Link
+                        to="/register"
+                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      >
+                        <BiUserPlus className="text-xl" />
+                        REGISTER
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </nav>
             </Disclosure.Panel>
           </Transition>
         </>

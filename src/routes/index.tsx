@@ -22,15 +22,13 @@ import Profile from "../pages/student/Profile";
 import ForgetPassword from "../pages/auth/ForgetPassword";
 import NewPassword from "../pages/auth/NewPassword";
 import axios from "axios";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 
 axios.defaults.baseURL =
   "https://virtserver.swaggerhub.com/EventPlanning/Education_Hub_Restful_API/1.0.0";
 const Router = () => {
-  const [cookie] = useCookies(["tkn", "role"]);
-  const checkToken = cookie.tkn;
-  const checkRole = cookie.role;
-  console.log(checkToken, checkRole);
+  // const [cookie] = useCookies(["tkn"]);
+  // const checToken = cookie.tkn;
   const router = createBrowserRouter([
     {
       path: "/",
@@ -63,99 +61,35 @@ const Router = () => {
     },
     {
       path: "/student/registration-form",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <RegistrationForm />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <RegistrationForm />,
     },
     {
       path: "/student/register-school",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <RegisterSchool />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <RegisterSchool />,
     },
     {
       path: "/student/progress",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <Progress />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <Progress />,
     },
     {
       path: "/student/transaction",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <Transaction />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <Transaction />,
     },
     {
       path: "/student/first-registration",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <FirstRegistration />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <FirstRegistration />,
     },
     {
       path: "/student/herregistration",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <HerRegistration />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <HerRegistration />,
     },
     {
       path: "/student/profile",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <Profile />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <Profile />,
     },
     {
       path: "/admin",
-      element: checkToken ? (
-        checkRole === "administrator" ? (
-          <Admin />
-        ) : (
-          <Home />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <Admin />,
     },
     {
       path: "/admin/profile",

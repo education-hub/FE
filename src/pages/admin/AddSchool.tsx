@@ -1,4 +1,11 @@
 import { FC, useEffect, useState } from "react";
+import { Document, Page } from "react-pdf";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+// import Swal from "sweetalert2";
+import axios from "axios";
+
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
@@ -7,9 +14,46 @@ import {
   TextAreaLightBlue,
   TextAreaWhite,
 } from "../../components/Input";
-import axios from "axios";
 import { ComboBox } from "../../components/ComboBox";
-import { Document, Page } from "react-pdf";
+
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
+
+const addressSchema = z.object({
+  province: z.string().min(1, { message: "Province is required" }),
+  city: z.string().min(1, { message: "City is required" }),
+  distric: z.string().min(1, { message: "district is required" }),
+  sub_distric: z.string().min(1, { message: "district is required" }),
+  detail: z
+    .string()
+    .min(20, { message: "detail must have minimum 20 characters" }),
+  zip_code: z.number().min(6, { message: "zip code must 6 numbers" }),
+});
+
+const schema = z.object({
+  npsn: z.number().min(8, { message: "npsn mush 8 number" }),
+  school_name: z.string().min(3, { message: "School name is required" }),
+  description: z
+    .string()
+    .min(20, { message: "description must have minimum 20 characters" }),
+  location: addressSchema,
+  students: z.number().min(1, { message: "how many students is required" }),
+  teachers: z.number().min(1, { message: "how many teachers is required" }),
+  staff: z.number().min(1, { message: "how many staff is required" }),
+  accreditation: z.string().min(1, { message: "Accreditaon is required" }),
+  school_web: z.string().min(1, { message: "school website is required" }),
+  image: z.any().refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type)),
+  video: z
+    .string()
+    .url({ message: "Must be a valid video youtube embedded URL" }),
+  pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
+});
+
+type Schema = z.infer<typeof schema>;
 
 interface ProvinceDataType {
   id: number;
@@ -37,6 +81,16 @@ interface SubDistrictDataType {
 }
 
 const AddSchool: FC = () => {
+  // const [loading, setLoading] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: zodResolver(schema),
+  });
+
   const [image, setImage] = useState<File | null>(null);
   const [video, setVideo] = useState("");
   const [src, setSrc] = useState("");
@@ -47,6 +101,7 @@ const AddSchool: FC = () => {
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
   const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
+
   const [selectedProvince, setSelectedProvince] = useState<{
     id: number;
     id_provinsi: string;
@@ -139,7 +194,7 @@ const AddSchool: FC = () => {
     setVideo(event.target.value);
   };
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmitVideo = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setSrc(video);
     console.log(src);
@@ -156,26 +211,51 @@ const AddSchool: FC = () => {
     }
   };
 
+  const submit: SubmitHandler<Schema> = (data) => {
+    console.log(data);
+  };
+
   return (
     <LayoutAdmin>
       <div className="grid grid-cols-2 px-20 py-20 gap-20 text-lg">
-        <div>
-          <div className="flex flex-col gap-1">
-            <p>National School Identification Number (NPSN)</p>
-            <InputLightBlue type="text" />
-          </div>
-          <div className="flex flex-col gap-1 my-5">
-            <p>School Name</p>
-            <InputLightBlue type="text" />
-          </div>
-          <div className="flex flex-col gap-1 my-5">
-            <p>Description</p>
-            <TextAreaLightBlue />
-          </div>
-          <div className="flex flex-col gap-1 my-5">
-            <p>School Website</p>
-            <InputLightBlue type="text" />
-          </div>
+        <div className=" flex flex-col gap-3">
+          <form onSubmit={handleSubmit(submit)}>
+            <InputLightBlue
+              label="National School Identification Number (NPSN)"
+              type="number"
+              name="npsn"
+              id="input-npsn"
+              onChange={(e) => {
+                const parsedValue = parseInt(e.target.value, 10);
+                setValue("npsn", parsedValue);
+              }}
+              error={errors.npsn?.message}
+            />
+            <InputLightBlue
+              label="School Name"
+              type="text"
+              name="school_name"
+              id="input-school_name"
+              register={register}
+              error={errors.school_name?.message}
+            />
+            <TextAreaLightBlue
+              label="Description"
+              name="description"
+              id="unput-description"
+              register={register}
+              error={errors.description?.message}
+            />
+            <InputLightBlue
+              label="School Website"
+              type="text"
+              name="school_web"
+              id="input-school_web"
+              register={register}
+              error={errors.school_web?.message}
+            />
+            <ButtonSubmit label="Post School" type="submit" />
+          </form>
           <div className="flex flex-col gap-1 my-5">
             <p>Location</p>
             <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
@@ -219,24 +299,46 @@ const AddSchool: FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-1 my-5">
-            <p>How many Students</p>
-            <InputLightBlue type="text" />
-          </div>
-          <div className="flex flex-col gap-1 my-5">
-            <p>How many Teachers</p>
-            <InputLightBlue type="text" />
-          </div>
-          <div className="flex flex-col gap-1 my-5">
-            <p>How many Staff</p>
-            <InputLightBlue type="text" />
-          </div>
-          <div className="flex flex-col gap-1 my-5">
-            <p>Accreditation</p>
-            <div className="w-32">
-              <InputLightBlue type="text" />
-            </div>
-          </div>
+          <InputLightBlue
+            label="How Many Students"
+            type="number"
+            name="students"
+            id="input-students"
+            register={register}
+            error={errors.students?.message}
+          />
+          <InputLightBlue
+            label="How Many Teachers"
+            type="number"
+            name="teachers"
+            id="input-teachers"
+            register={register}
+            error={errors.teachers?.message}
+          />
+          <InputLightBlue
+            label="How Many Teachers"
+            type="number"
+            name="teachers"
+            id="input-teachers"
+            register={register}
+            error={errors.teachers?.message}
+          />
+          <InputLightBlue
+            label="How Many Staff"
+            type="number"
+            name="staff"
+            id="input-staff"
+            register={register}
+            error={errors.staff?.message}
+          />
+          <InputLightBlue
+            label="Accreditation"
+            type="text"
+            name="accreditations"
+            id="input-staff"
+            register={register}
+            error={errors.accreditation?.message}
+          />
         </div>
         <div>
           <div>
@@ -290,7 +392,7 @@ const AddSchool: FC = () => {
             <div className="flex justify-end my-5">
               <ButtonSubmit
                 label="Add URL"
-                onClick={(event) => handleSubmit(event)}
+                onClick={(event) => handleSubmitVideo(event)}
               />
             </div>
           </div>
@@ -314,7 +416,7 @@ const AddSchool: FC = () => {
         </div>
         <div className="flex col-span-2 justify-end gap-10">
           <ButtonCancelDelete label="Cancel" />
-          <ButtonSubmit label="Post School" />
+          <ButtonSubmit label="Post School" type="submit" />
         </div>
       </div>
     </LayoutAdmin>

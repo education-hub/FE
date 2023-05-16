@@ -32,7 +32,7 @@ const interval = [
 const Admin: FC = () => {
   const [school, setSchool] = useState<boolean>(false);
   const [selected, setSelected] = useState(interval[0]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
   const [isOpenAchievement, setIsOpenAchievement] = useState(false);
   const [isOpenPayment, setIsOpenPayment] = useState(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
@@ -40,54 +40,6 @@ const Admin: FC = () => {
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
 
   const [image, setImage] = useState<File | null>(null);
-
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
-  const openModal = () => {
-    setIsOpen(true);
-  };
-
-  const closeModalAchievement = () => {
-    setIsOpenAchievement(false);
-  };
-
-  const openModalAchievement = () => {
-    setIsOpenAchievement(true);
-  };
-
-  const closeModalPayment = () => {
-    setIsOpenPayment(false);
-  };
-
-  const openModalPayment = () => {
-    setIsOpenPayment(true);
-  };
-
-  const closeModalFAQ = () => {
-    setIsOpenFAQ(false);
-  };
-
-  const openModalFAQ = () => {
-    setIsOpenFAQ(true);
-  };
-
-  const closeModalQuiz = () => {
-    setIsOpenQuiz(false);
-  };
-
-  const openModalQuiz = () => {
-    setIsOpenQuiz(true);
-  };
-
-  const closeModalDisclaimer = () => {
-    setIsOpenDisclaimer(false);
-  };
-
-  const openModalDisclaimer = () => {
-    setIsOpenDisclaimer(true);
-  };
 
   const navigate = useNavigate();
 
@@ -239,7 +191,10 @@ const Admin: FC = () => {
                   </div>
                   <div className="grid  grid-cols-2 gap-44">
                     <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit label="Edit" onClick={openModal} />
+                    <ButtonSubmit
+                      label="Edit"
+                      onClick={() => setIsOpenExtracurriculer(true)}
+                    />
                   </div>
                 </div>
                 <div className="bg-@light-blue p-10 flex flex-col gap-10">
@@ -257,7 +212,10 @@ const Admin: FC = () => {
                   </div>
                   <div className="grid  grid-cols-2 gap-44">
                     <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit label="Edit" onClick={openModal} />
+                    <ButtonSubmit
+                      label="Edit"
+                      onClick={() => setIsOpenExtracurriculer(true)}
+                    />
                   </div>
                 </div>
               </div>
@@ -280,7 +238,10 @@ const Admin: FC = () => {
                   </div>
                   <div className="grid  grid-cols-2 gap-44">
                     <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit label="Edit" onClick={openModalAchievement} />
+                    <ButtonSubmit
+                      label="Edit"
+                      onClick={() => setIsOpenAchievement(true)}
+                    />
                   </div>
                 </div>
                 <div className="bg-@light-blue p-10 h-96 flex flex-col gap-10">
@@ -300,7 +261,10 @@ const Admin: FC = () => {
                   </div>
                   <div className="grid  grid-cols-2 gap-44">
                     <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit label="Edit" onClick={openModalAchievement} />
+                    <ButtonSubmit
+                      label="Edit"
+                      onClick={() => setIsOpenAchievement(true)}
+                    />
                   </div>
                 </div>
               </div>
@@ -410,7 +374,10 @@ const Admin: FC = () => {
                       price={1000000}
                     />
                     <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit label="Edit" onClick={openModalPayment} />
+                      <ButtonSubmit
+                        label="Edit"
+                        onClick={() => setIsOpenPayment(true)}
+                      />
                       <ButtonCancelDelete label="Delete" />
                     </div>
                   </div>
@@ -421,7 +388,10 @@ const Admin: FC = () => {
                       price={2000000}
                     />
                     <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit label="Edit" onClick={openModalPayment} />
+                      <ButtonSubmit
+                        label="Edit"
+                        onClick={() => setIsOpenPayment(true)}
+                      />
                       <ButtonCancelDelete label="Delete" />
                     </div>
                   </div>
@@ -432,7 +402,10 @@ const Admin: FC = () => {
                       price={2000000}
                     />
                     <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit label="Edit" onClick={openModalPayment} />
+                      <ButtonSubmit
+                        label="Edit"
+                        onClick={() => setIsOpenPayment(true)}
+                      />
                       <ButtonCancelDelete label="Delete" />
                     </div>
                   </div>
@@ -450,7 +423,10 @@ const Admin: FC = () => {
                       price={500000}
                     />
                     <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit label="Edit" onClick={openModalPayment} />
+                      <ButtonSubmit
+                        label="Edit"
+                        onClick={() => setIsOpenPayment(true)}
+                      />
                       <ButtonCancelDelete label="Delete" />
                     </div>
                   </div>
@@ -461,7 +437,10 @@ const Admin: FC = () => {
                       price={100000}
                     />
                     <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit label="Edit" onClick={openModalPayment} />
+                      <ButtonSubmit
+                        label="Edit"
+                        onClick={() => setIsOpenPayment(true)}
+                      />
                       <ButtonCancelDelete label="Delete" />
                     </div>
                   </div>
@@ -496,20 +475,20 @@ const Admin: FC = () => {
                 answer={
                   "Of course , school is accreditation, and the accreditation is A"
                 }
-                onClick1={closeModalFAQ}
-                onClick2={openModalFAQ}
+                onClick1={() => setIsOpenFAQ(false)}
+                onClick2={() => setIsOpenFAQ(true)}
               />
               <AccordionFAQ
                 question={"Any public transportation near school ?"}
                 answer={"Yes , is F34 school bus"}
-                onClick1={closeModalFAQ}
-                onClick2={openModalFAQ}
+                onClick1={() => setIsOpenFAQ(false)}
+                onClick2={() => setIsOpenFAQ(true)}
               />
               <AccordionFAQ
                 question={"Is the school fee expensive there ?"}
                 answer={"Relative, but student will guarante beacome success"}
-                onClick1={closeModalFAQ}
-                onClick2={openModalFAQ}
+                onClick1={() => setIsOpenFAQ(false)}
+                onClick2={() => setIsOpenFAQ(true)}
               />
             </div>
             {/* Section 7 */}
@@ -549,7 +528,10 @@ const Admin: FC = () => {
               <div className="grid grid-cols-3 gap-96 mt-10">
                 <ButtonCancelDelete label="Reset Data" />
                 <ButtonSubmit label="View Quiz" />
-                <ButtonSubmit label="Submit" onClick={openModalDisclaimer} />
+                <ButtonSubmit
+                  label="Submit"
+                  onClick={() => setIsOpenDisclaimer(true)}
+                />
               </div>
             </div>
             <div className="py-20 px-20">
@@ -560,8 +542,8 @@ const Admin: FC = () => {
                 option3={"D.I. Yogyakarta"}
                 option4={"DKI Jakarta"}
                 answer={4}
-                onClick1={closeModalQuiz}
-                onClick2={openModalQuiz}
+                onClick1={() => setIsOpenQuiz(false)}
+                onClick2={() => setIsOpenQuiz(true)}
               />
               <CardAddQuiz
                 question={"Apa kepanjangan dari DKI"}
@@ -570,15 +552,19 @@ const Admin: FC = () => {
                 option3={"Dengan Khusus Ibu Kota"}
                 option4={"Daerah Khusus Ibu"}
                 answer={3}
-                onClick1={closeModalQuiz}
-                onClick2={openModalQuiz}
+                onClick1={() => setIsOpenQuiz(false)}
+                onClick2={() => setIsOpenQuiz(true)}
               />
             </div>
           </div>
           <>
             {/* modal extraculliculer */}
-            <Transition appear show={isOpen} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition appear show={isOpenExtracurriculer} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenExtracurriculer}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -654,13 +640,13 @@ const Admin: FC = () => {
                         <div className="mt-4 flex space-x-5 justify-end">
                           <ButtonCancelDelete
                             label="Cancel"
-                            onClick={closeModal}
+                            onClick={() => setIsOpenExtracurriculer(false)}
                           />
                           <ButtonSubmit
                             label="Update"
                             onClick={() => {
                               alert("update");
-                              setIsOpen(false);
+                              setIsOpenExtracurriculer(false);
                             }}
                           />
                         </div>
@@ -674,7 +660,11 @@ const Admin: FC = () => {
           <>
             {/* modal achievement */}
             <Transition appear show={isOpenAchievement} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={closeModal}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenAchievement}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -754,7 +744,7 @@ const Admin: FC = () => {
                         <div className="mt-4 flex space-x-5 justify-end">
                           <ButtonCancelDelete
                             label="Cancel"
-                            onClick={closeModalAchievement}
+                            onClick={() => setIsOpenAchievement(false)}
                           />
                           <ButtonSubmit
                             label="Update"
@@ -774,7 +764,11 @@ const Admin: FC = () => {
           <>
             {/* modal payment */}
             <Transition appear show={isOpenPayment} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={closeModal}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenPayment}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -853,13 +847,13 @@ const Admin: FC = () => {
                         <div className="mt-4 flex space-x-5 justify-end">
                           <ButtonCancelDelete
                             label="Cancel"
-                            onClick={closeModalPayment}
+                            onClick={() => setIsOpenPayment(false)}
                           />
                           <ButtonSubmit
                             label="Update"
                             onClick={() => {
                               alert("update");
-                              closeModalPayment();
+                              setIsOpenPayment(false);
                             }}
                           />
                         </div>
@@ -873,7 +867,11 @@ const Admin: FC = () => {
           <>
             {/* modal FAQ */}
             <Transition appear show={isOpenFAQ} as={Fragment}>
-              <Dialog as="div" className="relative z-40" onClose={closeModal}>
+              <Dialog
+                as="div"
+                className="relative z-40"
+                onClose={() => !isOpenFAQ}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -923,13 +921,13 @@ const Admin: FC = () => {
                         <div className="mt-4 flex space-x-5 justify-end">
                           <ButtonCancelDelete
                             label="Cancel"
-                            onClick={closeModalFAQ}
+                            onClick={() => setIsOpenFAQ(false)}
                           />
                           <ButtonSubmit
                             label="Update"
                             onClick={() => {
                               alert("update");
-                              closeModalFAQ();
+                              setIsOpenFAQ(false);
                             }}
                           />
                         </div>
@@ -943,7 +941,11 @@ const Admin: FC = () => {
           <>
             {/* modal Quiz */}
             <Transition appear show={isOpenQuiz} as={Fragment}>
-              <Dialog as="div" className="relative z-40" onClose={closeModal}>
+              <Dialog
+                as="div"
+                className="relative z-40"
+                onClose={() => !isOpenQuiz}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -1024,13 +1026,13 @@ const Admin: FC = () => {
                         <div className="mt-4 flex space-x-5 justify-end">
                           <ButtonCancelDelete
                             label="Cancel"
-                            onClick={closeModalQuiz}
+                            onClick={() => setIsOpenQuiz(false)}
                           />
                           <ButtonSubmit
                             label="Update"
                             onClick={() => {
                               alert("update");
-                              closeModalQuiz();
+                              setIsOpenQuiz(false);
                             }}
                           />
                         </div>
@@ -1044,7 +1046,11 @@ const Admin: FC = () => {
           <>
             {/* modal DisClaimer Quiz */}
             <Transition appear show={isOpenDisclaimer} as={Fragment}>
-              <Dialog as="div" className="relative z-40" onClose={closeModal}>
+              <Dialog
+                as="div"
+                className="relative z-40"
+                onClose={() => !isOpenDisclaimer}
+              >
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -1086,13 +1092,13 @@ const Admin: FC = () => {
                         <div className="mt-4 flex space-x-5 justify-end">
                           <ButtonCancelDelete
                             label="Cancel"
-                            onClick={closeModalDisclaimer}
+                            onClick={() => setIsOpenDisclaimer(false)}
                           />
                           <ButtonSubmit
                             label="Submit"
                             onClick={() => {
                               alert("Submit");
-                              closeModalDisclaimer();
+                              setIsOpenDisclaimer(false);
                             }}
                           />
                         </div>
