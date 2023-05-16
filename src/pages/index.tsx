@@ -4,8 +4,12 @@ import { ButtonCancelDelete, ButtonSubmit } from "../components/Button";
 import { NavbarIndex } from "../components/Navbar";
 import { VideoBackground } from "../components/videoBackground";
 import { Footer } from "../components/Footer";
+import { useCookies } from "react-cookie";
 
 const Home: FC = () => {
+  const [cookie] = useCookies(["tkn", "role"]);
+  const checkToken = cookie.tkn;
+  const checkRole = cookie.role;
   const navigate = useNavigate();
   return (
     <>
@@ -22,10 +26,18 @@ const Home: FC = () => {
               label="Let's find your dreams school"
               onClick={() => navigate("/student")}
             />
-            <ButtonCancelDelete
-              label="I'm School Admin"
-              onClick={() => navigate("/admin")}
-            />
+            {checkToken ? (
+              checkRole === "administrator" ? (
+                <ButtonCancelDelete
+                  label="I'm School Admin"
+                  onClick={() => navigate("/admin")}
+                />
+              ) : (
+                <></>
+              )
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </VideoBackground>
