@@ -72,7 +72,7 @@ const Register: FC = () => {
 
   const submit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
-
+    console.log(data);
     if (data.password !== data.retype_password) {
       Swal.fire({
         icon: "warning",

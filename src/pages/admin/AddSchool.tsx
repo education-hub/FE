@@ -35,7 +35,7 @@ const addressSchema = z.object({
 });
 
 const schema = z.object({
-  npsn: z.number().positive(),
+  npsn: z.number().min(8, { message: "npsn mush 8 number" }),
   school_name: z.string().min(3, { message: "School name is required" }),
   description: z
     .string()
@@ -85,6 +85,7 @@ const AddSchool: FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
@@ -224,7 +225,10 @@ const AddSchool: FC = () => {
               type="number"
               name="npsn"
               id="input-npsn"
-              register={register}
+              onChange={(e) => {
+                const parsedValue = parseInt(e.target.value, 10);
+                setValue("npsn", parsedValue);
+              }}
               error={errors.npsn?.message}
             />
             <InputLightBlue
