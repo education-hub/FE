@@ -92,6 +92,7 @@ const ForgetPassword: FC = () => {
           />
           <div className="flex justify-end mt-10">
             <ButtonSubmit label="Update Password" type="submit" />
+            {loading ? <div>Loading..</div> : <></>}
           </div>
         </form>
       </div>
