@@ -80,7 +80,6 @@ const Register: FC = () => {
         showCancelButton: false,
       });
     } else {
-      console.log(data);
       axios
         .post("https://go-event.online/register", data, {
           headers: {
