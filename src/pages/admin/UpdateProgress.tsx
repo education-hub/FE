@@ -1,13 +1,94 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { LayoutAdmin } from "../../components/Layout";
 import { RadioLightBlue } from "../../components/Input";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useCookies } from "react-cookie";
+import { useParams } from "react-router-dom";
+
+interface objAddType {
+  progress_status: string;
+}
 
 const UpdateProgress: FC = () => {
   const [selectedStep, setSelectedStep] = useState<string>("");
   const [status, setStatus] = useState<string>("");
+  const [student, setStudent] = useState({});
+  const [loading, setLoading] = useState<boolean>(false);
+  const [cookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
+  const [objAdd, setObjAdd] = useState<objAddType>({
+    progress_status: selectedStep,
+  });
+
+  const params = useParams();
+  const { id } = params;
 
   console.log(selectedStep, status);
+  console.log(checkToken);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    setLoading(true);
+    // https://go-event.online
+    axios
+      .get(`https://go-event.online/admin/school/progress/${id}`, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { data } = response.data;
+        setStudent(data.data);
+      })
+      .catch((error) => {
+        const { message } = error;
+        Swal.fire({
+          icon: "error",
+          title: "Failed to Fetch Data!!",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const updateStatus = () => {
+    // https://go-event.online
+    axios
+      .put(`https://go-event.online/admin/school/progress/${id}`, objAdd, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Success update",
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        });
+      })
+      .catch((error) => {
+        const { message, code } = error.response.data;
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: code,
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchData());
+  };
 
   return (
     <LayoutAdmin>
@@ -228,7 +309,7 @@ const UpdateProgress: FC = () => {
         </table>
         <div className="mt-20 flex justify-end gap-10">
           <ButtonCancelDelete label="Cancel" />
-          <ButtonSubmit label="Submit" />
+          <ButtonSubmit label="Submit" onClick={() => updateStatus()} />
         </div>
       </div>
     </LayoutAdmin>

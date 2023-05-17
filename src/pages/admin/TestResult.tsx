@@ -1,7 +1,54 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { LayoutAdmin } from "../../components/Layout";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+import Swal from "sweetalert2";
+
+interface ResultDataType {
+  name: string;
+  email: string;
+  result: string;
+}
 
 const TestResult: FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [TestResult, setTestResult] = useState<ResultDataType[]>([]);
+  const [cookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
+    setLoading(true);
+    // https://go-event.online
+    axios
+      .get(`https://go-event.online/admin/school/test`, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { data } = response.data;
+        setTestResult(data.data);
+      })
+      .catch((error) => {
+        const { message } = error;
+        Swal.fire({
+          icon: "error",
+          title: "Failed to Fetch Data!!",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  console.log(TestResult);
+
   return (
     <LayoutAdmin>
       <div className="p-20 flex flex-col gap-10">
