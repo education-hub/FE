@@ -49,7 +49,7 @@ const DetailAdmission: FC = () => {
         setLoading(false);
       });
   };
-
+  console.log(student);
   return (
     <LayoutAdmin>
       {loading ? (

@@ -17,22 +17,26 @@ interface StudentType {
 const Admission: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [student, setStudent] = useState<StudentType[]>([]);
-  const [cookie] = useCookies(["tkn"]);
+  const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
+
+  console.log(checkToken);
+  console.log(student);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     fetcData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetcData = () => {
     setLoading(true);
     // https://go-event.online
     axios
-      .get(`/admin/school/admission`, {
+      .get(`https://go-event.online/admin/admission`, {
         headers: {
-          Authorization: `Bearer ${cookie.tkn}`,
+          Authorization: `Bearer ${checkToken}`,
         },
       })
       .then((response) => {
