@@ -1,4 +1,11 @@
-import { FC, Fragment, useState, useEffect } from "react";
+import {
+  FC,
+  Fragment,
+  useState,
+  useEffect,
+  FormEvent,
+  MouseEvent,
+} from "react";
 import { Layout } from "../../components/Layout";
 import { BsFacebook, BsTwitter, BsInstagram } from "react-icons/bs";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
@@ -16,7 +23,7 @@ interface user {
   email: string;
   password: string;
   address: string;
-  image: string;
+  image: any;
 }
 
 const StudentProfile: FC = () => {
@@ -30,12 +37,13 @@ const StudentProfile: FC = () => {
     image: "",
   });
 
+  const [objSubmit, setObjSubmit] = useState<Partial<user>>({});
   const [cookie, removeCookie] = useCookies(["tkn"]);
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
 
-  const closeModal = () => {
+  const closeModal = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setIsOpen(false);
   };
 
@@ -62,6 +70,55 @@ const StudentProfile: FC = () => {
         alert(error.toString());
       });
   }
+
+  const handleChange = (value: string | File, key: keyof typeof objSubmit) => {
+    const temp = { ...objSubmit };
+    temp[key] = value;
+    setObjSubmit(temp);
+  };
+
+  const handleUpdate = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(objSubmit);
+    const formData = new FormData();
+    let key: keyof typeof objSubmit;
+    for (key in objSubmit) {
+      formData.append(key, objSubmit[key]);
+    }
+
+    axios
+      .put("https://go-event.online/users", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
+      .then((response) => {
+        const { message, code } = response.data && response.data;
+        Swal.fire({
+          icon: "success",
+          title: code,
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setObjSubmit({});
+            setIsOpen(false);
+          }
+        });
+      })
+      .catch((error) => {
+        const { message, code } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: code,
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchData());
+  };
 
   const handleDelete = () => {
     Swal.fire({
@@ -113,7 +170,17 @@ const StudentProfile: FC = () => {
         <div>
           <div className="flex flex-col">
             <div className="w-full bg-cover bg-center">
-              <img src="/org3.png" alt="" className="w-full h-auto" />
+              <img
+                src={
+                  user && user.image === "org1.jpg"
+                    ? "/org1.jpg"
+                    : `https://storage.googleapis.com/prj1ropel/${
+                        user && user.image
+                      }`
+                }
+                alt=""
+                className="w-full h-auto"
+              />
             </div>
             <div className="flex py-7 bg-@light-blue items-center justify-center space-x-5">
               <BsFacebook className="text-3xl text-@dark" />
@@ -164,7 +231,7 @@ const StudentProfile: FC = () => {
       <>
         {/* modal Edit Profile */}
         <Transition appear show={isOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-40" onClose={closeModal}>
+          <Dialog as="div" className="relative z-40" onClose={() => closeModal}>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -194,100 +261,128 @@ const StudentProfile: FC = () => {
                     >
                       Update Profile
                     </Dialog.Title>
-                    <div className="grid grid-cols-2 gap-10">
-                      <div>
-                        <div className="w-full flex flex-col items-center justify-center">
-                          {image ? (
-                            <div className="w-full">
-                              <img
-                                src={URL.createObjectURL(image)}
-                                alt="Selected"
-                                className="h-auto w-96"
-                              />
-                            </div>
-                          ) : (
-                            <div className="w-full">
-                              <img
-                                src="/org3.png"
-                                alt="Default"
-                                className="w-full"
-                              />
-                            </div>
-                          )}
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                setImage(file);
+                    <form onSubmit={(event) => handleUpdate(event)}>
+                      <div className="grid grid-cols-2 gap-10">
+                        <div>
+                          <div className="w-full flex flex-col items-center justify-center">
+                            <img
+                              src={
+                                objSubmit.image
+                                  ? URL.createObjectURL(objSubmit.image)
+                                  : user && user.image === "org1.jpg"
+                                  ? "/org1.jpg"
+                                  : `https://storage.googleapis.com/prj1ropel/${
+                                      user && user.image
+                                    }`
                               }
-                            }}
-                            className="bg-@light-blue w-full p-5"
-                          />
+                              alt="user-avatar"
+                              className=" w-full h-auto border-8 border-white"
+                            />
+                            <input
+                              placeholder=""
+                              id="upload-image"
+                              type="file"
+                              className="p-4"
+                              onChange={(event) => {
+                                if (!event.currentTarget.files) {
+                                  return;
+                                }
+                                setUser({
+                                  ...user,
+                                  image: URL.createObjectURL(
+                                    event.currentTarget.files[0]
+                                  ),
+                                });
+                                handleChange(
+                                  event.currentTarget.files[0],
+                                  "image"
+                                );
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex flex-col gap-5">
-                        <div className="grid grid-cols-2 gap-10">
+                        <div className="flex flex-col gap-5">
+                          <div className="grid grid-cols-2 gap-10">
+                            <div className="flex flex-col gap-1">
+                              <p>First Name</p>
+                              <InputLightBlue
+                                type="text"
+                                defaultValue={user.fname}
+                                onChange={(event) =>
+                                  handleChange(event.target.value, "fname")
+                                }
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <p>Last Name</p>
+                              <InputLightBlue
+                                type="text"
+                                defaultValue={user.sname}
+                                onChange={(event) =>
+                                  handleChange(event.target.value, "sname")
+                                }
+                              />
+                            </div>
+                          </div>
                           <div className="flex flex-col gap-1">
-                            <p>First Name</p>
+                            <p>Username</p>
                             <InputLightBlue
                               type="text"
-                              defaultValue={"Sohibul"}
+                              defaultValue={user.username}
+                              onChange={(event) =>
+                                handleChange(event.target.value, "username")
+                              }
                             />
                           </div>
                           <div className="flex flex-col gap-1">
-                            <p>Last Name</p>
+                            <p>Email</p>
                             <InputLightBlue
                               type="text"
-                              defaultValue={"Wafa'"}
+                              defaultValue={user.email}
+                              onChange={(event) =>
+                                handleChange(event.target.value, "email")
+                              }
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <p>Address</p>
+                            <TextAreaLightBlue
+                              defaultValue={user.address}
+                              onChange={(event) =>
+                                handleChange(event.target.value, "address")
+                              }
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <p>Password</p>
+                            <InputLightBlue
+                              type="password"
+                              defaultValue={user.password}
+                              onChange={(event) =>
+                                handleChange(event.target.value, "password")
+                              }
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <p>Re-Type Password</p>
+                            <InputLightBlue
+                              type="password"
+                              defaultValue={user.password}
+                              onChange={(event) =>
+                                handleChange(event.target.value, "password")
+                              }
                             />
                           </div>
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <p>Username</p>
-                          <InputLightBlue
-                            type="text"
-                            defaultValue={"sohek_jogorgi99"}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <p>Email</p>
-                          <InputLightBlue
-                            type="text"
-                            defaultValue={"sohek_aja@gmail.com"}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <p>Address</p>
-                          <TextAreaLightBlue defaultValue={"Indramayu"} />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <p>Password</p>
-                          <InputLightBlue
-                            type="password"
-                            defaultValue={"jakartans1"}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <p>Re-Type Password</p>
-                          <InputLightBlue
-                            type="password"
-                            defaultValue={"jakartans1"}
-                          />
-                        </div>
                       </div>
-                    </div>
-                    <div className="mt-10 flex space-x-5 justify-end">
-                      <ButtonCancelDelete label="Cancel" onClick={closeModal} />
-                      <ButtonSubmit
-                        label="Update"
-                        onClick={() => {
-                          alert("Submit");
-                          closeModal();
-                        }}
-                      />
-                    </div>
+                      <div className="mt-10 flex space-x-5 justify-end">
+                        <ButtonCancelDelete
+                          label="Cancel"
+                          onClick={closeModal}
+                        />
+                        <ButtonSubmit label="Update" type="submit" />
+                      </div>
+                    </form>
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
