@@ -4,7 +4,6 @@ import axios from "axios";
 
 import { Layout } from "../../components/Layout";
 import BgLandingPage from "/carousel-1.jpg";
-import ImageCard from "/public/course-2.jpg";
 import Logo from "../../assets/eduhub-logo-black.png";
 
 interface schoolDesc {
@@ -37,7 +36,7 @@ const Student: FC = () => {
       .then((res) => {
         const { data } = res.data.data;
         setDatas(data);
-        console.log(data);
+        console.log(data.image);
       })
       .catch((error) => {
         alert(error.toString());
@@ -87,7 +86,7 @@ const Student: FC = () => {
             return (
               <div className="bg-white rounded-lg overflow-hidden shadow-md mb-10">
                 <img
-                  src={ImageCard}
+                  src={`https://storage.googleapis.com/prj1ropel/${data.image}`}
                   alt="Card 1"
                   className="w-full h-64 object-cover"
                 />
