@@ -1,11 +1,49 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import axios from "axios";
 
 import { Layout } from "../../components/Layout";
 import BgLandingPage from "/carousel-1.jpg";
 import ImageCard from "/public/course-2.jpg";
 import Logo from "../../assets/eduhub-logo-black.png";
 
+interface schoolDesc {
+  name: string;
+  n_adm: string;
+  image: string;
+  accreditation: string;
+  location: string;
+}
+
 const Student: FC = () => {
+  const [datas, setDatas] = useState<schoolDesc[]>([]);
+
+  const [cookie] = useCookies(["tkn"]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(
+        `https://virtserver.swaggerhub.com/EventPlanning/Education_Hub_Restful_API/1.0.0/schools?limit=5&page=0&search=linux`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.tkn}`,
+          },
+        }
+      )
+      .then((res) => {
+        const { data } = res.data.data;
+        setDatas(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      });
+  }
+
   return (
     <Layout>
       <div className="bg-gray-100">
@@ -44,185 +82,34 @@ const Student: FC = () => {
         </div>
 
         <div className="max-w-6xl mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {/* Card 1 */}
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <img
-              src={ImageCard}
-              alt="Card 1"
-              className="w-full h-64 object-cover"
-            />
-            <div className="px-6 py-4">
-              <div className="font-bold text-xl mb-2">SMAN 1 Surabaya</div>
-              <div className="flex items-center">
+          {/* Card */}
+          {datas.map((data) => {
+            return (
+              <div className="bg-white rounded-lg overflow-hidden shadow-md mb-10">
                 <img
-                  src="./profile-photo.jpg"
-                  alt="Profile Photo"
-                  className="w-8 h-8 rounded-full mr-2"
+                  src={ImageCard}
+                  alt="Card 1"
+                  className="w-full h-64 object-cover"
                 />
-                <div className="text-gray-700 text-sm">Maulana Malik</div>
-              </div>
-              <div className="flex justify-between items-center mt-11">
-                <div className="text-gray-500 font-bold">
-                  <p>Akreditasi</p>
-                  <p>A</p>
-                </div>
-                <div className="text-gray-700 text-sm">
-                  <p>Location</p>
-                  <p>Surabaya, Jawa Timur</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2 */}
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <img
-              src={ImageCard}
-              alt="Card 1"
-              className="w-full h-64 object-cover"
-            />
-            <div className="px-6 py-4">
-              <div className="font-bold text-xl mb-2">SMAN 1 Surabaya</div>
-              <div className="flex items-center">
-                <img
-                  src="./profile-photo.jpg"
-                  alt="Profile Photo"
-                  className="w-8 h-8 rounded-full mr-2"
-                />
-                <div className="text-gray-700 text-sm">Maulana Malik</div>
-              </div>
-              <div className="flex justify-between items-center mt-11">
-                <div className="text-gray-500 font-bold">
-                  <p>Akreditasi</p>
-                  <p>A</p>
-                </div>
-                <div className="text-gray-700 text-sm">
-                  <p>Location</p>
-                  <p>Surabaya, Jawa Timur</p>
+                <div className="px-6 py-4">
+                  <div className="font-bold text-xl mb-2">{data.name}</div>
+                  <div className="flex items-center">
+                    <div className="text-gray-700 text-base">{data.n_adm}</div>
+                  </div>
+                  <div className="flex justify-between items-center mt-11">
+                    <div className="text-gray-500 font-bold">
+                      <p>Akreditasi</p>
+                      <p>{data.accreditation}</p>
+                    </div>
+                    <div className="text-gray-700 text-base font-semibold">
+                      <p>Location</p>
+                      <p>{data.location}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Card 3 */}
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <img
-              src={ImageCard}
-              alt="Card 1"
-              className="w-full h-64 object-cover"
-            />
-            <div className="px-6 py-4">
-              <div className="font-bold text-xl mb-2">SMAN 1 Surabaya</div>
-              <div className="flex items-center">
-                <img
-                  src="./profile-photo.jpg"
-                  alt="Profile Photo"
-                  className="w-8 h-8 rounded-full mr-2"
-                />
-                <div className="text-gray-700 text-sm">Maulana Malik</div>
-              </div>
-              <div className="flex justify-between items-center mt-11">
-                <div className="text-gray-500 font-bold">
-                  <p>Akreditasi</p>
-                  <p>A</p>
-                </div>
-                <div className="text-gray-700 text-sm">
-                  <p>Location</p>
-                  <p>Surabaya, Jawa Timur</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 4 */}
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <img
-              src={ImageCard}
-              alt="Card 1"
-              className="w-full h-64 object-cover"
-            />
-            <div className="px-6 py-4">
-              <div className="font-bold text-xl mb-2">SMAN 1 Surabaya</div>
-              <div className="flex items-center">
-                <img
-                  src="./profile-photo.jpg"
-                  alt="Profile Photo"
-                  className="w-8 h-8 rounded-full mr-2"
-                />
-                <div className="text-gray-700 text-sm">Maulana Malik</div>
-              </div>
-              <div className="flex justify-between items-center mt-11">
-                <div className="text-gray-500 font-bold">
-                  <p>Akreditasi</p>
-                  <p>A</p>
-                </div>
-                <div className="text-gray-700 text-sm">
-                  <p>Location</p>
-                  <p>Surabaya, Jawa Timur</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 5 */}
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <img
-              src={ImageCard}
-              alt="Card 1"
-              className="w-full h-64 object-cover"
-            />
-            <div className="px-6 py-4">
-              <div className="font-bold text-xl mb-2">SMAN 1 Surabaya</div>
-              <div className="flex items-center">
-                <img
-                  src="./profile-photo.jpg"
-                  alt="Profile Photo"
-                  className="w-8 h-8 rounded-full mr-2"
-                />
-                <div className="text-gray-700 text-sm">Maulana Malik</div>
-              </div>
-              <div className="flex justify-between items-center mt-11">
-                <div className="text-gray-500 font-bold">
-                  <p>Akreditasi</p>
-                  <p>A</p>
-                </div>
-                <div className="text-gray-700 text-sm">
-                  <p>Location</p>
-                  <p>Surabaya, Jawa Timur</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 6 */}
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <img
-              src={ImageCard}
-              alt="Card 1"
-              className="w-full h-64 object-cover"
-            />
-            <div className="px-6 py-4">
-              <div className="font-bold text-xl mb-2">SMAN 1 Surabaya</div>
-              <div className="flex items-center">
-                <img
-                  src="./profile-photo.jpg"
-                  alt="Profile Photo"
-                  className="w-8 h-8 rounded-full mr-2"
-                />
-                <div className="text-gray-700 text-sm">Maulana Malik</div>
-              </div>
-              <div className="flex justify-between items-center mt-11">
-                <div className="text-gray-500 font-bold">
-                  <p>Akreditasi</p>
-                  <p>A</p>
-                </div>
-                <div className="text-gray-700 text-sm">
-                  <p>Location</p>
-                  <p>Surabaya, Jawa Timur</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </Layout>
