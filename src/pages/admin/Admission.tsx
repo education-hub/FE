@@ -20,7 +20,6 @@ const Admission: FC = () => {
   const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
 
-  console.log(checkToken);
   console.log(student);
 
   const navigate = useNavigate();
@@ -42,6 +41,7 @@ const Admission: FC = () => {
       .then((response) => {
         const { data } = response.data;
         setStudent(data.data);
+        console.log(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
