@@ -3,7 +3,7 @@ import { Document, Page } from "react-pdf";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 import { LayoutAdmin } from "../../components/Layout";
@@ -25,32 +25,36 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const addressSchema = z.object({
   province: z.string().min(1, { message: "Province is required" }),
-  city: z.string().min(1, { message: "City is required" }),
-  distric: z.string().min(1, { message: "district is required" }),
-  sub_distric: z.string().min(1, { message: "district is required" }),
-  detail: z
-    .string()
-    .min(20, { message: "detail must have minimum 20 characters" }),
-  zip_code: z.number().min(6, { message: "zip code must 6 numbers" }),
+  // city: z.string().min(1, { message: "City is required" }),
+  // distric: z.string().min(1, { message: "district is required" }),
+  // sub_distric: z.string().min(1, { message: "district is required" }),
+  // detail: z
+  //   .string()
+  //   .min(20, { message: "detail must have minimum 20 characters" }),
+  // zip_code: z.number().min(6, { message: "zip code must 6 numbers" }),
 });
 
 const schema = z.object({
-  npsn: z.number().min(8, { message: "npsn mush 8 number" }),
+  npsn: z.string().min(8, { message: "npsn mush 8 number" }),
   school_name: z.string().min(3, { message: "School name is required" }),
   description: z
     .string()
     .min(20, { message: "description must have minimum 20 characters" }),
-  location: addressSchema,
-  students: z.number().min(1, { message: "how many students is required" }),
-  teachers: z.number().min(1, { message: "how many teachers is required" }),
-  staff: z.number().min(1, { message: "how many staff is required" }),
+  // location: addressSchema,
+  province: z.string().min(1, { message: "Province is required" }),
+  students: z.string().min(1, { message: "how many students is required" }),
+  teachers: z.string().min(1, { message: "how many teachers is required" }),
+  staff: z.string().min(1, { message: "how many staff is required" }),
   accreditation: z.string().min(1, { message: "Accreditaon is required" }),
-  school_web: z.string().min(1, { message: "school website is required" }),
-  image: z.any().refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type)),
-  video: z
+  school_web: z
     .string()
-    .url({ message: "Must be a valid video youtube embedded URL" }),
-  pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
+    .min(1, { message: "school website is required" })
+    .url({ message: "Must be a valid video URL" }),
+  image: z.any().refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type)),
+  // video: z
+  //   .string()
+  //   .url({ message: "Must be a valid video youtube embedded URL" }),
+  // pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -85,11 +89,15 @@ const AddSchool: FC = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
+
+  const Submit: SubmitHandler<Schema> = (data) => {
+    console.log(data);
+  };
 
   const [image, setImage] = useState<File | null>(null);
   const [video, setVideo] = useState("");
@@ -211,24 +219,17 @@ const AddSchool: FC = () => {
     }
   };
 
-  const submit: SubmitHandler<Schema> = (data) => {
-    console.log(data);
-  };
-
   return (
     <LayoutAdmin>
-      <div className="grid grid-cols-2 px-20 py-20 gap-20 text-lg">
-        <div className=" flex flex-col gap-3">
-          <form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(Submit)}>
+        <div className="grid grid-cols-2 px-20 py-20 gap-20 text-lg">
+          <div className=" flex flex-col gap-3">
             <InputLightBlue
               label="National School Identification Number (NPSN)"
               type="number"
               name="npsn"
               id="input-npsn"
-              onChange={(e) => {
-                const parsedValue = parseInt(e.target.value, 10);
-                setValue("npsn", parsedValue);
-              }}
+              register={register}
               error={errors.npsn?.message}
             />
             <InputLightBlue
@@ -254,171 +255,176 @@ const AddSchool: FC = () => {
               register={register}
               error={errors.school_web?.message}
             />
-            <ButtonSubmit label="Post School" type="submit" />
-          </form>
-          <div className="flex flex-col gap-1 my-5">
-            <p>Location</p>
-            <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
-              <div className="grid grid-cols-2 gap-10">
-                {/* provence */}
-                <ComboBox
-                  title={"Provinces"}
-                  data={provinces}
-                  selected={selectedProvince}
-                  setSelected={setSelectedProvince}
-                />
-                {/* city */}
-                <ComboBox
-                  title={"City/Regency"}
-                  data={cities}
-                  selected={selectedCities}
-                  setSelected={setSelectedCities}
-                />
-                {/* district */}
-                <ComboBox
-                  title={"District"}
-                  data={districts}
-                  selected={selectedDistrict}
-                  setSelected={setSelectedDistrict}
-                />
-                {/* sub-district */}
-                <ComboBox
-                  title={"Sub-district"}
-                  data={subDistricts}
-                  selected={selectedSubDistrict}
-                  setSelected={setSelectedSubDistrict}
-                />
-                <div className="flex flex-col gap-1 col-span-2 ">
-                  <p className="text-gray-400">Detail</p>
-                  <TextAreaWhite />
-                </div>
-                <div className="flex flex-col gap-1 ">
-                  <p className="text-gray-400">Zip Code</p>
-                  <InputWhite />
+            <div className="flex flex-col gap-1 my-5">
+              <p>Location</p>
+              <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
+                <div className="grid grid-cols-2 gap-10">
+                  {/* provence */}
+                  <ComboBox
+                    title={"Provinces"}
+                    data={provinces}
+                    selected={selectedProvince}
+                    setSelected={setSelectedProvince}
+                    name="province"
+                    register={register}
+                    error={errors.province?.message}
+                  />
+                  {/* city */}
+                  <ComboBox
+                    title={"City/Regency"}
+                    data={cities}
+                    selected={selectedCities}
+                    setSelected={setSelectedCities}
+                  />
+                  {/* district */}
+                  <ComboBox
+                    title={"District"}
+                    data={districts}
+                    selected={selectedDistrict}
+                    setSelected={setSelectedDistrict}
+                  />
+                  {/* sub-district */}
+                  <ComboBox
+                    title={"Sub-district"}
+                    data={subDistricts}
+                    selected={selectedSubDistrict}
+                    setSelected={setSelectedSubDistrict}
+                  />
+                  <div className="flex flex-col gap-1 col-span-2 ">
+                    <p className="text-gray-400">Detail</p>
+                    <TextAreaWhite />
+                  </div>
+                  <div className="flex flex-col gap-1 ">
+                    <p className="text-gray-400">Zip Code</p>
+                    <InputWhite />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <InputLightBlue
-            label="How Many Students"
-            type="number"
-            name="students"
-            id="input-students"
-            register={register}
-            error={errors.students?.message}
-          />
-          <InputLightBlue
-            label="How Many Teachers"
-            type="number"
-            name="teachers"
-            id="input-teachers"
-            register={register}
-            error={errors.teachers?.message}
-          />
-          <InputLightBlue
-            label="How Many Teachers"
-            type="number"
-            name="teachers"
-            id="input-teachers"
-            register={register}
-            error={errors.teachers?.message}
-          />
-          <InputLightBlue
-            label="How Many Staff"
-            type="number"
-            name="staff"
-            id="input-staff"
-            register={register}
-            error={errors.staff?.message}
-          />
-          <InputLightBlue
-            label="Accreditation"
-            type="text"
-            name="accreditations"
-            id="input-staff"
-            register={register}
-            error={errors.accreditation?.message}
-          />
-        </div>
-        <div>
-          <div>
-            {image && (
-              <div
-                className="relative z-10 h-96 w-full bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${URL.createObjectURL(image)})`,
-                }}
-              >
-                <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60"></div>
-              </div>
-            )}
-            {!image && (
-              <div
-                className="relative z-10 h-96 w-full bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(/sman3.jpg)`,
-                }}
-              >
-                <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60"></div>
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setImage(file);
-                }
-              }}
-              className="bg-@light-blue w-full p-5"
-            />
-          </div>
-          <div className="mt-10">
-            <div>
-              <iframe
-                className="w-full h-96"
-                src={src ? src : "https://www.youtube.com/embed/LlCwHnp3kL4"}
-                title="Introduction Video"
-                allowFullScreen
-              />
-            </div>
-            <p className="mt-5">Insert Video Youtube URL</p>
             <InputLightBlue
-              type="text"
-              value={video}
-              onChange={handleInputChange}
+              label="How Many Students"
+              type="number"
+              name="students"
+              id="input-students"
+              register={register}
+              error={errors.students?.message}
             />
-            <div className="flex justify-end my-5">
-              <ButtonSubmit
-                label="Add URL"
-                onClick={(event) => handleSubmitVideo(event)}
+            <InputLightBlue
+              label="How Many Teachers"
+              type="number"
+              name="teachers"
+              id="input-teachers"
+              register={register}
+              error={errors.teachers?.message}
+            />
+            <InputLightBlue
+              label="How Many Teachers"
+              type="number"
+              name="teachers"
+              id="input-teachers"
+              register={register}
+              error={errors.teachers?.message}
+            />
+            <InputLightBlue
+              label="How Many Staff"
+              type="number"
+              name="staff"
+              id="input-staff"
+              register={register}
+              error={errors.staff?.message}
+            />
+            <InputLightBlue
+              label="Accreditation"
+              type="text"
+              name="accreditation"
+              id="input-accreditation"
+              register={register}
+              error={errors.accreditation?.message}
+            />
+          </div>
+          <div>
+            <div>
+              {image && (
+                <div
+                  className="relative z-10 h-96 w-full bg-cover bg-center"
+                  style={{
+                    backgroundImage: `url(${URL.createObjectURL(image)})`,
+                  }}
+                >
+                  <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60"></div>
+                </div>
+              )}
+              {!image && (
+                <div
+                  className="relative z-10 h-96 w-full bg-cover bg-center"
+                  style={{
+                    backgroundImage: `url(/sman3.jpg)`,
+                  }}
+                >
+                  <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60"></div>
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setImage(file);
+                  }
+                }}
+                className="bg-@light-blue w-full p-5"
+              />
+            </div>
+            <div className="mt-10">
+              <div>
+                <iframe
+                  className="w-full h-96"
+                  src={src ? src : "https://www.youtube.com/embed/LlCwHnp3kL4"}
+                  title="Introduction Video"
+                  allowFullScreen
+                />
+              </div>
+              <p className="mt-5">Insert Video Youtube URL</p>
+              <InputLightBlue
+                type="text"
+                value={video}
+                onChange={handleInputChange}
+              />
+              <div className="flex justify-end my-5">
+                <ButtonSubmit
+                  label="Add URL"
+                  onClick={(event) => handleSubmitVideo(event)}
+                />
+              </div>
+            </div>
+            <div className="mt-10 bg-@light-blue p-5 flex flex-col gap-10">
+              {pdfFile && (
+                <div>
+                  <Document
+                    file={pdfFile}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                  >
+                    <Page pageNumber={pageNumber} />
+                  </Document>
+                  <p>
+                    Page {pageNumber} of {numPages}
+                  </p>
+                </div>
+              )}
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={handlePdfInputChange}
               />
             </div>
           </div>
-          <div className="mt-10 bg-@light-blue p-5 flex flex-col gap-10">
-            {pdfFile && (
-              <div>
-                <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-                  <Page pageNumber={pageNumber} />
-                </Document>
-                <p>
-                  Page {pageNumber} of {numPages}
-                </p>
-              </div>
-            )}
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={handlePdfInputChange}
-            />
+          <div className="flex col-span-2 justify-end gap-10">
+            <ButtonCancelDelete label="Cancel" />
+            <ButtonSubmit label="Post School" type="submit" />
           </div>
         </div>
-        <div className="flex col-span-2 justify-end gap-10">
-          <ButtonCancelDelete label="Cancel" />
-          <ButtonSubmit label="Post School" type="submit" />
-        </div>
-      </div>
+      </form>
     </LayoutAdmin>
   );
 };
