@@ -23,16 +23,16 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-const addressSchema = z.object({
-  province: z.string().min(1, { message: "Province is required" }),
-  // city: z.string().min(1, { message: "City is required" }),
-  // distric: z.string().min(1, { message: "district is required" }),
-  // sub_distric: z.string().min(1, { message: "district is required" }),
-  // detail: z
-  //   .string()
-  //   .min(20, { message: "detail must have minimum 20 characters" }),
-  // zip_code: z.number().min(6, { message: "zip code must 6 numbers" }),
-});
+// const addressSchema = z.object({
+//   province: z.string().min(1, { message: "Province is required" }),
+// city: z.string().min(1, { message: "City is required" }),
+// distric: z.string().min(1, { message: "district is required" }),
+// sub_distric: z.string().min(1, { message: "district is required" }),
+// detail: z
+//   .string()
+//   .min(20, { message: "detail must have minimum 20 characters" }),
+// zip_code: z.number().min(6, { message: "zip code must 6 numbers" }),
+// });
 
 const schema = z.object({
   npsn: z.string().min(8, { message: "npsn mush 8 number" }),
