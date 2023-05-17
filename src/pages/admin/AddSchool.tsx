@@ -16,32 +16,20 @@ import {
 } from "../../components/Input";
 import { ComboBox } from "../../components/ComboBox";
 
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
-// const addressSchema = z.object({
-//   province: z.string().min(1, { message: "Province is required" }),
-// city: z.string().min(1, { message: "City is required" }),
-// distric: z.string().min(1, { message: "district is required" }),
-// sub_distric: z.string().min(1, { message: "district is required" }),
-// detail: z
-//   .string()
-//   .min(20, { message: "detail must have minimum 20 characters" }),
-// zip_code: z.number().min(6, { message: "zip code must 6 numbers" }),
-// });
-
 const schema = z.object({
   npsn: z.string().min(8, { message: "npsn mush 8 number" }),
   school_name: z.string().min(3, { message: "School name is required" }),
   description: z
     .string()
     .min(20, { message: "description must have minimum 20 characters" }),
-  // location: addressSchema,
   province: z.string().min(1, { message: "Province is required" }),
+  city: z.string().min(1, { message: "City is required" }),
+  district: z.string().min(1, { message: "district is required" }),
+  sub_district: z.string().min(1, { message: "sub district is required" }),
+  detail: z
+    .string()
+    .min(20, { message: "detail must have minimum 20 characters" }),
+  zip_code: z.string().min(6, { message: "zip code must 6 numbers" }),
   students: z.string().min(1, { message: "how many students is required" }),
   teachers: z.string().min(1, { message: "how many teachers is required" }),
   staff: z.string().min(1, { message: "how many staff is required" }),
@@ -50,11 +38,11 @@ const schema = z.object({
     .string()
     .min(1, { message: "school website is required" })
     .url({ message: "Must be a valid video URL" }),
-  image: z.any().refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type)),
-  // video: z
-  //   .string()
-  //   .url({ message: "Must be a valid video youtube embedded URL" }),
-  // pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
+  image: z.any(),
+  video: z
+    .string()
+    .url({ message: "Must be a valid video youtube embedded URL" }),
+  pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -99,7 +87,7 @@ const AddSchool: FC = () => {
     console.log(data);
   };
 
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<string | null>(null);
   const [video, setVideo] = useState("");
   const [src, setSrc] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -198,6 +186,13 @@ const AddSchool: FC = () => {
       });
   };
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+    }
+  };
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVideo(event.target.value);
   };
@@ -256,7 +251,7 @@ const AddSchool: FC = () => {
               error={errors.school_web?.message}
             />
             <div className="flex flex-col gap-1 my-5">
-              <p>Location</p>
+              <p className="block text-gray-700 font-bold">Location</p>
               <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
                 <div className="grid grid-cols-2 gap-10">
                   {/* provence */}
@@ -275,6 +270,9 @@ const AddSchool: FC = () => {
                     data={cities}
                     selected={selectedCities}
                     setSelected={setSelectedCities}
+                    name="city"
+                    register={register}
+                    error={errors.city?.message}
                   />
                   {/* district */}
                   <ComboBox
@@ -282,6 +280,9 @@ const AddSchool: FC = () => {
                     data={districts}
                     selected={selectedDistrict}
                     setSelected={setSelectedDistrict}
+                    name="district"
+                    register={register}
+                    error={errors.district?.message}
                   />
                   {/* sub-district */}
                   <ComboBox
@@ -289,14 +290,28 @@ const AddSchool: FC = () => {
                     data={subDistricts}
                     selected={selectedSubDistrict}
                     setSelected={setSelectedSubDistrict}
+                    name="sub_district"
+                    register={register}
+                    error={errors.sub_district?.message}
                   />
                   <div className="flex flex-col gap-1 col-span-2 ">
-                    <p className="text-gray-400">Detail</p>
-                    <TextAreaWhite />
+                    <TextAreaWhite
+                      label="Detail"
+                      name="detail"
+                      id="input-detail"
+                      register={register}
+                      error={errors.detail?.message}
+                    />
                   </div>
                   <div className="flex flex-col gap-1 ">
-                    <p className="text-gray-400">Zip Code</p>
-                    <InputWhite />
+                    <InputWhite
+                      label="Zip Code"
+                      type="number"
+                      name="zip_code"
+                      id="input-zip_code"
+                      register={register}
+                      error={errors.zip_code?.message}
+                    />
                   </div>
                 </div>
               </div>
@@ -344,37 +359,29 @@ const AddSchool: FC = () => {
           </div>
           <div>
             <div>
-              {image && (
-                <div
-                  className="relative z-10 h-96 w-full bg-cover bg-center"
-                  style={{
-                    backgroundImage: `url(${URL.createObjectURL(image)})`,
-                  }}
-                >
-                  <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60"></div>
-                </div>
-              )}
-              {!image && (
-                <div
-                  className="relative z-10 h-96 w-full bg-cover bg-center"
-                  style={{
-                    backgroundImage: `url(/sman3.jpg)`,
-                  }}
-                >
-                  <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60"></div>
-                </div>
+              {image ? (
+                <img src={image} alt="Preview" className="w-full h-auto" />
+              ) : (
+                <img
+                  src={"/sman3.jpg"}
+                  alt="Default"
+                  className="w-full h-auto"
+                />
               )}
               <input
                 type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    setImage(file);
-                  }
-                }}
                 className="bg-@light-blue w-full p-5"
+                id="input-image"
+                {...register("image")}
+                onChange={handleImageChange}
               />
+              {errors.image && (
+                <label className="label">
+                  <span className="font-light text-sm text-red-500 break-words">
+                    {errors.image.message?.toString()}
+                  </span>
+                </label>
+              )}
             </div>
             <div className="mt-10">
               <div>
@@ -389,16 +396,21 @@ const AddSchool: FC = () => {
               <InputLightBlue
                 type="text"
                 value={video}
+                label="Video"
+                name="video"
+                id="input-video"
+                register={register}
                 onChange={handleInputChange}
+                error={errors.video?.message}
               />
               <div className="flex justify-end my-5">
                 <ButtonSubmit
-                  label="Add URL"
+                  label="Preview Video"
                   onClick={(event) => handleSubmitVideo(event)}
                 />
               </div>
             </div>
-            <div className="mt-10 bg-@light-blue p-5 flex flex-col gap-10">
+            <div className="mt-10 bg-@light-blue p-2 flex flex-col gap-10">
               {pdfFile && (
                 <div>
                   <Document
@@ -415,9 +427,19 @@ const AddSchool: FC = () => {
               <input
                 type="file"
                 accept="application/pdf"
+                className="bg-@light-blue w-full p-5"
+                id="input-pdf"
+                {...register("pdf")}
                 onChange={handlePdfInputChange}
               />
             </div>
+            {errors.pdf && (
+              <label className="label">
+                <span className="font-light text-sm text-red-500 break-words">
+                  {errors.pdf.message?.toString()}
+                </span>
+              </label>
+            )}
           </div>
           <div className="flex col-span-2 justify-end gap-10">
             <ButtonCancelDelete label="Cancel" />
