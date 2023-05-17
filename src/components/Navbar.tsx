@@ -1,4 +1,4 @@
-import { FC, useState, Fragment } from "react";
+import { FC, Fragment } from "react";
 import Logo from "../assets/eduhub-logo-black.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
