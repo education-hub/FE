@@ -46,8 +46,11 @@ const schema = z.object({
   teachers: z.string().min(1, { message: "how many teachers is required" }),
   staff: z.string().min(1, { message: "how many staff is required" }),
   accreditation: z.string().min(1, { message: "Accreditaon is required" }),
-  school_web: z.string().min(1, { message: "school website is required" }),
-  // image: z.any().refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type)),
+  school_web: z
+    .string()
+    .min(1, { message: "school website is required" })
+    .url({ message: "Must be a valid video URL" }),
+  image: z.any().refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type)),
   // video: z
   //   .string()
   //   .url({ message: "Must be a valid video youtube embedded URL" }),
@@ -89,6 +92,7 @@ const AddSchool: FC = () => {
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
+    mode: "onChange",
   });
 
   const Submit: SubmitHandler<Schema> = (data) => {

@@ -7,11 +7,11 @@ import Swal from "sweetalert2";
 import { useCookies } from "react-cookie";
 
 interface StudentType {
-  adm_id: number;
-  prog_id: number;
-  user_img: any;
-  usr_id: number;
-  usr_name: string;
+  submission_id: number;
+  progress_id: number;
+  user_image: any;
+  user_id: number;
+  user_name: string;
 }
 
 const Admission: FC = () => {
@@ -39,9 +39,9 @@ const Admission: FC = () => {
         },
       })
       .then((response) => {
-        const { data } = response.data;
+        const { data } = response;
         setStudent(data.data);
-        console.log(data);
+        // console.log(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -57,6 +57,7 @@ const Admission: FC = () => {
       });
   };
 
+  console.log(student);
   return (
     <LayoutAdmin>
       <div className="p-20 flex flex-col gap-10">
@@ -64,93 +65,48 @@ const Admission: FC = () => {
           <div>Loading..</div>
         ) : (
           <div className="grid grid-cols-6 gap-20">
-            <div>
-              <img src={"/org1.png"} alt="" />
-            </div>
-            <div>
-              <p>Student_id</p>
-              <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                <p>1</p>
-              </div>
-            </div>
-            <div className="col-span-2">
-              <p>Fullname</p>
-              <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                <p>Satrio Wibowo</p>
-              </div>
-            </div>
-            <div className="pt-6">
-              <ButtonSubmit
-                label="Detail Admission"
-                onClick={() => navigate("/admin/admission/1")}
-              />
-            </div>
-            <div className="pt-6">
-              <ButtonSubmit
-                label="Update Progress"
-                onClick={() => navigate("/admin/progress/2")}
-              />
-            </div>
+            {student.map((e) => {
+              return (
+                <>
+                  <div>
+                    <img
+                      src={`https://storage.googleapis.com/prj1ropel/${e.user_image}`}
+                      alt=""
+                    />
+                  </div>
+                  <div>
+                    <p>Student_id</p>
+                    <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                      <p>{e.user_id}</p>
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <p>Fullname</p>
+                    <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                      <p>{e.user_name}</p>
+                    </div>
+                  </div>
+                  <div className="pt-6">
+                    <ButtonSubmit
+                      label="Detail Admission"
+                      onClick={() =>
+                        navigate(`/admin/admission/${e.submission_id}`)
+                      }
+                    />
+                  </div>
+                  <div className="pt-6">
+                    <ButtonSubmit
+                      label="Update Progress"
+                      onClick={() =>
+                        navigate(`/admin/progress/${e.progress_id}`)
+                      }
+                    />
+                  </div>
+                </>
+              );
+            })}
           </div>
         )}
-        <div className="grid grid-cols-6 gap-20">
-          <div>
-            <img src="/org2.png" alt="" />
-          </div>
-          <div>
-            <p>Student_id</p>
-            <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-              <p>2</p>
-            </div>
-          </div>
-          <div className="col-span-2">
-            <p>Fullname</p>
-            <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-              <p>Dayanti Minahasa</p>
-            </div>
-          </div>
-          <div className="pt-6">
-            <ButtonSubmit
-              label="Detail Admission"
-              onClick={() => navigate("/admin/admission/1")}
-            />
-          </div>
-          <div className="pt-6">
-            <ButtonSubmit
-              label="Update Progress"
-              onClick={() => navigate("/admin/progress/2")}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-6 gap-20">
-          <div>
-            <img src="/org3.png" alt="" />
-          </div>
-          <div>
-            <p>Student_id</p>
-            <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-              <p>3</p>
-            </div>
-          </div>
-          <div className="col-span-2">
-            <p>Fullname</p>
-            <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-              <p>Amelia Rosnaida</p>
-            </div>
-          </div>
-          <div className="pt-6">
-            <ButtonSubmit
-              label="Detail Admission"
-              onClick={() => navigate("/admin/admission/1")}
-            />
-          </div>
-          <div className="pt-6">
-            <ButtonSubmit
-              label="Update Progress"
-              onClick={() => navigate("/admin/progress/2")}
-            />
-          </div>
-        </div>
       </div>
     </LayoutAdmin>
   );
