@@ -3,7 +3,7 @@ import { Document, Page } from "react-pdf";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import axios from "axios";
 
 import { LayoutAdmin } from "../../components/Layout";

@@ -32,13 +32,13 @@ const interval = [
   { interval: "Every 6 Month" },
 ];
 
-interface CostDataType {
-  id: number;
-  image: any;
-  description: string;
-  price: number;
-  interval: string;
-}
+// interface CostDataType {
+//   id: number;
+//   image: any;
+//   description: string;
+//   price: number;
+//   interval: string;
+// }
 
 interface FAQDataType {
   school_id: number;
@@ -71,7 +71,7 @@ const Admin: FC = () => {
     school_id: 1,
   });
   // const [datasFAQ, setDatasFAQ] = useState<FAQDataType[]>([]);
-  const [idFAQ, setIdFAQ] = useState<number>();
+  // const [idFAQ, setIdFAQ] = useState<number>();
   const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQDataType>>({});
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
     school_id: 0,
@@ -117,7 +117,7 @@ const Admin: FC = () => {
         },
       })
       .then((response) => {
-        const { data } = response.data;
+        // const { data } = response.data;
         console.log(response);
         // setDatasFAQ(data);
       })
@@ -166,7 +166,7 @@ const Admin: FC = () => {
 
   const handleUpdateFAQ = () => {
     axios
-      .put(`https://go-event.online/${idFAQ}`, updateFAQ, {
+      .put(`https://go-event.online/`, updateFAQ, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -196,48 +196,48 @@ const Admin: FC = () => {
           showCancelButton: false,
         });
       })
-      .finally(() => fetchDataFAQ());
+      .finally(() => fetchAllData());
   };
 
-  const handleDeleteFAQ = (id: number) => {
-    Swal.fire({
-      title: "Are you sure want to delete FAQ?",
-      text: "This process cannot be undone!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#0BBBCC",
-      cancelButtonColor: "#E4572E",
-      confirmButtonText: "Delete",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`https://go-event.online/${id}`, {
-            headers: {
-              Authorization: `Bearer ${cookie.tkn}`,
-            },
-          })
-          .then((response) => {
-            const { message } = response.data;
-            Swal.fire({
-              icon: "success",
-              title: "Success Delete FAQ",
-              text: message,
-              showCancelButton: false,
-            });
-          })
-          .catch((error) => {
-            const { message } = error.response.data;
-            Swal.fire({
-              icon: "error",
-              title: "Error",
-              text: message,
-              showCancelButton: false,
-            });
-          })
-          .finally(() => fetchDataFAQ());
-      }
-    });
-  };
+  // const handleDeleteFAQ = (id: number) => {
+  //   Swal.fire({
+  //     title: "Are you sure want to delete FAQ?",
+  //     text: "This process cannot be undone!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#0BBBCC",
+  //     cancelButtonColor: "#E4572E",
+  //     confirmButtonText: "Delete",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .delete(`https://go-event.online/${id}`, {
+  //           headers: {
+  //             Authorization: `Bearer ${cookie.tkn}`,
+  //           },
+  //         })
+  //         .then((response) => {
+  //           const { message } = response.data;
+  //           Swal.fire({
+  //             icon: "success",
+  //             title: "Success Delete FAQ",
+  //             text: message,
+  //             showCancelButton: false,
+  //           });
+  //         })
+  //         .catch((error) => {
+  //           const { message } = error.response.data;
+  //           Swal.fire({
+  //             icon: "error",
+  //             title: "Error",
+  //             text: message,
+  //             showCancelButton: false,
+  //           });
+  //         })
+  //         .finally(() => fetchAllData());
+  //     }
+  //   });
+  // };
 
   // quiz handle
 
