@@ -25,7 +25,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 
 axios.defaults.baseURL =
-  "https://virtserver.swaggerhub.com/EventPlanning/Education_Hub_Restful_API/1.0.0";
+  "https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0";
 const Router = () => {
   const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
