@@ -41,7 +41,7 @@ export const ComboBox: FC<Partial<ComboBoxType>> = (props) => {
 
   return (
     <div className="text-@dark">
-      <p className="text-gray-400">{title}</p>
+      <p className="block text-gray-700 font-bold">{title}</p>
       <Combobox value={selected} onChange={setSelected}>
         <div className="relative mt-1">
           <div className="relative z-10 w-full flex items-center cursor-default bg-white h-16 pl-3 text-left focus:outline-none text-lg text-@dark ">
