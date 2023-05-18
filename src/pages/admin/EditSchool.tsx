@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
@@ -11,6 +11,8 @@ import {
 import axios from "axios";
 import { ComboBox } from "../../components/ComboBox";
 import { Document, Page } from "react-pdf";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
 
 interface ProvinceDataType {
   id: number;
@@ -37,7 +39,47 @@ interface SubDistrictDataType {
   name: string;
 }
 
+interface LocationDataType {
+  id: number;
+  id_provinsi: string;
+  id_kota: string;
+  id_kecamatan: string;
+  nama: string;
+}
+
+interface SchoolDataType {
+  accreditation: string;
+  achievement: string | null; // belum ketahuan data aslinya jika ditambahkan
+  city: string;
+  description: string;
+  detail: string;
+  district: string;
+  extracurriculars: string | null; // belum ketahuan data aslinya jika ditambahkan
+  gmeet: string;
+  id: number;
+  image: any;
+  name: string;
+  npsn: string;
+  payment: {
+    interval: string | null; // belum ketahuan data aslinya jika ditambahkan
+    onetime: string | null; // belum ketahuan data aslinya jika ditambahkan
+  };
+  pdf: any;
+  province: string;
+  quizLinkPreview: string;
+  quizLinkPub: string;
+  reviews: string | null; // belum ketahuan data aslinya jika ditambahkan
+  staff: string;
+  students: string;
+  teachers: string;
+  video: string;
+  village: string;
+  web: string;
+  zipcode: string;
+}
+
 const EditSchool: FC = () => {
+  const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
   const [image, setImage] = useState<File | null>(null);
   const [video, setVideo] = useState("");
   const [src, setSrc] = useState("");
@@ -48,39 +90,26 @@ const EditSchool: FC = () => {
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
   const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
-  const [selectedProvince, setSelectedProvince] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedCities, setSelectedCities] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedDistrict, setSelectedDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedSubDistrict, setSelectedSubDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
+  const [selectedProvince, setSelectedProvince] =
+    useState<Partial<LocationDataType | null>>(null);
+  const [selectedCities, setSelectedCities] =
+    useState<Partial<LocationDataType | null>>(null);
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<Partial<LocationDataType | null>>(null);
+  const [selectedSubDistrict, setSelectedSubDistrict] =
+    useState<Partial<LocationDataType | null>>(null);
+
+  const [cookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
+
+  const params = useParams();
+  const { id } = params;
 
   const navigate = useNavigate();
 
   useEffect(() => {
     dataProvince();
+    fetchSchoolData();
   }, []);
 
   useEffect(() => {
@@ -159,32 +188,48 @@ const EditSchool: FC = () => {
     }
   };
 
+  const fetchSchoolData = () => {
+    axios
+      .get(`https://go-event.online/admin/school`, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        console.log(data);
+        setSchoolData(data);
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  };
+
   return (
     <LayoutAdmin>
       <div className="grid grid-cols-2 px-20 py-20 gap-20 text-lg">
         <div>
           <div className="flex flex-col gap-1">
             <p>National School Identification Number (NPSN)</p>
-            <InputLightBlue type="text" defaultValue={20403178} />
+            <InputLightBlue type="text" defaultValue={schoolData.npsn} />
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>School Name</p>
-            <InputLightBlue type="text" defaultValue={"SMAN 3 yogyakarta"} />
+            <InputLightBlue type="text" defaultValue={schoolData.name} />
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>Description</p>
-            <TextAreaLightBlue
-              defaultValue={
-                "SMA Negeri 3 Yogyakarta, better known to many as Padmanaba or SMA 3 B, is one of the oldest senior high schools and high schools located in Yogyakarta, the Province of the Special Region of Yogyakarta, Indonesia."
-              }
-            />
+            <TextAreaLightBlue defaultValue={schoolData.description} />
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>School Website</p>
-            <InputLightBlue
-              type="text"
-              defaultValue={"https://sma3jogja.sch.id/"}
-            />
+            <InputLightBlue type="text" defaultValue={schoolData.web} />
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>Location</p>
@@ -196,7 +241,7 @@ const EditSchool: FC = () => {
                   data={provinces}
                   selected={selectedProvince}
                   setSelected={setSelectedProvince}
-                  defaultFill={"D.I. Yogyakarta"}
+                  defaultFill={schoolData.province}
                 />
                 {/* city */}
                 <ComboBox
@@ -204,7 +249,7 @@ const EditSchool: FC = () => {
                   data={cities}
                   selected={selectedCities}
                   setSelected={setSelectedCities}
-                  defaultFill={"Yogyakarta"}
+                  defaultFill={schoolData.city}
                 />
                 {/* district */}
                 <ComboBox
@@ -212,7 +257,7 @@ const EditSchool: FC = () => {
                   data={districts}
                   selected={selectedDistrict}
                   setSelected={setSelectedDistrict}
-                  defaultFill={"Gondokusuman"}
+                  defaultFill={schoolData.district}
                 />
                 {/* sub-district */}
                 <ComboBox
@@ -220,37 +265,38 @@ const EditSchool: FC = () => {
                   data={subDistricts}
                   selected={selectedSubDistrict}
                   setSelected={setSelectedSubDistrict}
-                  defaultFill={"Kotabaru"}
+                  defaultFill={schoolData.village}
                 />
                 <div className="flex flex-col gap-1 col-span-2 ">
                   <p className="text-gray-400">Detail</p>
-                  <TextAreaWhite
-                    defaultValue={"Jalan Laksda Laut Yos Sudarso No : 7"}
-                  />
+                  <TextAreaWhite defaultValue={schoolData.detail} />
                 </div>
                 <div className="flex flex-col gap-1 ">
                   <p className="text-gray-400">Zip Code</p>
-                  <InputWhite defaultValue={41376} />
+                  <InputWhite defaultValue={schoolData.zipcode} />
                 </div>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>How many Students</p>
-            <InputLightBlue type="text" defaultValue={112} />
+            <InputLightBlue type="text" defaultValue={schoolData.students} />
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>How many Teachers</p>
-            <InputLightBlue type="text" defaultValue={70} />
+            <InputLightBlue type="text" defaultValue={schoolData.teachers} />
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>How many Staff</p>
-            <InputLightBlue type="text" defaultValue={21} />
+            <InputLightBlue type="text" defaultValue={schoolData.staff} />
           </div>
           <div className="flex flex-col gap-1 my-5">
             <p>Accreditation</p>
             <div className="w-32">
-              <InputLightBlue type="text" defaultValue={"A"} />
+              <InputLightBlue
+                type="text"
+                defaultValue={schoolData.accreditation}
+              />
             </div>
           </div>
         </div>
@@ -300,7 +346,9 @@ const EditSchool: FC = () => {
             <p className="mt-5">Insert Video Youtube URL</p>
             <InputLightBlue
               type="text"
-              value={video}
+              // value={video}
+              label="Video"
+              id="input-video"
               onChange={handleInputChange}
             />
             <div className="flex justify-end my-5">
@@ -333,7 +381,7 @@ const EditSchool: FC = () => {
             label="Cancel"
             onClick={() => navigate("/admin")}
           />
-          <ButtonSubmit label="Post School" />
+          <ButtonSubmit label="Update School" />
         </div>
       </div>
     </LayoutAdmin>
