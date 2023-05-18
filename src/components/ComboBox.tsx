@@ -3,23 +3,22 @@ import { Transition, Combobox } from "@headlessui/react";
 import { TbArrowsMoveVertical, TbCheck } from "react-icons/tb";
 
 interface ComboBoxType {
-  defaultFill: string | undefined;
   title: string;
   data: any[];
   selected: {
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
+    id?: number;
+    id_provinsi?: string;
+    id_kota?: string;
+    id_kecamatan?: string;
+    nama?: string;
   } | null;
   setSelected: React.Dispatch<
     React.SetStateAction<{
-      id: number;
-      id_provinsi: string;
-      id_kota: string;
-      id_kecamatan: string;
-      nama: string;
+      id?: number;
+      id_provinsi?: string;
+      id_kota?: string;
+      id_kecamatan?: string;
+      nama?: string;
     } | null>
   >;
   name: string;
@@ -79,6 +78,7 @@ export const ComboBox: FC<Partial<ComboBoxType>> = (props) => {
                         active ? "bg-@blue text-white" : "text-gray-900"
                       }`
                     }
+                    // {...(register ? register(name) : {})}
                     value={province}
                   >
                     {({ selected, active }) => (

@@ -1,10 +1,13 @@
-import { FC, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import { Document, Page } from "react-pdf";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 // import Swal from "sweetalert2";
 import axios from "axios";
+import { Worker } from "@react-pdf-viewer/core";
+import { Viewer } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
 
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
@@ -15,6 +18,7 @@ import {
   TextAreaWhite,
 } from "../../components/Input";
 import { ComboBox } from "../../components/ComboBox";
+import { Dialog, Transition } from "@headlessui/react";
 
 const schema = z.object({
   npsn: z.string().min(8, { message: "npsn mush 8 number" }),
@@ -41,6 +45,7 @@ const schema = z.object({
   image: z.any(),
   video: z
     .string()
+    .min(1, { message: "Youtube url is required" })
     .url({ message: "Must be a valid video youtube embedded URL" }),
   pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
 });
@@ -87,6 +92,7 @@ const AddSchool: FC = () => {
     console.log(data);
   };
 
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [image, setImage] = useState<string | null>(null);
   const [video, setVideo] = useState("");
   const [src, setSrc] = useState("");
@@ -98,34 +104,22 @@ const AddSchool: FC = () => {
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
   const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
 
-  const [selectedProvince, setSelectedProvince] = useState<{
+  interface LocationDataType {
     id: number;
     id_provinsi: string;
     id_kota: string;
     id_kecamatan: string;
     nama: string;
-  } | null>(null);
-  const [selectedCities, setSelectedCities] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedDistrict, setSelectedDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedSubDistrict, setSelectedSubDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
+  }
+
+  const [selectedProvince, setSelectedProvince] =
+    useState<Partial<LocationDataType | null>>(null);
+  const [selectedCities, setSelectedCities] =
+    useState<Partial<LocationDataType | null>>(null);
+  const [selectedDistrict, setSelectedDistrict] =
+    useState<Partial<LocationDataType | null>>(null);
+  const [selectedSubDistrict, setSelectedSubDistrict] =
+    useState<Partial<LocationDataType | null>>(null);
 
   useEffect(() => {
     dataProvince();
@@ -213,6 +207,11 @@ const AddSchool: FC = () => {
       setPdfFile(file);
     }
   };
+
+  console.log(selectedProvince);
+  console.log(selectedCities);
+  console.log(selectedDistrict);
+  console.log(selectedSubDistrict);
 
   return (
     <LayoutAdmin>
@@ -362,11 +361,7 @@ const AddSchool: FC = () => {
               {image ? (
                 <img src={image} alt="Preview" className="w-full h-auto" />
               ) : (
-                <img
-                  src={"/sman3.jpg"}
-                  alt="Default"
-                  className="w-full h-auto"
-                />
+                <></>
               )}
               <input
                 type="file"
@@ -395,13 +390,13 @@ const AddSchool: FC = () => {
               <p className="mt-5">Insert Video Youtube URL</p>
               <InputLightBlue
                 type="text"
-                value={video}
+                // value={video}
                 label="Video"
-                name="video"
                 id="input-video"
+                name="video"
                 register={register}
-                onChange={handleInputChange}
                 error={errors.video?.message}
+                onChange={handleInputChange}
               />
               <div className="flex justify-end my-5">
                 <ButtonSubmit
@@ -440,6 +435,9 @@ const AddSchool: FC = () => {
                 </span>
               </label>
             )}
+            <div className=" flex justify-end mt-3">
+              <ButtonSubmit label="view pdf" onClick={() => setIsOpen(true)} />
+            </div>
           </div>
           <div className="flex col-span-2 justify-end gap-10">
             <ButtonCancelDelete label="Cancel" />
@@ -447,6 +445,53 @@ const AddSchool: FC = () => {
           </div>
         </div>
       </form>
+      <>
+        {/* modal extraculliculer */}
+        <Transition appear show={isOpen} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={() => !isOpen}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed inset-0 bg-black bg-opacity-25" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                    <Dialog.Title
+                      as="h3"
+                      className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                    >
+                      View Brochure
+                    </Dialog.Title>
+                    <Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js">
+                      <Viewer fileUrl={"/sampel.pdf"} />
+                    </Worker>
+                    <ButtonCancelDelete
+                      label="close"
+                      onClick={() => setIsOpen(false)}
+                    />
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+      </>
     </LayoutAdmin>
   );
 };
