@@ -58,7 +58,7 @@ const Router = () => {
       element: <Student />,
     },
     {
-      path: "/student/detail-school",
+      path: "/student/detail-school/:id",
       element: <DetailSchool />,
     },
     {

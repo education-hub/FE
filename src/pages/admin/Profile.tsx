@@ -89,10 +89,10 @@ const AdminProfile: FC = () => {
             },
           })
           .then((response) => {
-            const { message, code } = response.data;
+            const { message } = response.data;
             Swal.fire({
               icon: "info",
-              title: code,
+              title: "Success",
               text: message,
               showCancelButton: false,
             }).then((result) => {
@@ -104,10 +104,10 @@ const AdminProfile: FC = () => {
             });
           })
           .catch((error) => {
-            const { message, code } = error.response.data;
+            const { message } = error.response.data;
             Swal.fire({
               icon: "error",
-              title: code,
+              title: "Failed",
               text: message,
               showCancelButton: false,
             });
