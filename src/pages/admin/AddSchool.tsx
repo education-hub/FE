@@ -3,7 +3,7 @@ import { Document, Page } from "react-pdf";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
 import axios from "axios";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
@@ -19,26 +19,27 @@ import {
 } from "../../components/Input";
 import { ComboBox } from "../../components/ComboBox";
 import { Dialog, Transition } from "@headlessui/react";
+import { useCookies } from "react-cookie";
 
 const schema = z.object({
   npsn: z.string().min(8, { message: "npsn mush 8 number" }),
-  school_name: z.string().min(3, { message: "School name is required" }),
+  name: z.string().min(3, { message: "School name is required" }),
   description: z
     .string()
     .min(20, { message: "description must have minimum 20 characters" }),
   province: z.string().min(1, { message: "Province is required" }),
   city: z.string().min(1, { message: "City is required" }),
   district: z.string().min(1, { message: "district is required" }),
-  sub_district: z.string().min(1, { message: "sub district is required" }),
+  village: z.string().min(1, { message: "sub district is required" }),
   detail: z
     .string()
     .min(20, { message: "detail must have minimum 20 characters" }),
-  zip_code: z.string().min(6, { message: "zip code must 6 numbers" }),
+  zipcode: z.string().min(6, { message: "zip code must 6 numbers" }),
   students: z.string().min(1, { message: "how many students is required" }),
   teachers: z.string().min(1, { message: "how many teachers is required" }),
   staff: z.string().min(1, { message: "how many staff is required" }),
   accreditation: z.string().min(1, { message: "Accreditaon is required" }),
-  school_web: z
+  web: z
     .string()
     .min(1, { message: "school website is required" })
     .url({ message: "Must be a valid video URL" }),
@@ -77,6 +78,14 @@ interface SubDistrictDataType {
   name: string;
 }
 
+interface LocationDataType {
+  id: number;
+  id_provinsi: string;
+  id_kota: string;
+  id_kecamatan: string;
+  nama: string;
+}
+
 const AddSchool: FC = () => {
   // const [loading, setLoading] = useState<boolean>(false);
   const {
@@ -104,14 +113,6 @@ const AddSchool: FC = () => {
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
   const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
 
-  interface LocationDataType {
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  }
-
   const [selectedProvince, setSelectedProvince] =
     useState<Partial<LocationDataType | null>>(null);
   const [selectedCities, setSelectedCities] =
@@ -120,6 +121,9 @@ const AddSchool: FC = () => {
     useState<Partial<LocationDataType | null>>(null);
   const [selectedSubDistrict, setSelectedSubDistrict] =
     useState<Partial<LocationDataType | null>>(null);
+
+  const [cookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
 
   useEffect(() => {
     dataProvince();
@@ -208,14 +212,38 @@ const AddSchool: FC = () => {
     }
   };
 
-  console.log(selectedProvince);
-  console.log(selectedCities);
-  console.log(selectedDistrict);
-  console.log(selectedSubDistrict);
+  const hadlePostSchool: SubmitHandler<Schema> = (data) => {
+    console.log(data);
+    axios
+      .post(`https://go-event.online/school`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        console.log(response);
+        Swal.fire({
+          icon: "success",
+          title: "Submit FAQ Success!!",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      });
+  };
 
   return (
     <LayoutAdmin>
-      <form onSubmit={handleSubmit(Submit)}>
+      <form onSubmit={handleSubmit(hadlePostSchool)}>
         <div className="grid grid-cols-2 px-20 py-20 gap-20 text-lg">
           <div className=" flex flex-col gap-3">
             <InputLightBlue
@@ -229,10 +257,10 @@ const AddSchool: FC = () => {
             <InputLightBlue
               label="School Name"
               type="text"
-              name="school_name"
+              name="name"
               id="input-school_name"
               register={register}
-              error={errors.school_name?.message}
+              error={errors.name?.message}
             />
             <TextAreaLightBlue
               label="Description"
@@ -244,10 +272,10 @@ const AddSchool: FC = () => {
             <InputLightBlue
               label="School Website"
               type="text"
-              name="school_web"
+              name="web"
               id="input-school_web"
               register={register}
-              error={errors.school_web?.message}
+              error={errors.web?.message}
             />
             <div className="flex flex-col gap-1 my-5">
               <p className="block text-gray-700 font-bold">Location</p>
@@ -289,9 +317,9 @@ const AddSchool: FC = () => {
                     data={subDistricts}
                     selected={selectedSubDistrict}
                     setSelected={setSelectedSubDistrict}
-                    name="sub_district"
+                    name="village"
                     register={register}
-                    error={errors.sub_district?.message}
+                    error={errors.village?.message}
                   />
                   <div className="flex flex-col gap-1 col-span-2 ">
                     <TextAreaWhite
@@ -306,10 +334,10 @@ const AddSchool: FC = () => {
                     <InputWhite
                       label="Zip Code"
                       type="number"
-                      name="zip_code"
-                      id="input-zip_code"
+                      name="zipcode"
+                      id="input-zipcode"
                       register={register}
-                      error={errors.zip_code?.message}
+                      error={errors.zipcode?.message}
                     />
                   </div>
                 </div>
@@ -363,7 +391,7 @@ const AddSchool: FC = () => {
               ) : (
                 <></>
               )}
-              <input
+              {/* <input
                 type="file"
                 className="bg-@light-blue w-full p-5"
                 id="input-image"
@@ -376,7 +404,14 @@ const AddSchool: FC = () => {
                     {errors.image.message?.toString()}
                   </span>
                 </label>
-              )}
+              )} */}
+              <input
+                type="file"
+                id="input-image"
+                // name="image"
+                {...register("image")}
+              />
+              {errors.image && <span>{errors.image.message?.toString()}</span>}
             </div>
             <div className="mt-10">
               <div>
