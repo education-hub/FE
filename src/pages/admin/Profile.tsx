@@ -61,7 +61,13 @@ const AdminProfile: FC = () => {
         setUser(data);
       })
       .catch((error) => {
-        alert(error.toString());
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        });
       });
   };
 
@@ -133,10 +139,10 @@ const AdminProfile: FC = () => {
         },
       })
       .then((response) => {
-        const { message, code } = response.data && response.data;
+        const { message } = response.data && response.data;
         Swal.fire({
           icon: "success",
-          title: code,
+          title: "Update Success",
           text: message,
           showCancelButton: false,
           showConfirmButton: true,
@@ -148,10 +154,10 @@ const AdminProfile: FC = () => {
         });
       })
       .catch((error) => {
-        const { message, code } = error.response.data;
+        const { message } = error.response.data;
         Swal.fire({
           icon: "error",
-          title: code,
+          title: "Error",
           text: message,
           showCancelButton: false,
         });

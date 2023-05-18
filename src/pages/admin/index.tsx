@@ -1,4 +1,4 @@
-import { Fragment, FC, useEffect, useState } from "react";
+import { Fragment, FC, useEffect, useState, MouseEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
@@ -19,6 +19,9 @@ import {
 import { Listbox, Transition, Dialog } from "@headlessui/react";
 import { CardAddQuiz, CardCost } from "../../components/Card";
 import { AccordionFAQ } from "../../components/Accordion";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
 
 const src = "https://www.youtube.com/embed/WrBQNImsV74";
 
@@ -29,6 +32,30 @@ const interval = [
   { interval: "Every 6 Month" },
 ];
 
+// interface CostDataType {
+//   id: number;
+//   image: any;
+//   description: string;
+//   price: number;
+//   interval: string;
+// }
+
+interface FAQDataType {
+  school_id: number;
+  question: string;
+  answer: string;
+}
+
+interface QuizDataType {
+  school_id: number;
+  question: string;
+  option1: string;
+  option2: string;
+  option3: string;
+  option4: string;
+  answer: number;
+}
+
 const Admin: FC = () => {
   const [school, setSchool] = useState<boolean>(false);
   const [selected, setSelected] = useState(interval[0]);
@@ -38,17 +65,275 @@ const Admin: FC = () => {
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
   const [isOpenQuiz, setIsOpenQuiz] = useState(false);
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
-
   const [image, setImage] = useState<File | null>(null);
+  // const [cost, setCost] = useState<CostDataType>({});
+  const [faq, setFaq] = useState<Partial<FAQDataType>>({
+    school_id: 1,
+  });
+  // const [datasFAQ, setDatasFAQ] = useState<FAQDataType[]>([]);
+  // const [idFAQ, setIdFAQ] = useState<number>();
+  const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQDataType>>({});
+  const [selectedItem, setSelectedItem] = useState<QuizDataType>({
+    school_id: 0,
+    question: "",
+    option1: "",
+    option2: "",
+    option3: "",
+    option4: "",
+    answer: 0,
+  });
+  const [updatedQuestion, setUpdatedQuestion] = useState<string>("");
+  const [updatedOption1, setUpdatedOption1] = useState<string>("");
+  const [updatedOption2, setUpdatedOption2] = useState<string>("");
+  const [updatedOption3, setUpdatedOption3] = useState<string>("");
+  const [updatedOption4, setUpdatedOption4] = useState<string>("");
+  const [updatedAnswer, setUpdatedAnswer] = useState<number>();
+  const [quiz, setQuiz] = useState<QuizDataType[]>([]);
+  const [addQuiz, setAddQuiz] = useState<QuizDataType>({
+    school_id: 0,
+    question: "",
+    option1: "",
+    option2: "",
+    option3: "",
+    option4: "",
+    answer: 0,
+  });
+
+  const [cookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
 
   const navigate = useNavigate();
 
   useEffect(() => {
     setSchool(false);
+    fetchAllData();
   }, []);
 
-  console.log(isOpenFAQ);
+  const fetchAllData = () => {
+    axios
+      .get(`https://go-event.online/admin/school`, {
+        headers: {
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
+      .then((response) => {
+        // const { data } = response.data;
+        console.log(response);
+        // setDatasFAQ(data);
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  };
 
+  // Cost Handle
+
+  // FAQ Handle
+
+  const handleSubmitFAQ = () => {
+    console.log(faq);
+    axios
+      .post(`https://go-event.online/faqs`, faq, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        console.log(response);
+        Swal.fire({
+          icon: "success",
+          title: "Submit FAQ Success!!",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      });
+  };
+
+  const handleUpdateFAQ = () => {
+    axios
+      .put(`https://go-event.online/`, updateFAQ, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data && response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Update Success",
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setUpdateFAQ({});
+            setIsOpenFAQ(false);
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchAllData());
+  };
+
+  // const handleDeleteFAQ = (id: number) => {
+  //   Swal.fire({
+  //     title: "Are you sure want to delete FAQ?",
+  //     text: "This process cannot be undone!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#0BBBCC",
+  //     cancelButtonColor: "#E4572E",
+  //     confirmButtonText: "Delete",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .delete(`https://go-event.online/${id}`, {
+  //           headers: {
+  //             Authorization: `Bearer ${cookie.tkn}`,
+  //           },
+  //         })
+  //         .then((response) => {
+  //           const { message } = response.data;
+  //           Swal.fire({
+  //             icon: "success",
+  //             title: "Success Delete FAQ",
+  //             text: message,
+  //             showCancelButton: false,
+  //           });
+  //         })
+  //         .catch((error) => {
+  //           const { message } = error.response.data;
+  //           Swal.fire({
+  //             icon: "error",
+  //             title: "Error",
+  //             text: message,
+  //             showCancelButton: false,
+  //           });
+  //         })
+  //         .finally(() => fetchAllData());
+  //     }
+  //   });
+  // };
+
+  // quiz handle
+
+  const handleAddQuiz = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setQuiz(quiz.concat(addQuiz));
+  };
+
+  const openModalQuiz = (e: QuizDataType) => {
+    setSelectedItem(e);
+    setUpdatedQuestion(e.question);
+    setUpdatedOption1(e.option1);
+    setUpdatedOption2(e.option2);
+    setUpdatedOption3(e.option3);
+    setUpdatedOption4(e.option4);
+    setUpdatedAnswer(e.answer);
+    setIsOpenQuiz(true);
+  };
+
+  const closeModalQuiz = () => {
+    setSelectedItem({
+      school_id: 0,
+      question: "",
+      option1: "",
+      option2: "",
+      option3: "",
+      option4: "",
+      answer: 0,
+    });
+    setIsOpenQuiz(false);
+  };
+
+  const handleSaveUpdateQuiz = () => {
+    const updatedQuiz = quiz.map((item) => {
+      if (item === selectedItem) {
+        return {
+          ...item,
+          question: updatedQuestion,
+          option1: updatedOption1,
+          option2: updatedOption2,
+          option3: updatedOption3,
+          option4: updatedOption4,
+          answer: updatedAnswer,
+        };
+      }
+      return item;
+    });
+    setQuiz(updatedQuiz as QuizDataType[]);
+    closeModalQuiz();
+  };
+
+  const handleDeleteProperty = (indexToDelete: number) => {
+    Swal.fire({
+      title: "Are you sure to delete ?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedQuiz = quiz.filter((_, index) => index !== indexToDelete);
+        setQuiz(updatedQuiz);
+      }
+    });
+  };
+
+  const FinalAddQuiz = () => {
+    console.log(quiz);
+    axios
+      .post(`https://go-event.online/admin/school/test`, quiz, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { data } = response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Submit Quiz Success!!",
+          text: data,
+          showCancelButton: false,
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      });
+  };
+
+  console.log(quiz);
   return (
     <>
       {school ? (
@@ -454,22 +739,43 @@ const Admin: FC = () => {
                 <div className="grid grid-cols-5 gap-20">
                   <div className="flex flex-col col-span-2 gap-1">
                     <p>Question</p>
-                    <InputLightBlue type="text" />
+                    <InputLightBlue
+                      type="text"
+                      onChange={(event) =>
+                        setFaq({ ...faq, question: event.target.value })
+                      }
+                    />
                   </div>
                   <div className="flex flex-col col-span-2 gap-1">
-                    <p>Question</p>
-                    <InputLightBlue type="text" />
+                    <p>Answer</p>
+                    <InputLightBlue
+                      type="text"
+                      onChange={(event) =>
+                        setFaq({ ...faq, answer: event.target.value })
+                      }
+                    />
                   </div>
                   <div className="flex flex-col justify-end">
-                    <ButtonSubmit label="Add Question" />
+                    <ButtonSubmit
+                      label="Add Question"
+                      onClick={() => handleSubmitFAQ()}
+                    />
                   </div>
-                  <div></div>
-                  <div></div>
                 </div>
               </div>
-              <div></div>
             </div>
             <div className="pb-20 px-20">
+              {/* {datasFAQ.map((e) => (
+                <AccordionFAQ
+                  question={e.question}
+                  answer={e.answer}
+                  onClick1={() => handleDeleteFAQ(e.id)}
+                  onClick2={() => {
+                    setIdFAQ(e.id);
+                    setIsOpenFAQ(true);
+                  }}
+                />
+              ))} */}
               <AccordionFAQ
                 question={"Is the school accredited ?"}
                 answer={
@@ -496,33 +802,69 @@ const Admin: FC = () => {
               <h1 className="text-lg font-semibold text-center">ADD QUIZ</h1>
               <div className="flex flex-col gap-1">
                 <p>Question</p>
-                <InputWhite type="text" />
+                <InputWhite
+                  type="text"
+                  onChange={(event) =>
+                    setAddQuiz({ ...addQuiz, question: event.target.value })
+                  }
+                />
               </div>
               <div className="grid grid-cols-2 mt-10 gap-x-20 gap-y-5">
                 <div className="flex flex-col gap-1">
                   <p>Option 1</p>
-                  <InputWhite type="text" />
+                  <InputWhite
+                    type="text"
+                    onChange={(event) =>
+                      setAddQuiz({ ...addQuiz, option1: event.target.value })
+                    }
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <p>Option 2</p>
-                  <InputWhite type="text" />
+                  <InputWhite
+                    type="text"
+                    onChange={(event) =>
+                      setAddQuiz({ ...addQuiz, option2: event.target.value })
+                    }
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <p>Option 3</p>
-                  <InputWhite type="text" />
+                  <InputWhite
+                    type="text"
+                    onChange={(event) =>
+                      setAddQuiz({ ...addQuiz, option3: event.target.value })
+                    }
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <p>Option 4</p>
-                  <InputWhite type="text" />
+                  <InputWhite
+                    type="text"
+                    onChange={(event) =>
+                      setAddQuiz({ ...addQuiz, option4: event.target.value })
+                    }
+                  />
                 </div>
               </div>
               <div className="flex justify-between">
                 <div className="flex flex-col w-[10%] gap-1 mt-5">
                   <p>Answer</p>
-                  <InputWhite type="number" />
+                  <InputWhite
+                    type="number"
+                    onChange={(event) =>
+                      setAddQuiz({
+                        ...addQuiz,
+                        answer: Number(event.target.value),
+                      })
+                    }
+                  />
                 </div>
                 <div className="flex flex-col w-[10%] gap-1 mt-5 justify-end">
-                  <ButtonSubmit label="Add" />
+                  <ButtonSubmit
+                    label="Add"
+                    onClick={(event) => handleAddQuiz(event)}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-96 mt-10">
@@ -535,26 +877,20 @@ const Admin: FC = () => {
               </div>
             </div>
             <div className="py-20 px-20">
-              <CardAddQuiz
-                question={"Sebutkan Ibu Kota Indonesia"}
-                option1={"Surabaya"}
-                option2={"Semarang"}
-                option3={"D.I. Yogyakarta"}
-                option4={"DKI Jakarta"}
-                answer={4}
-                onClick1={() => setIsOpenQuiz(false)}
-                onClick2={() => setIsOpenQuiz(true)}
-              />
-              <CardAddQuiz
-                question={"Apa kepanjangan dari DKI"}
-                option1={"Daerah Khusus Indah"}
-                option2={"Daerah Khusus Indonesia"}
-                option3={"Dengan Khusus Ibu Kota"}
-                option4={"Daerah Khusus Ibu"}
-                answer={3}
-                onClick1={() => setIsOpenQuiz(false)}
-                onClick2={() => setIsOpenQuiz(true)}
-              />
+              {quiz.map((e, index) => (
+                <div>
+                  <CardAddQuiz
+                    question={e.question}
+                    option1={e.option1}
+                    option2={e.option2}
+                    option3={e.option3}
+                    option4={e.option4}
+                    answer={e.answer}
+                    onClick1={() => handleDeleteProperty(index)}
+                    onClick2={() => openModalQuiz(e)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
           <>
@@ -907,6 +1243,12 @@ const Admin: FC = () => {
                             <InputLightBlue
                               type="text"
                               defaultValue={"Is the school accredited ?"}
+                              onChange={(event) =>
+                                setUpdateFAQ({
+                                  ...updateFAQ,
+                                  question: event.target.value,
+                                })
+                              }
                             />
                           </div>
                           <div className="flex flex-col gap-1 my-5 w-full">
@@ -914,6 +1256,12 @@ const Admin: FC = () => {
                             <TextAreaLightBlue
                               defaultValue={
                                 "Of course , school is accreditation, and the accreditation is A"
+                              }
+                              onChange={(event) =>
+                                setUpdateFAQ({
+                                  ...updateFAQ,
+                                  answer: event.target.value,
+                                })
                               }
                             />
                           </div>
@@ -926,8 +1274,7 @@ const Admin: FC = () => {
                           <ButtonSubmit
                             label="Update"
                             onClick={() => {
-                              alert("update");
-                              setIsOpenFAQ(false);
+                              handleUpdateFAQ();
                             }}
                           />
                         </div>
@@ -944,7 +1291,7 @@ const Admin: FC = () => {
               <Dialog
                 as="div"
                 className="relative z-40"
-                onClose={() => !isOpenQuiz}
+                onClose={() => closeModalQuiz()}
               >
                 <Transition.Child
                   as={Fragment}
@@ -983,7 +1330,10 @@ const Admin: FC = () => {
                             <p>Question</p>
                             <InputWhite
                               type="text"
-                              defaultValue={"Sebutkan Ibu Kota Indonesia"}
+                              defaultValue={updatedQuestion}
+                              onChange={(e) =>
+                                setUpdatedQuestion(e.target.value)
+                              }
                             />
                           </div>
                           <div className="grid grid-cols-2 mt-10 gap-x-20 gap-y-5">
@@ -991,35 +1341,53 @@ const Admin: FC = () => {
                               <p>Option 1</p>
                               <InputWhite
                                 type="text"
-                                defaultValue={"Surabaya"}
+                                defaultValue={updatedOption1}
+                                onChange={(e) =>
+                                  setUpdatedOption1(e.target.value)
+                                }
                               />
                             </div>
                             <div className="flex flex-col gap-1">
                               <p>Option 2</p>
                               <InputWhite
                                 type="text"
-                                defaultValue={"Semarang"}
+                                defaultValue={updatedOption2}
+                                onChange={(e) =>
+                                  setUpdatedOption2(e.target.value)
+                                }
                               />
                             </div>
                             <div className="flex flex-col gap-1">
                               <p>Option 3</p>
                               <InputWhite
                                 type="text"
-                                defaultValue={"D.I. Yogyakarta"}
+                                defaultValue={updatedOption3}
+                                onChange={(e) =>
+                                  setUpdatedOption3(e.target.value)
+                                }
                               />
                             </div>
                             <div className="flex flex-col gap-1">
                               <p>Option 4</p>
                               <InputWhite
                                 type="text"
-                                defaultValue={"DKI Jakarta"}
+                                defaultValue={updatedOption4}
+                                onChange={(e) =>
+                                  setUpdatedOption4(e.target.value)
+                                }
                               />
                             </div>
                           </div>
                           <div className="flex justify-between">
                             <div className="flex flex-col w-[30%] gap-1 mt-5">
                               <p>Answer</p>
-                              <InputWhite type="number" defaultValue={4} />
+                              <InputWhite
+                                type="number"
+                                defaultValue={updatedAnswer}
+                                onChange={(e) =>
+                                  setUpdatedAnswer(Number(e.target.value))
+                                }
+                              />
                             </div>
                           </div>
                         </div>
@@ -1031,8 +1399,7 @@ const Admin: FC = () => {
                           <ButtonSubmit
                             label="Update"
                             onClick={() => {
-                              alert("update");
-                              setIsOpenQuiz(false);
+                              handleSaveUpdateQuiz();
                             }}
                           />
                         </div>
@@ -1097,7 +1464,7 @@ const Admin: FC = () => {
                           <ButtonSubmit
                             label="Submit"
                             onClick={() => {
-                              alert("Submit");
+                              FinalAddQuiz();
                               setIsOpenDisclaimer(false);
                             }}
                           />
