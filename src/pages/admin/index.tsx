@@ -102,6 +102,7 @@ const Admin: FC = () => {
   const [isOpenQuiz, setIsOpenQuiz] = useState(false);
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
   const [image, setImage] = useState<File | null>(null);
+  const [schoolId, setSchoolId] = useState<number>();
   // const [cost, setCost] = useState<CostDataType>({});
   const [faq, setFaq] = useState<Partial<FAQDataType>>({
     school_id: 1,
@@ -110,7 +111,7 @@ const Admin: FC = () => {
   // const [idFAQ, setIdFAQ] = useState<number>();
   const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQDataType>>({});
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
-    school_id: 0,
+    school_id: schoolId,
     question: "",
     option1: "",
     option2: "",
@@ -126,7 +127,7 @@ const Admin: FC = () => {
   const [updatedAnswer, setUpdatedAnswer] = useState<number>();
   const [quiz, setQuiz] = useState<QuizDataType[]>([]);
   const [addQuiz, setAddQuiz] = useState<QuizDataType>({
-    school_id: 0,
+    school_id: 1,
     question: "",
     option1: "",
     option2: "",
@@ -153,8 +154,8 @@ const Admin: FC = () => {
       })
       .then((response) => {
         const { data } = response.data;
-        console.log(data);
         setSchoolData(data);
+        setSchoolId(data.id);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -166,6 +167,8 @@ const Admin: FC = () => {
         });
       });
   };
+
+  console.log(schoolId);
 
   // Cost Handle
 
@@ -293,15 +296,6 @@ const Admin: FC = () => {
   };
 
   const closeModalQuiz = () => {
-    setSelectedItem({
-      school_id: 0,
-      question: "",
-      option1: "",
-      option2: "",
-      option3: "",
-      option4: "",
-      answer: 0,
-    });
     setIsOpenQuiz(false);
   };
 
@@ -344,7 +338,7 @@ const Admin: FC = () => {
   const FinalAddQuiz = () => {
     console.log(quiz);
     axios
-      .post(`https://go-event.online/admin/school/test`, quiz, {
+      .post(`https://go-event.online/quiz`, quiz, {
         headers: {
           Authorization: `Bearer ${checkToken}`,
         },
@@ -365,7 +359,8 @@ const Admin: FC = () => {
           title: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => window.location.reload());
   };
 
   console.log(quiz);

@@ -20,6 +20,7 @@ import {
 import { ComboBox } from "../../components/ComboBox";
 import { Dialog, Transition } from "@headlessui/react";
 import { useCookies } from "react-cookie";
+import Autocomplete from "../../components/ComboBox2";
 
 const schema = z.object({
   npsn: z.string().min(8, { message: "npsn mush 8 number" }),
@@ -288,6 +289,13 @@ const AddSchool: FC = () => {
               <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
                 <div className="grid grid-cols-2 gap-10">
                   {/* provence */}
+                  <Autocomplete
+                    datas={provinces}
+                    id="input-province"
+                    name="province"
+                    register={register}
+                    error={errors.province?.message}
+                  />
                   <ComboBox
                     title={"Provinces"}
                     data={provinces}
