@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { Layout } from "../../components/Layout";
@@ -7,11 +8,12 @@ import BgLandingPage from "/carousel-1.jpg";
 import Logo from "../../assets/eduhub-logo-black.png";
 
 interface schoolDesc {
-  name: string;
-  n_adm: string;
-  image: string;
   accreditation: string;
+  admin_name: string;
+  id: number;
+  image: string;
   location: string;
+  name: string;
 }
 
 const Student: FC = () => {
@@ -25,18 +27,14 @@ const Student: FC = () => {
 
   function fetchData() {
     axios
-      .get(
-        `https://virtserver.swaggerhub.com/EventPlanning/Education_Hub_Restful_API/1.0.0/schools?limit=5&page=0&search=linux`,
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.tkn}`,
-          },
-        }
-      )
+      .get(`https://go-event.online/schools?limit=5&page=1&search=`, {
+        headers: {
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
       .then((res) => {
         const { data } = res.data.data;
         setDatas(data);
-        console.log(data.image);
       })
       .catch((error) => {
         alert(error.toString());
@@ -84,29 +82,33 @@ const Student: FC = () => {
           {/* Card */}
           {datas.map((data) => {
             return (
-              <div className="bg-white rounded-lg overflow-hidden shadow-md mb-10">
-                <img
-                  src={`https://storage.googleapis.com/prj1ropel/${data.image}`}
-                  alt="Card 1"
-                  className="w-full h-64 object-cover"
-                />
-                <div className="px-6 py-4">
-                  <div className="font-bold text-xl mb-2">{data.name}</div>
-                  <div className="flex items-center">
-                    <div className="text-gray-700 text-base">{data.n_adm}</div>
-                  </div>
-                  <div className="flex justify-between items-center mt-11">
-                    <div className="text-gray-500 font-bold">
-                      <p>Akreditasi</p>
-                      <p>{data.accreditation}</p>
+              <Link to={`/student/detail-school/${data.id}`} className="block">
+                <div className="bg-white rounded-lg overflow-hidden shadow-md mb-10 hover:shadow-xl hover:scale-110 duration-200">
+                  <img
+                    src={`https://storage.googleapis.com/prj1ropel/${data.image}`}
+                    alt="Card 1"
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="px-6 py-4">
+                    <div className="font-bold text-xl mb-1">{data.name}</div>
+                    <div className="flex items-center">
+                      <div className="text-gray-700 text-base mb-4">
+                        {data.admin_name}
+                      </div>
                     </div>
-                    <div className="text-gray-700 text-base font-semibold">
-                      <p>Location</p>
-                      <p>{data.location}</p>
+                    <div className="flex justify-between items-center mt-11">
+                      <div className="text-gray-500 font-bold">
+                        <p>Akreditasi</p>
+                        <p>{data.accreditation}</p>
+                      </div>
+                      <div className="text-gray-700 text-base font-semibold">
+                        <p>Location</p>
+                        <p>{data.location}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

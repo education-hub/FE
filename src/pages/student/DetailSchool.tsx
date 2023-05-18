@@ -1,6 +1,8 @@
-import { FC, useState, Fragment } from "react";
+import { FC, useState, Fragment, useEffect } from "react";
+import axios from "axios";
+import { useCookies } from "react-cookie";
 import { Layout } from "../../components/Layout";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { CardCost } from "../../components/Card";
 import { Transition, Dialog } from "@headlessui/react";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
@@ -8,9 +10,82 @@ import { AccordionFAQStudent } from "../../components/AccordionStudent";
 import { TbWorldWww, TbMapPin } from "react-icons/tb";
 import { InputLightBlue } from "../../components/Input";
 
-const src = "https://www.youtube.com/embed/WrBQNImsV74";
+interface detailSchool {
+  accreditation: string;
+  address: string;
+  description: string;
+  event: {
+    date: string;
+    gmeet: string;
+  };
+  extracurriculars: [
+    { name: string; img: string; description: string },
+    { name: string; img: string; description: string }
+  ];
+  faq: {
+    qa: [{ q: string; a: string }, { q: string; a: string }];
+    wa: string;
+  };
+  image: string;
+  name: string;
+  prestations: [{ name: string; img: string; description: string }];
+  reviews: [{ img: string; review: string }, { img: string; review: string }];
+  school_fees: {
+    books_fee: number;
+    building_fee: number;
+    m_fee: number;
+    regis_fee: number;
+  };
+  staff: number;
+  students: number;
+  teachers: number;
+}
+
+const src = "https://man1gresik.sch.id/";
+const srcVideo = "https://youtu.be/3Q0TeSKP20M";
 
 const DetailSchool: FC = () => {
+  const [data, setData] = useState<detailSchool>({
+    accreditation: "",
+    address: "",
+    description: "",
+    event: {
+      date: "",
+      gmeet: "",
+    },
+    extracurriculars: [
+      { name: "", img: "", description: "" },
+      { name: "", img: "", description: "" },
+    ],
+    faq: {
+      qa: [
+        { q: "", a: "" },
+        { q: "", a: "" },
+      ],
+      wa: "",
+    },
+    image: "",
+    name: "",
+    prestations: [{ name: "", img: "", description: "" }],
+    reviews: [
+      { img: "", review: "" },
+      { img: "", review: "" },
+    ],
+    school_fees: {
+      books_fee: 0,
+      building_fee: 0,
+      m_fee: 0,
+      regis_fee: 0,
+    },
+    staff: 0,
+    students: 0,
+    teachers: 0,
+  });
+
+  const [cookie] = useCookies(["tkn"]);
+  const param = useParams();
+  const { id } = param;
+
   const [, setIsOpen] = useState(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
 
@@ -24,34 +99,53 @@ const DetailSchool: FC = () => {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(
+        `https://virtserver.swaggerhub.com/EventPlanning/Education_Hub_Restful_API/1.0.0/schools/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.tkn}`,
+          },
+        }
+      )
+      .then((res) => {
+        const { data } = res.data;
+        setData(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      });
+  }
+
   return (
     <Layout>
       {/* Section 1 */}
       <div className="grid lg:grid-cols-2 p-20 gap-20 text-@dark">
         <div className="flex flex-col gap-10">
-          <h1 className="text-5xl">SMAN 3 YOGYAKARTA</h1>
-          <p className="text-lg">
-            SMA Negeri 3 Yogyakarta, better known to many as Padmanaba or SMA 3
-            B, is one of the oldest senior high schools and high schools located
-            in Yogyakarta, the Province of the Special Region of Yogyakarta,
-            Indonesia.
-          </p>
+          <h1 className="text-5xl">{data.name}</h1>
+          <p className="text-lg">{data.description}</p>
           <div className="grid grid-cols-4 gap-10">
             <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-              <h1 className="text-3xl font-bold">112</h1>
+              <h1 className="text-3xl font-bold">{data.students}</h1>
               <p>Students</p>
             </div>
             <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-              <h1 className="text-3xl font-bold">70</h1>
+              <h1 className="text-3xl font-bold">{data.teachers}</h1>
               <p>Teachers</p>
             </div>
             <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-              <h1 className="text-3xl font-bold">21</h1>
+              <h1 className="text-3xl font-bold">{data.staff}</h1>
               <p>Staff</p>
             </div>
             <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-              <h1 className="text-3xl font-bold">A</h1>
-              <p>Akreditasion</p>
+              <h1 className="text-3xl font-bold">{data.accreditation}</h1>
+              <p>Accreditation</p>
             </div>
           </div>
           <div className=" flex space-x-3">
@@ -59,11 +153,7 @@ const DetailSchool: FC = () => {
             <p className="text-lg">
               Find more about school, go to school Website:{" "}
               <span className="text-@orange hover:text-@blue">
-                <Link
-                  to="https://sma3jogja.sch.id/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link to={src} target="_blank" rel="noopener noreferrer">
                   Click Here!
                 </Link>
               </span>
@@ -76,7 +166,9 @@ const DetailSchool: FC = () => {
           </div>
           <div className="flex pl-10 py-7 bg-@light-blue items-center space-x-5">
             <TbMapPin className="text-3xl text-@blue" />
-            <p className="text-lg font-semibold">Yogyakarta, D.I Yogyakarta</p>
+            <p className="text-lg font-semibold tracking-wider">
+              {data.address}
+            </p>
           </div>
         </div>
       </div>
@@ -91,15 +183,23 @@ const DetailSchool: FC = () => {
             <ButtonSubmit label="Add" />
           </div>
           <div className="flex space-x-10 h-16">
-            <img src="/org1.png" alt="" className="h- w-auto" />
+            <img
+              src={`https://storage.googleapis.com/prj1ropel/${data.reviews[0].img}`}
+              alt=""
+              className="h- w-auto"
+            />
             <div className="flex items-center bg-@light-blue w-full px-10 h-full">
-              <p>The school is good, the admin is also friendly</p>
+              <p>{data.reviews[0].review}</p>
             </div>
           </div>
           <div className="flex space-x-10 h-16">
-            <img src="/org1.png" alt="" className="h- w-auto" />
+            <img
+              src={`https://storage.googleapis.com/prj1ropel/${data.reviews[1].img}`}
+              alt=""
+              className="h- w-auto"
+            />
             <div className=" flex items-center bg-@light-blue w-full px-10 h-full">
-              <p>The yard is nice, the school is clean</p>
+              <p>{data.reviews[1].review}</p>
             </div>
           </div>
           <div className="flex space-x-10 h-16">
@@ -112,21 +212,22 @@ const DetailSchool: FC = () => {
         <div className="flex flex-col gap-10">
           <iframe
             className="w-full h-96"
-            src={src}
+            src={srcVideo}
             title="Introduction Video"
             allowFullScreen
           />
           <div className="grid grid-cols-3 gap-10">
             <ButtonSubmit label="Register" />
             <ButtonSubmit label="Brochure" />
+            {/* {data.pdf} */}
             <ButtonSubmit label="FAQ" onClick={openModalFAQ} />
           </div>
         </div>
         <div className="flex space-x-10 h-44">
           <div className="p-8 grid grid-rows-2 grid-flow-col gap-2 bg-@light-blue w-full px-10 h-full">
-            <p>join g-meet school introduction at Mon, 16-05-2023</p>
+            <p>join g-meet school introduction at {data.event.date}</p>
             <div className="items-center">
-              <ButtonSubmit label="Join" />
+              <Link to={data.event.gmeet} className="block"></Link>
             </div>
           </div>
         </div>
@@ -138,15 +239,16 @@ const DetailSchool: FC = () => {
             <p>extracurricular</p>
           </div>
           <div className="flex space-x-10">
-            <img src="/scout.webp" alt="" className="h-32 w-auto" />
+            <img
+              src={`https://storage.googleapis.com/prj1ropel/${data.extracurriculars[0].img}`}
+              alt=""
+              className="h-32 w-auto"
+            />
             <div className="w-full flex flex-col gap-4">
-              <h1 className="text-2xl font-semibold">Scout</h1>
-              <p className="text-lg">
-                The Scout is a non-formal educational organization that
-                organizes scouting education in Indonesia. The word Scout is an
-                abbreviation of Praja Muda Karana which means Young People who
-                Like to Work.
-              </p>
+              <h1 className="text-2xl font-semibold">
+                {data.extracurriculars[0].name}
+              </h1>
+              <p className="text-lg">{data.extracurriculars[0].description}</p>
             </div>
           </div>
         </div>
@@ -155,16 +257,16 @@ const DetailSchool: FC = () => {
             <p>ACHIEVEMENT</p>
           </div>
           <div className="flex  space-x-10">
-            <img src="/math.png" alt="" className="h-32 w-auto" />
+            <img
+              src={`https://storage.googleapis.com/prj1ropel/${data.prestations[0].img}`}
+              alt=""
+              className="h-32 w-auto"
+            />
             <div className="w-full flex flex-col gap-4">
               <h1 className="text-2xl font-semibold">
-                1’st Matematic Olympiade{" "}
+                {data.prestations[0].name}
               </h1>
-              <p className="text-lg">
-                The material tested or contested in the Mathematics Olympiad
-                consists of several branches of mathematics, including; number
-                theory, algebra, geometry and combinatorics.
-              </p>
+              <p className="text-lg">{data.prestations[0].description}</p>
             </div>
           </div>
         </div>
@@ -180,8 +282,8 @@ const DetailSchool: FC = () => {
               <div className="flex flex-col gap-5">
                 <CardCost
                   image={"/registration.png"}
-                  title={"Her Registration"}
-                  price={1000000}
+                  title={"Registration"}
+                  price={data.school_fees.regis_fee}
                 />
                 <div className="flex flex-col gap-5 bg-gray-200"></div>
               </div>
@@ -189,7 +291,7 @@ const DetailSchool: FC = () => {
                 <CardCost
                   image={"/school.png"}
                   title={"Building"}
-                  price={2000000}
+                  price={data.school_fees.building_fee}
                 />
                 <div className="flex flex-col gap-5 bg-gray-200"></div>
               </div>
@@ -197,7 +299,7 @@ const DetailSchool: FC = () => {
                 <CardCost
                   image={"/books.png"}
                   title={"Books"}
-                  price={2000000}
+                  price={data.school_fees.books_fee}
                 />
                 <div className="flex flex-col gap-5 bg-gray-200"></div>
               </div>
@@ -265,14 +367,12 @@ const DetailSchool: FC = () => {
                     </Dialog.Title>
                     <div className="pb-10">
                       <AccordionFAQStudent
-                        question={"Is the school accredited ?"}
-                        answer={
-                          "Of course , school is accreditation, and the accreditation is A"
-                        }
+                        question={data.faq.qa[0].q}
+                        answer={data.faq.qa[0].a}
                       />
                       <AccordionFAQStudent
-                        question={"Any public transportation near school ?"}
-                        answer={"Yes , is F34 school bus"}
+                        question={data.faq.qa[1].q}
+                        answer={data.faq.qa[1].a}
                       />
                       <AccordionFAQStudent
                         question={"Is the school fee expensive there ?"}
@@ -289,7 +389,9 @@ const DetailSchool: FC = () => {
                             </p>
                           </div>
                         </div>
-                        <ButtonSubmit label="Click Here" />
+                        <Link to={data.faq.wa}>
+                          <ButtonSubmit label="Click Here" />
+                        </Link>
                       </div>
                     </div>
                     <div className="mt-4 flex space-x-5 justify-end">

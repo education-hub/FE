@@ -94,10 +94,10 @@ const StudentProfile: FC = () => {
         },
       })
       .then((response) => {
-        const { message, code } = response.data && response.data;
+        const { message } = response.data && response.data;
         Swal.fire({
           icon: "success",
-          title: code,
+          title: "Success",
           text: message,
           showCancelButton: false,
           showConfirmButton: true,
@@ -109,10 +109,10 @@ const StudentProfile: FC = () => {
         });
       })
       .catch((error) => {
-        const { message, code } = error.response.data;
+        const { message } = error.response.data;
         Swal.fire({
           icon: "error",
-          title: code,
+          title: "Failed",
           text: message,
           showCancelButton: false,
         });
