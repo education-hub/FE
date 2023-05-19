@@ -42,13 +42,13 @@ interface SubDistrictDataType {
   name: string;
 }
 
-interface LocationDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  id_kecamatan: string;
-  nama: string;
-}
+// interface LocationDataType {
+//   id: number;
+//   id_provinsi: string;
+//   id_kota: string;
+//   id_kecamatan: string;
+//   nama: string;
+// }
 
 interface SchoolDataType {
   accreditation: string;
@@ -135,8 +135,10 @@ const EditSchool: FC = () => {
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
 
-  // const params = useParams();
-  // const { id } = params;
+  const params = useParams();
+  const { id } = params;
+
+  console.log(id);
 
   const navigate = useNavigate();
 
