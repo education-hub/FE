@@ -21,12 +21,12 @@ export const CardCost: FC<AddCostType> = (props) => {
 };
 
 interface AddQuizType {
-  question: string;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
-  answer: number;
+  question?: string;
+  option1?: string;
+  option2?: string;
+  option3?: string;
+  option4?: string;
+  answer?: number;
   onClick1: React.MouseEventHandler<HTMLButtonElement>;
   onClick2: React.MouseEventHandler<HTMLButtonElement>;
 }

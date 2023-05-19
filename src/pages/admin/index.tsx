@@ -15,7 +15,6 @@ import { Listbox, Transition, Dialog } from "@headlessui/react";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
-
 import {
   InputLightBlue,
   InputWhite,
@@ -49,15 +48,20 @@ interface FAQDataType {
   question: string;
   answer: string;
 }
+interface FAQUpdateDataType {
+  id: number;
+  question: string;
+  answer: string;
+}
 
 interface QuizDataType {
   school_id: number;
-  question: string;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
-  answer: number;
+  question?: string;
+  option1?: string;
+  option2?: string;
+  option3?: string;
+  option4?: string;
+  answer?: number;
 }
 
 interface SchoolDataType {
@@ -89,6 +93,13 @@ interface SchoolDataType {
   village: string;
   web: string;
   zipcode: string;
+  faqs: [
+    {
+      id: number;
+      question: string;
+      answer: string;
+    }
+  ];
 }
 
 const Admin: FC = () => {
@@ -105,13 +116,14 @@ const Admin: FC = () => {
   const [schoolId, setSchoolId] = useState<number>();
   // const [cost, setCost] = useState<CostDataType>({});
   const [faq, setFaq] = useState<Partial<FAQDataType>>({
-    school_id: 1,
+    school_id: schoolData.id,
   });
-  // const [datasFAQ, setDatasFAQ] = useState<FAQDataType[]>([]);
-  // const [idFAQ, setIdFAQ] = useState<number>();
-  const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQDataType>>({});
+  const [idFAQ, setIdFAQ] = useState<number>();
+  const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQUpdateDataType>>({
+    id: idFAQ,
+  });
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
-    school_id: schoolId,
+    school_id: schoolId || 0,
     question: "",
     option1: "",
     option2: "",
@@ -126,16 +138,7 @@ const Admin: FC = () => {
   const [updatedOption4, setUpdatedOption4] = useState<string>("");
   const [updatedAnswer, setUpdatedAnswer] = useState<number>();
   const [quiz, setQuiz] = useState<QuizDataType[]>([]);
-  const [addQuiz, setAddQuiz] = useState<QuizDataType>({
-    school_id: 1,
-    question: "",
-    option1: "",
-    option2: "",
-    option3: "",
-    option4: "",
-    answer: 0,
-  });
-
+  const [addQuiz, setAddQuiz] = useState<Partial<QuizDataType>>({});
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
 
@@ -144,6 +147,11 @@ const Admin: FC = () => {
   useEffect(() => {
     fetchAllData();
   }, []);
+
+  useEffect(() => {
+    fetchAllData();
+    setUpdateFAQ((prevFaq) => ({ ...prevFaq, id: idFAQ }));
+  }, [isOpenFAQ]);
 
   const fetchAllData = () => {
     axios
@@ -168,14 +176,12 @@ const Admin: FC = () => {
       });
   };
 
-  console.log(schoolId);
-
   // Cost Handle
 
   // FAQ Handle
 
   const handleSubmitFAQ = () => {
-    console.log(faq);
+    setFaq((prevFaq) => ({ ...prevFaq, school_id: schoolData.id }));
     axios
       .post(`https://go-event.online/faqs`, faq, {
         headers: {
@@ -184,7 +190,6 @@ const Admin: FC = () => {
       })
       .then((response) => {
         const { message } = response.data;
-        console.log(response);
         Swal.fire({
           icon: "success",
           title: "Submit FAQ Success!!",
@@ -199,14 +204,17 @@ const Admin: FC = () => {
           title: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => fetchAllData());
   };
 
-  const handleUpdateFAQ = () => {
+  const handleUpdateFAQ = (faqId: number) => {
+    console.log(faqId);
+    console.log(updateFAQ);
     axios
-      .put(`https://go-event.online/`, updateFAQ, {
+      .put(`https://go-event.online/faqs`, updateFAQ, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${checkToken}`,
         },
       })
@@ -234,63 +242,84 @@ const Admin: FC = () => {
           showCancelButton: false,
         });
       })
-      .finally(() => fetchAllData());
+      .finally(() => {
+        fetchAllData();
+      });
   };
 
-  // const handleDeleteFAQ = (id: number) => {
-  //   Swal.fire({
-  //     title: "Are you sure want to delete FAQ?",
-  //     text: "This process cannot be undone!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#0BBBCC",
-  //     cancelButtonColor: "#E4572E",
-  //     confirmButtonText: "Delete",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios
-  //         .delete(`https://go-event.online/${id}`, {
-  //           headers: {
-  //             Authorization: `Bearer ${cookie.tkn}`,
-  //           },
-  //         })
-  //         .then((response) => {
-  //           const { message } = response.data;
-  //           Swal.fire({
-  //             icon: "success",
-  //             title: "Success Delete FAQ",
-  //             text: message,
-  //             showCancelButton: false,
-  //           });
-  //         })
-  //         .catch((error) => {
-  //           const { message } = error.response.data;
-  //           Swal.fire({
-  //             icon: "error",
-  //             title: "Error",
-  //             text: message,
-  //             showCancelButton: false,
-  //           });
-  //         })
-  //         .finally(() => fetchAllData());
-  //     }
-  //   });
-  // };
+  const handleDeleteFAQ = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete FAQ?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/faqs/${id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.tkn}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete FAQ",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
 
   // quiz handle
 
   const handleAddQuiz = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setQuiz(quiz.concat(addQuiz));
+    if (
+      addQuiz.question === undefined ||
+      addQuiz.option1 === undefined ||
+      addQuiz.option2 === undefined ||
+      addQuiz.option3 === undefined ||
+      addQuiz.option4 === undefined ||
+      addQuiz.answer === undefined
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "data cannot empty",
+      });
+      return;
+    } else {
+      const AddQuiz: QuizDataType = {
+        ...addQuiz,
+        school_id: schoolId ? schoolId : 0,
+      };
+      setQuiz(quiz.concat(AddQuiz));
+    }
   };
 
   const openModalQuiz = (e: QuizDataType) => {
     setSelectedItem(e);
-    setUpdatedQuestion(e.question);
-    setUpdatedOption1(e.option1);
-    setUpdatedOption2(e.option2);
-    setUpdatedOption3(e.option3);
-    setUpdatedOption4(e.option4);
+    setUpdatedQuestion(e.question || "");
+    setUpdatedOption1(e.option1 || "");
+    setUpdatedOption2(e.option2 || "");
+    setUpdatedOption3(e.option3 || "");
+    setUpdatedOption4(e.option4 || "");
     setUpdatedAnswer(e.answer);
     setIsOpenQuiz(true);
   };
@@ -336,7 +365,6 @@ const Admin: FC = () => {
   };
 
   const FinalAddQuiz = () => {
-    console.log(quiz);
     axios
       .post(`https://go-event.online/quiz`, quiz, {
         headers: {
@@ -362,8 +390,6 @@ const Admin: FC = () => {
       })
       .finally(() => window.location.reload());
   };
-
-  console.log(quiz);
   return (
     <>
       {schoolData ? (
@@ -768,7 +794,7 @@ const Admin: FC = () => {
                 </div>
               </div>
             </div>
-            {/* Section 6 */}
+            {/* Section 6 FAQ*/}
             <div className="pt-20 px-20">
               <div className="flex flex-col gap-10">
                 <h1 className="text-lg font-semibold text-center">FAQ</h1>
@@ -801,7 +827,7 @@ const Admin: FC = () => {
               </div>
             </div>
             <div className="pb-20 px-20">
-              {/* {datasFAQ.map((e) => (
+              {schoolData.faqs?.map((e) => (
                 <AccordionFAQ
                   question={e.question}
                   answer={e.answer}
@@ -811,27 +837,7 @@ const Admin: FC = () => {
                     setIsOpenFAQ(true);
                   }}
                 />
-              ))} */}
-              <AccordionFAQ
-                question={"Is the school accredited ?"}
-                answer={
-                  "Of course , school is accreditation, and the accreditation is A"
-                }
-                onClick1={() => setIsOpenFAQ(false)}
-                onClick2={() => setIsOpenFAQ(true)}
-              />
-              <AccordionFAQ
-                question={"Any public transportation near school ?"}
-                answer={"Yes , is F34 school bus"}
-                onClick1={() => setIsOpenFAQ(false)}
-                onClick2={() => setIsOpenFAQ(true)}
-              />
-              <AccordionFAQ
-                question={"Is the school fee expensive there ?"}
-                answer={"Relative, but student will guarante beacome success"}
-                onClick1={() => setIsOpenFAQ(false)}
-                onClick2={() => setIsOpenFAQ(true)}
-              />
+              ))}
             </div>
             {/* Section 7 */}
             <div className="bg-gray-200 py-20 px-20 ">
@@ -904,7 +910,10 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-96 mt-10">
-                <ButtonCancelDelete label="Reset Data" />
+                <ButtonCancelDelete
+                  label="Reset Data"
+                  onClick={() => window.location.reload()}
+                />
                 <ButtonSubmit label="View Quiz" />
                 <ButtonSubmit
                   label="Submit"
@@ -1273,47 +1282,55 @@ const Admin: FC = () => {
                         >
                           Update FAQ
                         </Dialog.Title>
-                        <div className="mt-2 flex flex-col items-center justify-center">
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Question</p>
-                            <InputLightBlue
-                              type="text"
-                              defaultValue={"Is the school accredited ?"}
-                              onChange={(event) =>
-                                setUpdateFAQ({
-                                  ...updateFAQ,
-                                  question: event.target.value,
-                                })
-                              }
-                            />
+                        {schoolData.faqs?.map((e) => (
+                          <div>
+                            {e.id === idFAQ ? (
+                              <>
+                                <div className="mt-2 flex flex-col items-center justify-center">
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Question</p>
+                                    <InputLightBlue
+                                      type="text"
+                                      defaultValue={e.question}
+                                      onChange={(event) =>
+                                        setUpdateFAQ({
+                                          ...updateFAQ,
+                                          question: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Answer</p>
+                                    <TextAreaLightBlue
+                                      defaultValue={e.answer}
+                                      onChange={(event) =>
+                                        setUpdateFAQ({
+                                          ...updateFAQ,
+                                          answer: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="mt-4 flex space-x-5 justify-end">
+                                  <ButtonCancelDelete
+                                    label="Cancel"
+                                    onClick={() => setIsOpenFAQ(false)}
+                                  />
+                                  <ButtonSubmit
+                                    label="Update"
+                                    onClick={() => {
+                                      handleUpdateFAQ(e.id);
+                                    }}
+                                  />
+                                </div>
+                              </>
+                            ) : (
+                              <></>
+                            )}
                           </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Answer</p>
-                            <TextAreaLightBlue
-                              defaultValue={
-                                "Of course , school is accreditation, and the accreditation is A"
-                              }
-                              onChange={(event) =>
-                                setUpdateFAQ({
-                                  ...updateFAQ,
-                                  answer: event.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex space-x-5 justify-end">
-                          <ButtonCancelDelete
-                            label="Cancel"
-                            onClick={() => setIsOpenFAQ(false)}
-                          />
-                          <ButtonSubmit
-                            label="Update"
-                            onClick={() => {
-                              handleUpdateFAQ();
-                            }}
-                          />
-                        </div>
+                        ))}
                       </Dialog.Panel>
                     </Transition.Child>
                   </div>
