@@ -159,31 +159,50 @@ const Router = () => {
     },
     {
       path: "/admin/profile",
-      element: <AdminProfile />,
+      element:
+        checkToken && checkRole === "administrator" ? (
+          <AdminProfile />
+        ) : (
+          <Home />
+        ),
     },
     {
-      path: "/admin/edit-school",
-      element: <EditSchool />,
+      path: "/admin/edit-school/:id",
+      element:
+        checkToken && checkRole === "administrator" ? <EditSchool /> : <Home />,
     },
     {
       path: "/admin/add-school",
-      element: <AddSchool />,
+      element:
+        checkToken && checkRole === "administrator" ? <AddSchool /> : <Home />,
     },
     {
       path: "/admin/admission",
-      element: <Admission />,
+      element:
+        checkToken && checkRole === "administrator" ? <Admission /> : <Home />,
     },
     {
       path: "/admin/admission/:student_id",
-      element: <DetailAdmission />,
+      element:
+        checkToken && checkRole === "administrator" ? (
+          <DetailAdmission />
+        ) : (
+          <Home />
+        ),
     },
     {
       path: "/admin/progress/:student_id",
-      element: <UpdateProgress />,
+      element:
+        checkToken && checkRole === "administrator" ? (
+          <UpdateProgress />
+        ) : (
+          <Home />
+        ),
     },
     {
       path: "/admin/result",
-      element: <TestResult />,
+      element:
+        checkToken && checkRole === "administrator" ? <TestResult /> : <Home />,
     },
   ]);
 

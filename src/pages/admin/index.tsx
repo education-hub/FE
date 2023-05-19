@@ -11,19 +11,23 @@ import {
   TbArrowsMoveVertical,
   TbCheck,
 } from "react-icons/tb";
+import { Listbox, Transition, Dialog } from "@headlessui/react";
+import { Worker } from "@react-pdf-viewer/core";
+import { Viewer } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+
 import {
   InputLightBlue,
   InputWhite,
   TextAreaLightBlue,
 } from "../../components/Input";
-import { Listbox, Transition, Dialog } from "@headlessui/react";
 import { CardAddQuiz, CardCost } from "../../components/Card";
 import { AccordionFAQ } from "../../components/Accordion";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 
-const src = "https://www.youtube.com/embed/WrBQNImsV74";
+// const src = "https://www.youtube.com/embed/WrBQNImsV74";
 
 const interval = [
   { interval: "Onetime Payment" },
@@ -56,8 +60,40 @@ interface QuizDataType {
   answer: number;
 }
 
+interface SchoolDataType {
+  accreditation: string;
+  achievement: string | null; // belum ketahuan data aslinya jika ditambahkan
+  city: string;
+  description: string;
+  detail: string;
+  district: string;
+  extracurriculars: string | null; // belum ketahuan data aslinya jika ditambahkan
+  gmeet: string;
+  id: number;
+  image: any;
+  name: string;
+  npsn: string;
+  payment: {
+    interval: string | null; // belum ketahuan data aslinya jika ditambahkan
+    onetime: string | null; // belum ketahuan data aslinya jika ditambahkan
+  };
+  pdf: any;
+  province: string;
+  quizLinkPreview: string;
+  quizLinkPub: string;
+  reviews: string | null; // belum ketahuan data aslinya jika ditambahkan
+  staff: string;
+  students: string;
+  teachers: string;
+  video: string;
+  village: string;
+  web: string;
+  zipcode: string;
+}
+
 const Admin: FC = () => {
-  const [school, setSchool] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
   const [selected, setSelected] = useState(interval[0]);
   const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
   const [isOpenAchievement, setIsOpenAchievement] = useState(false);
@@ -105,7 +141,6 @@ const Admin: FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSchool(false);
     fetchAllData();
   }, []);
 
@@ -117,9 +152,9 @@ const Admin: FC = () => {
         },
       })
       .then((response) => {
-        // const { data } = response.data;
-        console.log(response);
-        // setDatasFAQ(data);
+        const { data } = response.data;
+        console.log(data);
+        setSchoolData(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -336,62 +371,63 @@ const Admin: FC = () => {
   console.log(quiz);
   return (
     <>
-      {school ? (
+      {schoolData ? (
         <LayoutAdmin>
           <div>
             {/* Section 1 */}
             <div className="grid lg:grid-cols-2 p-20 gap-20 text-@dark">
               <div className="flex flex-col gap-10">
-                <h1 className="text-5xl">SMAN 3 YOGYAKARTA</h1>
-                <p className="text-lg">
-                  SMA Negeri 3 Yogyakarta, better known to many as Padmanaba or
-                  SMA 3 B, is one of the oldest senior high schools and high
-                  schools located in Yogyakarta, the Province of the Special
-                  Region of Yogyakarta, Indonesia.
-                </p>
+                <h1 className="text-5xl">{schoolData.name?.toUpperCase()}</h1>
+                <p className="text-lg">{schoolData.description}</p>
                 <div className="grid grid-cols-4 gap-10">
                   <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-                    <h1 className="text-3xl font-bold">112</h1>
+                    <h1 className="text-3xl font-bold">
+                      {schoolData.students}
+                    </h1>
                     <p>Students</p>
                   </div>
                   <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-                    <h1 className="text-3xl font-bold">70</h1>
+                    <h1 className="text-3xl font-bold">
+                      {schoolData.teachers}
+                    </h1>
                     <p>Teachers</p>
                   </div>
                   <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-                    <h1 className="text-3xl font-bold">21</h1>
+                    <h1 className="text-3xl font-bold">{schoolData.staff}</h1>
                     <p>Staff</p>
                   </div>
                   <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
-                    <h1 className="text-3xl font-bold">A</h1>
+                    <h1 className="text-3xl font-bold">
+                      {schoolData.accreditation}
+                    </h1>
                     <p>Akreditasion</p>
                   </div>
                 </div>
                 <div className=" flex space-x-3">
                   <TbWorldWww className="text-2xl" />
                   <p className="text-lg">
-                    School Website:
+                    School Website:{" "}
                     <span className="hover:text-@orange">
                       <Link
-                        to="https://sma3jogja.sch.id/"
+                        to={"https://sma3jogja.sch.id/"}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        https://sma3jogja.sch.id/
+                        {schoolData.web}
                       </Link>
                     </span>
                   </p>
                 </div>
               </div>
               <div className="flex flex-col">
-                <div className="relative z-10 bg-[url('/sman3.jpg')] h-96 w-full bg-cover bg-center">
+                <div
+                  className={`relative z-10 bg-[url('/sman3.jpg')] h-96 w-full bg-cover bg-center`}
+                >
                   <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60 "></div>
                 </div>
                 <div className="flex pl-10 py-7 bg-@light-blue items-center space-x-5">
                   <TbMapPin className="text-3xl text-@blue" />
-                  <p className="text-lg font-semibold">
-                    Yogyakarta, D.I Yogyakarta
-                  </p>
+                  <p className="text-lg font-semibold">{schoolData.city}</p>
                 </div>
               </div>
             </div>
@@ -425,19 +461,24 @@ const Admin: FC = () => {
                 </video> */}
                 <iframe
                   className="w-full h-96"
-                  src={src}
+                  src={schoolData.video}
                   title="Introduction Video"
                   allowFullScreen
                 />
                 <div className="flex flex-col">
-                  <ButtonSubmit label="View Brochure" />
+                  <ButtonSubmit
+                    label="View Brochure"
+                    onClick={() => setIsOpen(true)}
+                  />
                 </div>
               </div>
               <div className="flex space-x-10">
                 <ButtonCancelDelete label="Delete School" />
                 <ButtonSubmit
                   label="Edit School"
-                  onClick={() => navigate("/admin/edit-school")}
+                  onClick={() =>
+                    navigate(`/admin/edit-school/${schoolData.id}`)
+                  }
                 />
               </div>
             </div>
@@ -1475,6 +1516,59 @@ const Admin: FC = () => {
                 </div>
               </Dialog>
             </Transition>
+          </>
+          <>
+            <>
+              {/* modal view pdf */}
+              <Transition appear show={isOpen} as={Fragment}>
+                <Dialog
+                  as="div"
+                  className="relative z-10"
+                  onClose={() => !isOpen}
+                >
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0"
+                    enterTo="opacity-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <div className="fixed inset-0 bg-black bg-opacity-25" />
+                  </Transition.Child>
+                  <div className="fixed inset-0 overflow-y-auto">
+                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                      <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0 scale-95"
+                        enterTo="opacity-100 scale-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100 scale-100"
+                        leaveTo="opacity-0 scale-95"
+                      >
+                        <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                          <Dialog.Title
+                            as="h3"
+                            className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                          >
+                            View Brochure
+                          </Dialog.Title>
+                          <Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js">
+                            <Viewer fileUrl={"/sampel.pdf"} />
+                          </Worker>
+                          <ButtonCancelDelete
+                            label="close"
+                            onClick={() => setIsOpen(false)}
+                          />
+                        </Dialog.Panel>
+                      </Transition.Child>
+                    </div>
+                  </div>
+                </Dialog>
+              </Transition>
+            </>
           </>
         </LayoutAdmin>
       ) : (

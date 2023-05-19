@@ -43,12 +43,12 @@ const schema = z.object({
     .string()
     .min(1, { message: "school website is required" })
     .url({ message: "Must be a valid video URL" }),
-  image: z.any(),
+  // image: z.any(),
   video: z
     .string()
     .min(1, { message: "Youtube url is required" })
     .url({ message: "Must be a valid video youtube embedded URL" }),
-  pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
+  // pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -214,8 +214,14 @@ const AddSchool: FC = () => {
 
   const hadlePostSchool: SubmitHandler<Schema> = (data) => {
     console.log(data);
+
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
     axios
-      .post(`https://go-event.online/school`, data, {
+      .post(`https://go-event.online/school`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -385,13 +391,13 @@ const AddSchool: FC = () => {
             />
           </div>
           <div>
-            <div>
-              {image ? (
+            {/* <div> */}
+            {/* {image ? (
                 <img src={image} alt="Preview" className="w-full h-auto" />
               ) : (
                 <></>
-              )}
-              {/* <input
+              )} */}
+            {/* <input
                 type="file"
                 className="bg-@light-blue w-full p-5"
                 id="input-image"
@@ -405,56 +411,53 @@ const AddSchool: FC = () => {
                   </span>
                 </label>
               )} */}
-              <input
+            {/* <input
                 type="file"
                 id="input-image"
                 // name="image"
                 {...register("image")}
+              /> */}
+            {/* {errors.image && <span>{errors.image.message?.toString()}</span>} */}
+          </div>
+          <div className="mt-10">
+            <div>
+              <iframe
+                className="w-full h-96"
+                src={src ? src : "https://www.youtube.com/embed/LlCwHnp3kL4"}
+                title="Introduction Video"
+                allowFullScreen
               />
-              {errors.image && <span>{errors.image.message?.toString()}</span>}
             </div>
-            <div className="mt-10">
+            <p className="mt-5">Insert Video Youtube URL</p>
+            <InputLightBlue
+              type="text"
+              // value={video}
+              label="Video"
+              id="input-video"
+              name="video"
+              register={register}
+              error={errors.video?.message}
+              onChange={handleInputChange}
+            />
+            <div className="flex justify-end my-5">
+              <ButtonSubmit
+                label="Preview Video"
+                onClick={(event) => handleSubmitVideo(event)}
+              />
+            </div>
+          </div>
+          <div className="mt-10 bg-@light-blue p-2 flex flex-col gap-10">
+            {pdfFile && (
               <div>
-                <iframe
-                  className="w-full h-96"
-                  src={src ? src : "https://www.youtube.com/embed/LlCwHnp3kL4"}
-                  title="Introduction Video"
-                  allowFullScreen
-                />
+                <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
+                  <Page pageNumber={pageNumber} />
+                </Document>
+                <p>
+                  Page {pageNumber} of {numPages}
+                </p>
               </div>
-              <p className="mt-5">Insert Video Youtube URL</p>
-              <InputLightBlue
-                type="text"
-                // value={video}
-                label="Video"
-                id="input-video"
-                name="video"
-                register={register}
-                error={errors.video?.message}
-                onChange={handleInputChange}
-              />
-              <div className="flex justify-end my-5">
-                <ButtonSubmit
-                  label="Preview Video"
-                  onClick={(event) => handleSubmitVideo(event)}
-                />
-              </div>
-            </div>
-            <div className="mt-10 bg-@light-blue p-2 flex flex-col gap-10">
-              {pdfFile && (
-                <div>
-                  <Document
-                    file={pdfFile}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                  >
-                    <Page pageNumber={pageNumber} />
-                  </Document>
-                  <p>
-                    Page {pageNumber} of {numPages}
-                  </p>
-                </div>
-              )}
-              <input
+            )}
+            {/* <input
                 type="file"
                 accept="application/pdf"
                 className="bg-@light-blue w-full p-5"
@@ -469,7 +472,7 @@ const AddSchool: FC = () => {
                   {errors.pdf.message?.toString()}
                 </span>
               </label>
-            )}
+            )} */}
             <div className=" flex justify-end mt-3">
               <ButtonSubmit label="view pdf" onClick={() => setIsOpen(true)} />
             </div>
@@ -481,7 +484,7 @@ const AddSchool: FC = () => {
         </div>
       </form>
       <>
-        {/* modal extraculliculer */}
+        {/* modal view pdf */}
         <Transition appear show={isOpen} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={() => !isOpen}>
             <Transition.Child
