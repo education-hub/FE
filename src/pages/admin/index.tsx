@@ -1,4 +1,4 @@
-import { Fragment, FC, useEffect, useState, MouseEvent } from "react";
+import React, { Fragment, FC, useEffect, useState, MouseEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
@@ -16,6 +16,10 @@ import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
+
 import {
   InputLightBlue,
   InputWhite,
@@ -23,9 +27,6 @@ import {
 } from "../../components/Input";
 import { CardAddQuiz, CardCost } from "../../components/Card";
 import { AccordionFAQ } from "../../components/Accordion";
-import axios from "axios";
-import { useCookies } from "react-cookie";
-import Swal from "sweetalert2";
 
 // const src = "https://www.youtube.com/embed/WrBQNImsV74";
 
@@ -44,20 +45,39 @@ const interval = [
 //   interval: string;
 // }
 
+interface ExtracurricularDataType {
+  school_id: number;
+  image: any;
+  title: string;
+  description: string;
+}
+
+interface UpdateExtracurricularDataType {
+  id: number;
+  image: any;
+  name: string;
+  description: string;
+}
+
 interface FAQDataType {
   school_id: number;
+  question: string;
+  answer: string;
+}
+interface FAQUpdateDataType {
+  id: number;
   question: string;
   answer: string;
 }
 
 interface QuizDataType {
   school_id: number;
-  question: string;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
-  answer: number;
+  question?: string;
+  option1?: string;
+  option2?: string;
+  option3?: string;
+  option4?: string;
+  answer?: number;
 }
 
 interface SchoolDataType {
@@ -89,12 +109,21 @@ interface SchoolDataType {
   village: string;
   web: string;
   zipcode: string;
+  faqs: [
+    {
+      id: number;
+      question: string;
+      answer: string;
+    }
+  ];
 }
 
 const Admin: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
   const [selected, setSelected] = useState(interval[0]);
+  const [isOpenAddExtracurricular, setIsOpenAddExtracurricular] =
+    useState<boolean>(false);
   const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
   const [isOpenAchievement, setIsOpenAchievement] = useState(false);
   const [isOpenPayment, setIsOpenPayment] = useState(false);
@@ -102,15 +131,26 @@ const Admin: FC = () => {
   const [isOpenQuiz, setIsOpenQuiz] = useState(false);
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
   const [image, setImage] = useState<File | null>(null);
-  // const [cost, setCost] = useState<CostDataType>({});
-  const [faq, setFaq] = useState<Partial<FAQDataType>>({
-    school_id: 1,
+  const [schoolId, setSchoolId] = useState<number>();
+
+  const [addExtracurricural, setAddExtracurricular] = useState<
+    Partial<ExtracurricularDataType>
+  >({
+    school_id: schoolData.id,
   });
-  // const [datasFAQ, setDatasFAQ] = useState<FAQDataType[]>([]);
-  // const [idFAQ, setIdFAQ] = useState<number>();
-  const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQDataType>>({});
+  const [idExtracurricular, setIdExtracurricular] = useState<number>();
+  const [updateExtracurricular, setUpdateExtracurricular] = useState<
+    Partial<UpdateExtracurricularDataType>
+  >({});
+  const [faq, setFaq] = useState<Partial<FAQDataType>>({
+    school_id: schoolData.id,
+  });
+  const [idFAQ, setIdFAQ] = useState<number>();
+  const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQUpdateDataType>>({
+    id: idFAQ,
+  });
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
-    school_id: 0,
+    school_id: schoolId || 0,
     question: "",
     option1: "",
     option2: "",
@@ -125,24 +165,33 @@ const Admin: FC = () => {
   const [updatedOption4, setUpdatedOption4] = useState<string>("");
   const [updatedAnswer, setUpdatedAnswer] = useState<number>();
   const [quiz, setQuiz] = useState<QuizDataType[]>([]);
-  const [addQuiz, setAddQuiz] = useState<QuizDataType>({
-    school_id: 0,
-    question: "",
-    option1: "",
-    option2: "",
-    option3: "",
-    option4: "",
-    answer: 0,
-  });
-
+  const [addQuiz, setAddQuiz] = useState<Partial<QuizDataType>>({});
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
-
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchAllData();
   }, []);
+
+  useEffect(() => {
+    fetchAllData();
+    setUpdateFAQ((prevFaq) => ({ ...prevFaq, id: idFAQ }));
+  }, [isOpenFAQ]);
+
+  useEffect(() => {
+    setAddExtracurricular((prevExtracurriculer) => ({
+      ...prevExtracurriculer,
+      school_id: schoolData.id,
+    }));
+  }, [isOpenAddExtracurricular]);
+
+  useEffect(() => {
+    setUpdateExtracurricular((prevExtracurriculer) => ({
+      ...prevExtracurriculer,
+      id: idExtracurricular,
+    }));
+  }, [isOpenExtracurriculer]);
 
   const fetchAllData = () => {
     axios
@@ -153,8 +202,8 @@ const Admin: FC = () => {
       })
       .then((response) => {
         const { data } = response.data;
-        console.log(data);
         setSchoolData(data);
+        setSchoolId(data.id);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -167,12 +216,156 @@ const Admin: FC = () => {
       });
   };
 
+  // Extracurriculer Handle
+
+  const handleChangeExtracurricular = (
+    value: string | File | number | null,
+    key: keyof typeof addExtracurricural
+  ) => {
+    const temp = { ...addExtracurricural };
+    if (value === null) {
+      temp[key] = null;
+    } else {
+      temp[key] = value;
+    }
+    setAddExtracurricular(temp);
+  };
+  const handleChangeUpdateExtracurricular = (
+    value: string | File,
+    key: keyof typeof updateExtracurricular
+  ) => {
+    const temp = { ...updateExtracurricular };
+    temp[key] = value;
+    setUpdateExtracurricular(temp);
+  };
+
+  const handleSubmitExtracurriculer = () => {
+    console.log(addExtracurricural);
+    axios
+      .post(`https://go-event.online/extracurriculars`, addExtracurricural, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Submit Extracurricular Success!!",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setIsOpenAddExtracurricular(false);
+            setAddExtracurricular({});
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchAllData());
+  };
+
+  const handleUpdateExtracurricular = () => {
+    console.log(updateExtracurricular);
+    const formData = new FormData();
+    let key: keyof typeof updateExtracurricular;
+    for (key in updateExtracurricular) {
+      formData.append(key, updateExtracurricular[key]);
+    }
+    axios
+      .put(`https://go-event.online/extracurriculars`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data && response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Update Success",
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setUpdateExtracurricular({});
+            setIsOpenExtracurriculer(false);
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => {
+        fetchAllData();
+      });
+  };
+
+  const handleDeleteExtracurricular = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/extracurriculars/${id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.tkn}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete !!",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
+
   // Cost Handle
+
+  // const handleSubmitCost: SubmitHandler<SchemaExtracurriculer> = (data) => {
+  //   console.log(data);
+  // };
 
   // FAQ Handle
 
   const handleSubmitFAQ = () => {
-    console.log(faq);
+    setFaq((prevFaq) => ({ ...prevFaq, school_id: schoolData.id }));
     axios
       .post(`https://go-event.online/faqs`, faq, {
         headers: {
@@ -181,7 +374,6 @@ const Admin: FC = () => {
       })
       .then((response) => {
         const { message } = response.data;
-        console.log(response);
         Swal.fire({
           icon: "success",
           title: "Submit FAQ Success!!",
@@ -196,14 +388,17 @@ const Admin: FC = () => {
           title: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => fetchAllData());
   };
 
-  const handleUpdateFAQ = () => {
+  const handleUpdateFAQ = (faqId: number) => {
+    console.log(faqId);
+    console.log(updateFAQ);
     axios
-      .put(`https://go-event.online/`, updateFAQ, {
+      .put(`https://go-event.online/faqs`, updateFAQ, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${checkToken}`,
         },
       })
@@ -231,77 +426,88 @@ const Admin: FC = () => {
           showCancelButton: false,
         });
       })
-      .finally(() => fetchAllData());
+      .finally(() => {
+        fetchAllData();
+      });
   };
 
-  // const handleDeleteFAQ = (id: number) => {
-  //   Swal.fire({
-  //     title: "Are you sure want to delete FAQ?",
-  //     text: "This process cannot be undone!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#0BBBCC",
-  //     cancelButtonColor: "#E4572E",
-  //     confirmButtonText: "Delete",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios
-  //         .delete(`https://go-event.online/${id}`, {
-  //           headers: {
-  //             Authorization: `Bearer ${cookie.tkn}`,
-  //           },
-  //         })
-  //         .then((response) => {
-  //           const { message } = response.data;
-  //           Swal.fire({
-  //             icon: "success",
-  //             title: "Success Delete FAQ",
-  //             text: message,
-  //             showCancelButton: false,
-  //           });
-  //         })
-  //         .catch((error) => {
-  //           const { message } = error.response.data;
-  //           Swal.fire({
-  //             icon: "error",
-  //             title: "Error",
-  //             text: message,
-  //             showCancelButton: false,
-  //           });
-  //         })
-  //         .finally(() => fetchAllData());
-  //     }
-  //   });
-  // };
+  const handleDeleteFAQ = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete FAQ?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/faqs/${id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.tkn}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete FAQ",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
 
   // quiz handle
-
   const handleAddQuiz = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setQuiz(quiz.concat(addQuiz));
+    if (
+      addQuiz.question === undefined ||
+      addQuiz.option1 === undefined ||
+      addQuiz.option2 === undefined ||
+      addQuiz.option3 === undefined ||
+      addQuiz.option4 === undefined ||
+      addQuiz.answer === undefined
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "data cannot empty",
+      });
+      return;
+    } else {
+      const AddQuiz: QuizDataType = {
+        ...addQuiz,
+        school_id: schoolId ? schoolId : 0,
+      };
+      setQuiz(quiz.concat(AddQuiz));
+    }
   };
 
   const openModalQuiz = (e: QuizDataType) => {
     setSelectedItem(e);
-    setUpdatedQuestion(e.question);
-    setUpdatedOption1(e.option1);
-    setUpdatedOption2(e.option2);
-    setUpdatedOption3(e.option3);
-    setUpdatedOption4(e.option4);
+    setUpdatedQuestion(e.question || "");
+    setUpdatedOption1(e.option1 || "");
+    setUpdatedOption2(e.option2 || "");
+    setUpdatedOption3(e.option3 || "");
+    setUpdatedOption4(e.option4 || "");
     setUpdatedAnswer(e.answer);
     setIsOpenQuiz(true);
   };
 
   const closeModalQuiz = () => {
-    setSelectedItem({
-      school_id: 0,
-      question: "",
-      option1: "",
-      option2: "",
-      option3: "",
-      option4: "",
-      answer: 0,
-    });
     setIsOpenQuiz(false);
   };
 
@@ -342,9 +548,8 @@ const Admin: FC = () => {
   };
 
   const FinalAddQuiz = () => {
-    console.log(quiz);
     axios
-      .post(`https://go-event.online/admin/school/test`, quiz, {
+      .post(`https://go-event.online/quiz`, quiz, {
         headers: {
           Authorization: `Bearer ${checkToken}`,
         },
@@ -365,10 +570,13 @@ const Admin: FC = () => {
           title: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => window.location.reload());
   };
 
-  console.log(quiz);
+  console.log(schoolData);
+  console.log(idExtracurricular);
+
   return (
     <>
       {schoolData ? (
@@ -498,52 +706,48 @@ const Admin: FC = () => {
                 <ButtonSubmit label="CREATE G-MEET" />
               </div>
             </div>
-            {/* Section 4 */}
+            {/* Section 4  extracurriculer*/}
             <div className="bg-gray-200 p-20 grid grid-cols-2 gap-20">
               <div className="flex flex-col gap-10">
-                <ButtonSubmit label="ADD EXTRACULLICULER" />
-                <div className="bg-@light-blue p-10 flex flex-col gap-10">
-                  <div className="flex  space-x-10">
-                    <img src="/scout.webp" alt="" className="h-32 w-auto" />
-                    <div className="w-full flex flex-col gap-4">
-                      <h1 className="text-2xl font-semibold">Scout</h1>
-                      <p className="text-lg">
-                        The Scout is a non-formal educational organization that
-                        organizes scouting education in Indonesia. The word
-                        Scout is an abbreviation of Praja Muda Karana which
-                        means Young People who Like to Work.
-                      </p>
+                <ButtonSubmit
+                  label="ADD EXTRACULLICULER"
+                  onClick={() => setIsOpenAddExtracurricular(true)}
+                />
+                {Array.isArray(schoolData.extracurriculars) ? (
+                  schoolData.extracurriculars.map((e) => (
+                    <div
+                      className="bg-@light-blue p-10 flex flex-col gap-10"
+                      key={e.id}
+                    >
+                      <div className="flex space-x-10">
+                        <img
+                          src={`https://storage.googleapis.com/prj1ropel/${e.img}`}
+                          alt=""
+                          className="h-32 w-auto"
+                        />
+                        <div className="w-full flex flex-col gap-4">
+                          <h1 className="text-2xl font-semibold">{e.name}</h1>
+                          <p className="text-lg">{e.description}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-44">
+                        <ButtonCancelDelete
+                          label="Delete"
+                          onClick={() => handleDeleteExtracurricular(e.id)}
+                        />
+                        <ButtonSubmit
+                          label="Edit"
+                          onClick={() => {
+                            setIdExtracurricular(e.id);
+                            setIsOpenExtracurriculer(true);
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="grid  grid-cols-2 gap-44">
-                    <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit
-                      label="Edit"
-                      onClick={() => setIsOpenExtracurriculer(true)}
-                    />
-                  </div>
-                </div>
-                <div className="bg-@light-blue p-10 flex flex-col gap-10">
-                  <div className="flex  space-x-10">
-                    <img src="/scout.webp" alt="" className="h-32 w-auto" />
-                    <div className="w-full flex flex-col gap-4">
-                      <h1 className="text-2xl font-semibold">Scout</h1>
-                      <p className="text-lg">
-                        The Scout is a non-formal educational organization that
-                        organizes scouting education in Indonesia. The word
-                        Scout is an abbreviation of Praja Muda Karana which
-                        means Young People who Like to Work.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid  grid-cols-2 gap-44">
-                    <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit
-                      label="Edit"
-                      onClick={() => setIsOpenExtracurriculer(true)}
-                    />
-                  </div>
-                </div>
+                  ))
+                ) : (
+                  <p>No extracurricular data available</p>
+                )}
               </div>
               <div className="flex flex-col gap-10">
                 <ButtonSubmit label="ADD ACHIEVEMENT" />
@@ -773,7 +977,7 @@ const Admin: FC = () => {
                 </div>
               </div>
             </div>
-            {/* Section 6 */}
+            {/* Section 6 FAQ*/}
             <div className="pt-20 px-20">
               <div className="flex flex-col gap-10">
                 <h1 className="text-lg font-semibold text-center">FAQ</h1>
@@ -806,7 +1010,7 @@ const Admin: FC = () => {
               </div>
             </div>
             <div className="pb-20 px-20">
-              {/* {datasFAQ.map((e) => (
+              {schoolData.faqs?.map((e) => (
                 <AccordionFAQ
                   question={e.question}
                   answer={e.answer}
@@ -816,27 +1020,7 @@ const Admin: FC = () => {
                     setIsOpenFAQ(true);
                   }}
                 />
-              ))} */}
-              <AccordionFAQ
-                question={"Is the school accredited ?"}
-                answer={
-                  "Of course , school is accreditation, and the accreditation is A"
-                }
-                onClick1={() => setIsOpenFAQ(false)}
-                onClick2={() => setIsOpenFAQ(true)}
-              />
-              <AccordionFAQ
-                question={"Any public transportation near school ?"}
-                answer={"Yes , is F34 school bus"}
-                onClick1={() => setIsOpenFAQ(false)}
-                onClick2={() => setIsOpenFAQ(true)}
-              />
-              <AccordionFAQ
-                question={"Is the school fee expensive there ?"}
-                answer={"Relative, but student will guarante beacome success"}
-                onClick1={() => setIsOpenFAQ(false)}
-                onClick2={() => setIsOpenFAQ(true)}
-              />
+              ))}
             </div>
             {/* Section 7 */}
             <div className="bg-gray-200 py-20 px-20 ">
@@ -909,7 +1093,10 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-96 mt-10">
-                <ButtonCancelDelete label="Reset Data" />
+                <ButtonCancelDelete
+                  label="Reset Data"
+                  onClick={() => window.location.reload()}
+                />
                 <ButtonSubmit label="View Quiz" />
                 <ButtonSubmit
                   label="Submit"
@@ -935,7 +1122,131 @@ const Admin: FC = () => {
             </div>
           </div>
           <>
-            {/* modal extraculliculer */}
+            {/* modal Add extraculliculer */}
+            <Transition appear show={isOpenAddExtracurricular} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenAddExtracurricular}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-black bg-opacity-25" />
+                </Transition.Child>
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 scale-95"
+                      enterTo="opacity-100 scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 scale-100"
+                      leaveTo="opacity-0 scale-95"
+                    >
+                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                        >
+                          Add Extraculliculer
+                        </Dialog.Title>
+                        <form>
+                          <div className="mt-2 flex flex-col items-center justify-center">
+                            <div className="w-full flex flex-col items-center justify-center">
+                              <div className="w-full">
+                                <img
+                                  src={
+                                    addExtracurricural.image
+                                      ? URL.createObjectURL(
+                                          addExtracurricural.image
+                                        )
+                                      : "/photo.png"
+                                  }
+                                  alt="user-avatar"
+                                  className="w-full h-auto border-1 border-black "
+                                />
+                              </div>
+                              <input
+                                placeholder=""
+                                id="upload-image"
+                                type="file"
+                                className="p-4"
+                                onChange={(event) => {
+                                  if (!event.currentTarget.files) {
+                                    return;
+                                  }
+                                  setAddExtracurricular({
+                                    ...addExtracurricural,
+                                    image: URL.createObjectURL(
+                                      event.currentTarget.files[0]
+                                    ),
+                                  });
+                                  handleChangeExtracurricular(
+                                    event.currentTarget.files[0],
+                                    "image"
+                                  );
+                                }}
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 my-5 w-full">
+                              <p>Title</p>
+                              <InputLightBlue
+                                type="text"
+                                onChange={(event) =>
+                                  setAddExtracurricular({
+                                    ...addExtracurricural,
+                                    title: event.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 my-5 w-full">
+                              <p>Description</p>
+                              <TextAreaLightBlue
+                                onChange={(event) =>
+                                  setAddExtracurricular({
+                                    ...addExtracurricural,
+                                    description: event.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                          <div className="mt-4 flex space-x-5 justify-end">
+                            <ButtonCancelDelete
+                              label="Cancel"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setIsOpenAddExtracurricular(false);
+                              }}
+                            />
+                            <ButtonSubmit
+                              label="Add"
+                              type="submit"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                handleSubmitExtracurriculer();
+                              }}
+                            />
+                          </div>
+                        </form>
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
+          </>
+          <>
+            {/* modal Edit extraculliculer */}
             <Transition appear show={isOpenExtracurriculer} as={Fragment}>
               <Dialog
                 as="div"
@@ -971,62 +1282,95 @@ const Admin: FC = () => {
                         >
                           Edit Extraculliculer
                         </Dialog.Title>
-                        <div className="mt-2 flex flex-col items-center justify-center">
-                          <div className="w-full flex flex-col items-center justify-center">
-                            {image ? (
-                              <div>
-                                <img
-                                  src={URL.createObjectURL(image)}
-                                  alt="Selected"
-                                  className="h-auto w-96"
-                                />
-                              </div>
-                            ) : (
-                              <div>
-                                <img src="/sman3.jpg" alt="Default" />
-                              </div>
-                            )}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setImage(file);
-                                }
-                              }}
-                              className="bg-@light-blue w-full p-5"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Title</p>
-                            <InputLightBlue
-                              type="text"
-                              defaultValue={"Scout"}
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Description</p>
-                            <TextAreaLightBlue
-                              defaultValue={
-                                "The Scout is a non-formal educational organization that organizes scouting education in Indonesia. The word Scout is an abbreviation of Praja Muda Karana which means Young People who Like to Work."
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex space-x-5 justify-end">
-                          <ButtonCancelDelete
-                            label="Cancel"
-                            onClick={() => setIsOpenExtracurriculer(false)}
-                          />
-                          <ButtonSubmit
-                            label="Update"
-                            onClick={() => {
-                              alert("update");
-                              setIsOpenExtracurriculer(false);
-                            }}
-                          />
-                        </div>
+                        {Array.isArray(schoolData.extracurriculars) ? (
+                          schoolData.extracurriculars?.map((e) => (
+                            <div>
+                              {e.id === idExtracurricular ? (
+                                <div>
+                                  <div className="mt-2 flex flex-col items-center justify-center">
+                                    <div className="w-full">
+                                      <img
+                                        src={
+                                          updateExtracurricular.image
+                                            ? URL.createObjectURL(
+                                                updateExtracurricular.image
+                                              )
+                                            : `https://storage.googleapis.com/prj1ropel/${e.img}`
+                                        }
+                                        alt="user-avatar"
+                                        className="w-full h-auto border-1 border-black "
+                                      />
+                                    </div>
+                                    <input
+                                      placeholder=""
+                                      id="upload-image"
+                                      type="file"
+                                      className="bg-@light-blue w-full p-5"
+                                      onChange={(event) => {
+                                        if (!event.currentTarget.files) {
+                                          return;
+                                        }
+                                        setUpdateExtracurricular({
+                                          ...updateExtracurricular,
+                                          image: URL.createObjectURL(
+                                            event.currentTarget.files[0]
+                                          ),
+                                        });
+                                        handleChangeUpdateExtracurricular(
+                                          event.currentTarget.files[0],
+                                          "image"
+                                        );
+                                      }}
+                                    />
+                                    <div className="flex flex-col gap-1 my-5 w-full">
+                                      <p>Title</p>
+                                      <InputLightBlue
+                                        type="text"
+                                        defaultValue={e.name}
+                                        onChange={(event) =>
+                                          setUpdateExtracurricular({
+                                            ...updateExtracurricular,
+                                            name: event.target.value,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                    <div className="flex flex-col gap-1 my-5 w-full">
+                                      <p>Description</p>
+                                      <TextAreaLightBlue
+                                        defaultValue={e.description}
+                                        onChange={(event) =>
+                                          setUpdateExtracurricular({
+                                            ...updateExtracurricular,
+                                            description: event.target.value,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="mt-4 flex space-x-5 justify-end">
+                                    <ButtonCancelDelete
+                                      label="Cancel"
+                                      onClick={() =>
+                                        setIsOpenExtracurriculer(false)
+                                      }
+                                    />
+                                    <ButtonSubmit
+                                      label="Update"
+                                      onClick={() => {
+                                        handleUpdateExtracurricular();
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <></>
+                        )}
                       </Dialog.Panel>
                     </Transition.Child>
                   </div>
@@ -1278,47 +1622,55 @@ const Admin: FC = () => {
                         >
                           Update FAQ
                         </Dialog.Title>
-                        <div className="mt-2 flex flex-col items-center justify-center">
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Question</p>
-                            <InputLightBlue
-                              type="text"
-                              defaultValue={"Is the school accredited ?"}
-                              onChange={(event) =>
-                                setUpdateFAQ({
-                                  ...updateFAQ,
-                                  question: event.target.value,
-                                })
-                              }
-                            />
+                        {schoolData.faqs?.map((e) => (
+                          <div>
+                            {e.id === idFAQ ? (
+                              <>
+                                <div className="mt-2 flex flex-col items-center justify-center">
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Question</p>
+                                    <InputLightBlue
+                                      type="text"
+                                      defaultValue={e.question}
+                                      onChange={(event) =>
+                                        setUpdateFAQ({
+                                          ...updateFAQ,
+                                          question: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Answer</p>
+                                    <TextAreaLightBlue
+                                      defaultValue={e.answer}
+                                      onChange={(event) =>
+                                        setUpdateFAQ({
+                                          ...updateFAQ,
+                                          answer: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="mt-4 flex space-x-5 justify-end">
+                                  <ButtonCancelDelete
+                                    label="Cancel"
+                                    onClick={() => setIsOpenFAQ(false)}
+                                  />
+                                  <ButtonSubmit
+                                    label="Update"
+                                    onClick={() => {
+                                      handleUpdateFAQ(e.id);
+                                    }}
+                                  />
+                                </div>
+                              </>
+                            ) : (
+                              <></>
+                            )}
                           </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Answer</p>
-                            <TextAreaLightBlue
-                              defaultValue={
-                                "Of course , school is accreditation, and the accreditation is A"
-                              }
-                              onChange={(event) =>
-                                setUpdateFAQ({
-                                  ...updateFAQ,
-                                  answer: event.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex space-x-5 justify-end">
-                          <ButtonCancelDelete
-                            label="Cancel"
-                            onClick={() => setIsOpenFAQ(false)}
-                          />
-                          <ButtonSubmit
-                            label="Update"
-                            onClick={() => {
-                              handleUpdateFAQ();
-                            }}
-                          />
-                        </div>
+                        ))}
                       </Dialog.Panel>
                     </Transition.Child>
                   </div>
