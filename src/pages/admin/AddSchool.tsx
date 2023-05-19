@@ -206,12 +206,12 @@ const AddSchool: FC = () => {
     setNumPages(numPages);
   };
 
-  const handlePdfInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setPdfFile(file);
-    }
-  };
+  // const handlePdfInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     setPdfFile(file);
+  //   }
+  // };
 
   const hadlePostSchool: SubmitHandler<Schema> = (data) => {
     console.log(data);
