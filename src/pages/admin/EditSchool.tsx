@@ -13,6 +13,9 @@ import { ComboBox } from "../../components/ComboBox";
 import { Document, Page } from "react-pdf";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
 interface ProvinceDataType {
   id: number;
@@ -78,6 +81,44 @@ interface SchoolDataType {
   zipcode: string;
 }
 
+const schema = z.object({
+  npsn: z.string().min(8, { message: "npsn mush 8 number" }),
+  name: z.string().min(3, { message: "School name is required" }),
+  description: z
+    .string()
+    .min(20, { message: "description must have minimum 20 characters" }),
+  province: z.string().min(1, { message: "Province is required" }),
+  city: z.string().min(1, { message: "City is required" }),
+  district: z.string().min(1, { message: "district is required" }),
+  village: z.string().min(1, { message: "sub district is required" }),
+  detail: z
+    .string()
+    .min(20, { message: "detail must have minimum 20 characters" }),
+  zipcode: z.string().min(5, { message: "zip code must 5 numbers" }),
+  students: z.string().min(1, { message: "how many students is required" }),
+  teachers: z.string().min(1, { message: "how many teachers is required" }),
+  staff: z.string().min(1, { message: "how many staff is required" }),
+  accreditation: z.string().min(1, { message: "Accreditaon is required" }),
+  web: z
+    .string()
+    .min(1, { message: "school website is required" })
+    .url({ message: "Must be a valid video URL" }),
+  image: z.any().refine((files) => files?.length === 1, "Image is required."),
+  video: z
+    .string()
+    .min(1, { message: "Youtube url is required" })
+    .url({ message: "Must be a valid video youtube embedded URL" }),
+  pdf: z
+    .any()
+    .refine((files) => files?.length === 1, "pdf is required.")
+    .refine(
+      (files) => files[0]?.type === "application/pdf",
+      "Only PDF files are allowed."
+    ),
+});
+
+export type Schema = z.infer<typeof schema>;
+
 const EditSchool: FC = () => {
   const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
   const [image, setImage] = useState<File | null>(null);
@@ -90,41 +131,30 @@ const EditSchool: FC = () => {
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
   const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
-  const [selectedProvince, setSelectedProvince] =
-    useState<Partial<LocationDataType | null>>(null);
-  const [selectedCities, setSelectedCities] =
-    useState<Partial<LocationDataType | null>>(null);
-  const [selectedDistrict, setSelectedDistrict] =
-    useState<Partial<LocationDataType | null>>(null);
-  const [selectedSubDistrict, setSelectedSubDistrict] =
-    useState<Partial<LocationDataType | null>>(null);
 
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
 
-  const params = useParams();
-  const { id } = params;
+  // const params = useParams();
+  // const { id } = params;
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    dataProvince();
     fetchSchoolData();
+    fetchProvince();
   }, []);
 
-  useEffect(() => {
-    dataCity();
-  }, [selectedProvince]);
+  const {
+    register,
+    setValue,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: zodResolver(schema),
+    mode: "onChange",
+  });
 
-  useEffect(() => {
-    dataDistrict();
-  }, [selectedCities]);
-
-  useEffect(() => {
-    dataSubDistrict();
-  }, [selectedDistrict]);
-
-  const dataProvince = () => {
+  const fetchProvince = () => {
     axios
       .get("https://dev.farizdotid.com/api/daerahindonesia/provinsi")
       .then((response) => {
@@ -133,10 +163,10 @@ const EditSchool: FC = () => {
       });
   };
 
-  const dataCity = () => {
+  const fetchCity = (province_id: number) => {
     axios
       .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvince?.id}`
+        `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${province_id}`
       )
       .then((response) => {
         const citiesData = response.data;
@@ -144,22 +174,21 @@ const EditSchool: FC = () => {
       });
   };
 
-  const dataDistrict = () => {
+  const fetchDistrict = (city_id: number) => {
     axios
       .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=${selectedCities?.id}`
+        `https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=${city_id}`
       )
       .then((response) => {
         const districtData = response.data;
         setDistricts(districtData.kecamatan);
-        console.log(districtData.kecamatan);
       });
   };
 
-  const dataSubDistrict = () => {
+  const fetchSubDistrict = (district_id: number) => {
     axios
       .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=${selectedDistrict?.id}`
+        `https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=${district_id}`
       )
       .then((response) => {
         const subDistrictData = response.data;
@@ -238,34 +267,41 @@ const EditSchool: FC = () => {
                 {/* provence */}
                 <ComboBox
                   title={"Provinces"}
-                  data={provinces}
-                  selected={selectedProvince}
-                  setSelected={setSelectedProvince}
-                  defaultFill={schoolData.province}
+                  datas={provinces}
+                  name="province"
+                  register={register}
+                  setValue={setValue}
+                  onChange={(id) => fetchCity(id)}
+                  error={errors.province?.message}
                 />
                 {/* city */}
                 <ComboBox
                   title={"City/Regency"}
-                  data={cities}
-                  selected={selectedCities}
-                  setSelected={setSelectedCities}
-                  defaultFill={schoolData.city}
+                  datas={cities}
+                  name="city"
+                  register={register}
+                  setValue={setValue}
+                  onChange={(id) => fetchDistrict(id)}
+                  error={errors.city?.message}
                 />
                 {/* district */}
                 <ComboBox
                   title={"District"}
-                  data={districts}
-                  selected={selectedDistrict}
-                  setSelected={setSelectedDistrict}
-                  defaultFill={schoolData.district}
+                  datas={districts}
+                  name="district"
+                  register={register}
+                  setValue={setValue}
+                  onChange={(id) => fetchSubDistrict(id)}
+                  error={errors.district?.message}
                 />
                 {/* sub-district */}
                 <ComboBox
                   title={"Sub-district"}
-                  data={subDistricts}
-                  selected={selectedSubDistrict}
-                  setSelected={setSelectedSubDistrict}
-                  defaultFill={schoolData.village}
+                  datas={subDistricts}
+                  name="village"
+                  register={register}
+                  setValue={setValue}
+                  error={errors.village?.message}
                 />
                 <div className="flex flex-col gap-1 col-span-2 ">
                   <p className="text-gray-400">Detail</p>

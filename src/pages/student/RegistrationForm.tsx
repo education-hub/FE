@@ -162,37 +162,37 @@ const RegistrationForm: FC = () => {
             <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
               <div className="grid grid-cols-2 gap-10">
                 {/* provence */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Provinces"}
                   data={provinces}
                   selected={selectedProvince}
                   setSelected={setSelectedProvince}
                   defaultFill={"D.I. Yogyakarta"}
-                />
+                /> */}
                 {/* city */}
-                <ComboBox
+                {/* <ComboBox
                   title={"City/Regency"}
                   data={cities}
                   selected={selectedCities}
                   setSelected={setSelectedCities}
                   defaultFill={"Yogyakarta"}
-                />
+                /> */}
                 {/* district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"District"}
                   data={districts}
                   selected={selectedDistrict}
                   setSelected={setSelectedDistrict}
                   defaultFill={"Gondokusuman"}
-                />
+                /> */}
                 {/* sub-district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Sub-district"}
                   data={subDistricts}
                   selected={selectedSubDistrict}
                   setSelected={setSelectedSubDistrict}
                   defaultFill={"Kotabaru"}
-                />
+                /> */}
                 <div className="flex flex-col gap-1 col-span-2 ">
                   <p className="text-gray-400">Detail</p>
                   <TextAreaWhite
@@ -245,37 +245,37 @@ const RegistrationForm: FC = () => {
             <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
               <div className="grid grid-cols-2 gap-10">
                 {/* provence */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Provinces"}
                   data={provinces}
                   selected={selectedProvince}
                   setSelected={setSelectedProvince}
                   defaultFill={"D.I. Yogyakarta"}
-                />
+                /> */}
                 {/* city */}
-                <ComboBox
+                {/* <ComboBox
                   title={"City/Regency"}
                   data={cities}
                   selected={selectedCities}
                   setSelected={setSelectedCities}
                   defaultFill={"Yogyakarta"}
-                />
+                /> */}
                 {/* district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"District"}
                   data={districts}
                   selected={selectedDistrict}
                   setSelected={setSelectedDistrict}
                   defaultFill={"Gondokusuman"}
-                />
+                /> */}
                 {/* sub-district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Sub-district"}
                   data={subDistricts}
                   selected={selectedSubDistrict}
                   setSelected={setSelectedSubDistrict}
                   defaultFill={"Kotabaru"}
-                />
+                /> */}
                 <div className="flex flex-col gap-1 col-span-2 ">
                   <p className="text-gray-400">Detail</p>
                   <TextAreaWhite

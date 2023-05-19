@@ -1,4 +1,4 @@
-import React, { Fragment, FC, useEffect, useState, MouseEvent } from "react";
+import { Fragment, FC, useEffect, useState, MouseEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
@@ -27,8 +27,6 @@ import {
 } from "../../components/Input";
 import { CardAddQuiz, CardCost } from "../../components/Card";
 import { AccordionFAQ } from "../../components/Accordion";
-
-// const src = "https://www.youtube.com/embed/WrBQNImsV74";
 
 const interval = [
   { interval: "Onetime Payment" },
