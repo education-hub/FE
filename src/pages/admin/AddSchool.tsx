@@ -1,5 +1,4 @@
 import { FC, Fragment, useEffect, useState } from "react";
-import { Document, Page } from "react-pdf";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,6 +7,9 @@ import axios from "axios";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { ProgressBar } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
@@ -34,7 +36,7 @@ const schema = z.object({
   detail: z
     .string()
     .min(20, { message: "detail must have minimum 20 characters" }),
-  zipcode: z.string().min(6, { message: "zip code must 6 numbers" }),
+  zipcode: z.string().min(5, { message: "zip code must 5 numbers" }),
   students: z.string().min(1, { message: "how many students is required" }),
   teachers: z.string().min(1, { message: "how many teachers is required" }),
   staff: z.string().min(1, { message: "how many staff is required" }),
@@ -43,15 +45,21 @@ const schema = z.object({
     .string()
     .min(1, { message: "school website is required" })
     .url({ message: "Must be a valid video URL" }),
-  // image: z.any(),
+  image: z.any().refine((files) => files?.length === 1, "Image is required."),
   video: z
     .string()
     .min(1, { message: "Youtube url is required" })
     .url({ message: "Must be a valid video youtube embedded URL" }),
-  // pdf: z.any().refine((files) => files?.length === 1, "pdf is required."),
+  pdf: z
+    .any()
+    .refine((files) => files?.length === 1, "pdf is required.")
+    .refine(
+      (files) => files[0]?.type === "application/pdf",
+      "Only PDF files are allowed."
+    ),
 });
 
-type Schema = z.infer<typeof schema>;
+export type Schema = z.infer<typeof schema>;
 
 interface ProvinceDataType {
   id: number;
@@ -78,70 +86,39 @@ interface SubDistrictDataType {
   name: string;
 }
 
-interface LocationDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  id_kecamatan: string;
-  nama: string;
-}
-
 const AddSchool: FC = () => {
-  // const [loading, setLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [src, setSrc] = useState("");
+  const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
+  const [cities, setCities] = useState<CitiesDataType[]>([]);
+  const [districts, setDistricts] = useState<DistrictDataType[]>([]);
+  const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
+
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
+  const [cookie] = useCookies(["tkn"]);
+  const checkToken = cookie.tkn;
+
+  useEffect(() => {
+    fetchProvince();
+  }, []);
+
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
     mode: "onChange",
   });
 
-  const Submit: SubmitHandler<Schema> = (data) => {
-    console.log(data);
-  };
+  const video = watch("video");
+  const viewPdf = watch("pdf");
+  const [pdfFile, setPdfFile] = useState<string | null>("");
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [image, setImage] = useState<string | null>(null);
-  const [video, setVideo] = useState("");
-  const [src, setSrc] = useState("");
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber] = useState(1);
-  const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
-  const [cities, setCities] = useState<CitiesDataType[]>([]);
-  const [districts, setDistricts] = useState<DistrictDataType[]>([]);
-  const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
-
-  const [selectedProvince, setSelectedProvince] =
-    useState<Partial<LocationDataType | null>>(null);
-  const [selectedCities, setSelectedCities] =
-    useState<Partial<LocationDataType | null>>(null);
-  const [selectedDistrict, setSelectedDistrict] =
-    useState<Partial<LocationDataType | null>>(null);
-  const [selectedSubDistrict, setSelectedSubDistrict] =
-    useState<Partial<LocationDataType | null>>(null);
-
-  const [cookie] = useCookies(["tkn"]);
-  const checkToken = cookie.tkn;
-
-  useEffect(() => {
-    dataProvince();
-  }, []);
-
-  useEffect(() => {
-    dataCity();
-  }, [selectedProvince]);
-
-  useEffect(() => {
-    dataDistrict();
-  }, [selectedCities]);
-
-  useEffect(() => {
-    dataSubDistrict();
-  }, [selectedDistrict]);
-
-  const dataProvince = () => {
+  const fetchProvince = () => {
     axios
       .get("https://dev.farizdotid.com/api/daerahindonesia/provinsi")
       .then((response) => {
@@ -150,10 +127,10 @@ const AddSchool: FC = () => {
       });
   };
 
-  const dataCity = () => {
+  const fetchCity = (province_id: number) => {
     axios
       .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvince?.id}`
+        `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${province_id}`
       )
       .then((response) => {
         const citiesData = response.data;
@@ -161,22 +138,21 @@ const AddSchool: FC = () => {
       });
   };
 
-  const dataDistrict = () => {
+  const fetchDistrict = (city_id: number) => {
     axios
       .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=${selectedCities?.id}`
+        `https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=${city_id}`
       )
       .then((response) => {
         const districtData = response.data;
         setDistricts(districtData.kecamatan);
-        console.log(districtData.kecamatan);
       });
   };
 
-  const dataSubDistrict = () => {
+  const fetchSubDistrict = (district_id: number) => {
     axios
       .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=${selectedDistrict?.id}`
+        `https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=${district_id}`
       )
       .then((response) => {
         const subDistrictData = response.data;
@@ -184,44 +160,37 @@ const AddSchool: FC = () => {
       });
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
+  const generatePreview = () => {
+    if (viewPdf) {
+      if (typeof viewPdf[0] === "string") {
+        setPdfFile(viewPdf[0]);
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPdfFile(reader.result as string);
+        };
+        reader.readAsDataURL(viewPdf[0]);
+      }
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setVideo(event.target.value);
-  };
+  console.log(pdfFile);
 
   const handleSubmitVideo = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setSrc(video);
-    console.log(src);
-  };
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
-  };
-
-  const handlePdfInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setPdfFile(file);
-    }
   };
 
   const hadlePostSchool: SubmitHandler<Schema> = (data) => {
     console.log(data);
 
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    // const formData = new FormData();
+    // Object.entries(data).forEach(([key, value]) => {
+    //   formData.append(key, value);
+    // });
 
     axios
-      .post(`https://go-event.online/school`, formData, {
+      .post(`https://go-event.online/school`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -232,7 +201,7 @@ const AddSchool: FC = () => {
         console.log(response);
         Swal.fire({
           icon: "success",
-          title: "Submit FAQ Success!!",
+          title: "Post School Success!!",
           text: message,
           showCancelButton: false,
         });
@@ -246,11 +215,11 @@ const AddSchool: FC = () => {
         });
       });
   };
-
+  console.log(pdfFile);
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit(hadlePostSchool)}>
-        <div className="grid grid-cols-2 px-20 py-20 gap-20 text-lg">
+        <div className="text-lg grid py-20 px-20 gap-20 grid-cols-2">
           <div className=" flex flex-col gap-3">
             <InputLightBlue
               label="National School Identification Number (NPSN)"
@@ -283,48 +252,47 @@ const AddSchool: FC = () => {
               register={register}
               error={errors.web?.message}
             />
-            <div className="flex flex-col gap-1 my-5">
-              <p className="block text-gray-700 font-bold">Location</p>
-              <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
-                <div className="grid grid-cols-2 gap-10">
+            <div className="flex flex-col my-5 gap-1">
+              <p className="font-bold text-gray-700 block">Location</p>
+              <div className="bg-@light-blue font-medium border-2 text-md text-@dark p-10 sm:text-lg focus:outline-none">
+                <div className="grid gap-10 grid-cols-2">
                   {/* provence */}
                   <ComboBox
                     title={"Provinces"}
-                    data={provinces}
-                    selected={selectedProvince}
-                    setSelected={setSelectedProvince}
+                    datas={provinces}
                     name="province"
                     register={register}
+                    setValue={setValue}
+                    onChange={(id) => fetchCity(id)}
                     error={errors.province?.message}
                   />
                   {/* city */}
                   <ComboBox
                     title={"City/Regency"}
-                    data={cities}
-                    selected={selectedCities}
-                    setSelected={setSelectedCities}
+                    datas={cities}
                     name="city"
                     register={register}
+                    setValue={setValue}
+                    onChange={(id) => fetchDistrict(id)}
                     error={errors.city?.message}
                   />
                   {/* district */}
                   <ComboBox
                     title={"District"}
-                    data={districts}
-                    selected={selectedDistrict}
-                    setSelected={setSelectedDistrict}
+                    datas={districts}
                     name="district"
                     register={register}
+                    setValue={setValue}
+                    onChange={(id) => fetchSubDistrict(id)}
                     error={errors.district?.message}
                   />
                   {/* sub-district */}
                   <ComboBox
                     title={"Sub-district"}
-                    data={subDistricts}
-                    selected={selectedSubDistrict}
-                    setSelected={setSelectedSubDistrict}
+                    datas={subDistricts}
                     name="village"
                     register={register}
+                    setValue={setValue}
                     error={errors.village?.message}
                   />
                   <div className="flex flex-col gap-1 col-span-2 ">
@@ -366,14 +334,6 @@ const AddSchool: FC = () => {
               error={errors.teachers?.message}
             />
             <InputLightBlue
-              label="How Many Teachers"
-              type="number"
-              name="teachers"
-              id="input-teachers"
-              register={register}
-              error={errors.teachers?.message}
-            />
-            <InputLightBlue
               label="How Many Staff"
               type="number"
               name="staff"
@@ -391,93 +351,89 @@ const AddSchool: FC = () => {
             />
           </div>
           <div>
-            {/* <div> */}
-            {/* {image ? (
-                <img src={image} alt="Preview" className="w-full h-auto" />
-              ) : (
-                <></>
-              )} */}
-            {/* <input
-                type="file"
-                className="bg-@light-blue w-full p-5"
-                id="input-image"
-                {...register("image")}
-                onChange={handleImageChange}
-              />
-              {errors.image && (
-                <label className="label">
-                  <span className="font-light text-sm text-red-500 break-words">
-                    {errors.image.message?.toString()}
-                  </span>
-                </label>
-              )} */}
-            {/* <input
-                type="file"
-                id="input-image"
-                // name="image"
-                {...register("image")}
-              /> */}
-            {/* {errors.image && <span>{errors.image.message?.toString()}</span>} */}
-          </div>
-          <div className="mt-10">
             <div>
-              <iframe
-                className="w-full h-96"
-                src={src ? src : "https://www.youtube.com/embed/LlCwHnp3kL4"}
-                title="Introduction Video"
-                allowFullScreen
-              />
-            </div>
-            <p className="mt-5">Insert Video Youtube URL</p>
-            <InputLightBlue
-              type="text"
-              // value={video}
-              label="Video"
-              id="input-video"
-              name="video"
-              register={register}
-              error={errors.video?.message}
-              onChange={handleInputChange}
-            />
-            <div className="flex justify-end my-5">
-              <ButtonSubmit
-                label="Preview Video"
-                onClick={(event) => handleSubmitVideo(event)}
-              />
-            </div>
-          </div>
-          <div className="mt-10 bg-@light-blue p-2 flex flex-col gap-10">
-            {pdfFile && (
               <div>
-                <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-                  <Page pageNumber={pageNumber} />
-                </Document>
-                <p>
-                  Page {pageNumber} of {numPages}
-                </p>
+                <img
+                  className="h-auto w-full"
+                  src={
+                    watch("image") && typeof watch("image")[0] === "object"
+                      ? URL.createObjectURL(watch("image")[0])
+                      : "/photo.png"
+                  }
+                  alt="Profile"
+                />
               </div>
-            )}
-            {/* <input
+              <InputLightBlue
                 type="file"
-                accept="application/pdf"
-                className="bg-@light-blue w-full p-5"
-                id="input-pdf"
-                {...register("pdf")}
-                onChange={handlePdfInputChange}
+                label="Image"
+                id="input-image"
+                name="image"
+                register={register}
+                error={errors.image?.message?.toString()}
               />
             </div>
-            {errors.pdf && (
-              <label className="label">
-                <span className="font-light text-sm text-red-500 break-words">
-                  {errors.pdf.message?.toString()}
-                </span>
-              </label>
-            )} */}
-            <div className=" flex justify-end mt-3">
-              <ButtonSubmit label="view pdf" onClick={() => setIsOpen(true)} />
+            <div className="mt-10">
+              <div>
+                <iframe
+                  className="h-96 w-full"
+                  src={src ? src : "https://www.youtube.com/embed/LlCwHnp3kL4"}
+                  title="Introduction Video"
+                  allowFullScreen
+                />
+              </div>
+              <p className="mt-5">Insert Video Youtube URL</p>
+              <InputLightBlue
+                type="text"
+                label="Video"
+                id="input-video"
+                name="video"
+                register={register}
+                error={errors.video?.message}
+              />
+              <div className="flex my-5 justify-end">
+                <ButtonSubmit
+                  label="Preview Video"
+                  onClick={(event) => handleSubmitVideo(event)}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col mt-10 p-2 gap-10">
+              {pdfFile && (
+                <div className="h-[500px]">
+                  <h3>PDF Preview:</h3>
+                  <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                    <Viewer
+                      fileUrl={pdfFile}
+                      plugins={[defaultLayoutPluginInstance]}
+                      renderLoader={(percentages: number) => (
+                        <div>
+                          <ProgressBar progress={Math.round(percentages)} />
+                        </div>
+                      )}
+                    />
+                  </Worker>
+                </div>
+              )}
+              <InputLightBlue
+                type="file"
+                label="Pdf"
+                accept="application/pdf"
+                id="input-pdf"
+                name="pdf"
+                register={register}
+                error={errors.pdf?.message?.toString()}
+              />
+            </div>
+            <div className="flex mt-3 justify-end">
+              <ButtonSubmit
+                label="view pdf"
+                onClick={() => {
+                  generatePreview();
+                }}
+              />
             </div>
           </div>
-          <div className="flex col-span-2 justify-end gap-10">
+          <div className="flex gap-10 col-span-2 justify-end">
             <ButtonCancelDelete label="Cancel" />
             <ButtonSubmit label="Post School" type="submit" />
           </div>
@@ -486,7 +442,7 @@ const AddSchool: FC = () => {
       <>
         {/* modal view pdf */}
         <Transition appear show={isOpen} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={() => !isOpen}>
+          <Dialog as="div" className="z-10 relative" onClose={() => !isOpen}>
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -496,10 +452,10 @@ const AddSchool: FC = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="fixed inset-0 bg-black bg-opacity-25" />
+              <div className="bg-black bg-opacity-25 inset-0 fixed" />
             </Transition.Child>
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="inset-0 fixed overflow-y-auto">
+              <div className="flex min-h-full text-center p-4 items-center justify-center">
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -509,15 +465,29 @@ const AddSchool: FC = () => {
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
                 >
-                  <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Panel className="bg-white shadow-xl text-left w-full max-w-2xl p-16 transform transition-all overflow-hidden align-middle">
                     <Dialog.Title
                       as="h3"
-                      className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                      className="font-semibold text-xl  text-@dark text-center py-5 leading-6"
                     >
                       View Brochure
                     </Dialog.Title>
-                    <Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js">
-                      <Viewer fileUrl={"/sampel.pdf"} />
+                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                      {pdfFile ? (
+                        <div
+                          style={{
+                            border: "1px solid rgba(0, 0, 0, 0.3)",
+                            height: "750px",
+                          }}
+                        >
+                          <Viewer
+                            fileUrl={pdfFile}
+                            plugins={[defaultLayoutPluginInstance]}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </Worker>
                     <ButtonCancelDelete
                       label="close"

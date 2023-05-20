@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import { Layout } from "../../components/Layout";
-import { ComboBox } from "../../components/ComboBox";
+// import { ComboBox } from "../../components/ComboBox";
 import {
   InputLightBlue,
   InputWhite,
@@ -8,66 +8,66 @@ import {
 } from "../../components/Input";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 
-interface ProvinceDataType {
-  id: number;
-  nama: string;
-}
+// interface ProvinceDataType {
+//   id: number;
+//   nama: string;
+// }
 
-interface CitiesDataType {
-  id: number;
-  id_provinsi: string;
-  name: string;
-}
+// interface CitiesDataType {
+//   id: number;
+//   id_provinsi: string;
+//   name: string;
+// }
 
-interface DistrictDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  name: string;
-}
+// interface DistrictDataType {
+//   id: number;
+//   id_provinsi: string;
+//   id_kota: string;
+//   name: string;
+// }
 
-interface SubDistrictDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  name: string;
-}
+// interface SubDistrictDataType {
+//   id: number;
+//   id_provinsi: string;
+//   id_kota: string;
+//   name: string;
+// }
 
 const RegistrationForm: FC = () => {
   const [image, setImage] = useState<File | null>(null);
 
-  const [provinces] = useState<ProvinceDataType[]>([]);
-  const [cities] = useState<CitiesDataType[]>([]);
-  const [districts] = useState<DistrictDataType[]>([]);
-  const [subDistricts] = useState<SubDistrictDataType[]>([]);
-  const [selectedProvince, setSelectedProvince] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedCities, setSelectedCities] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedDistrict, setSelectedDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
-  const [selectedSubDistrict, setSelectedSubDistrict] = useState<{
-    id: number;
-    id_provinsi: string;
-    id_kota: string;
-    id_kecamatan: string;
-    nama: string;
-  } | null>(null);
+  // const [provinces] = useState<ProvinceDataType[]>([]);
+  // const [cities] = useState<CitiesDataType[]>([]);
+  // const [districts] = useState<DistrictDataType[]>([]);
+  // const [subDistricts] = useState<SubDistrictDataType[]>([]);
+  // const [selectedProvince, setSelectedProvince] = useState<{
+  //   id: number;
+  //   id_provinsi: string;
+  //   id_kota: string;
+  //   id_kecamatan: string;
+  //   nama: string;
+  // } | null>(null);
+  // const [selectedCities, setSelectedCities] = useState<{
+  //   id: number;
+  //   id_provinsi: string;
+  //   id_kota: string;
+  //   id_kecamatan: string;
+  //   nama: string;
+  // } | null>(null);
+  // const [selectedDistrict, setSelectedDistrict] = useState<{
+  //   id: number;
+  //   id_provinsi: string;
+  //   id_kota: string;
+  //   id_kecamatan: string;
+  //   nama: string;
+  // } | null>(null);
+  // const [selectedSubDistrict, setSelectedSubDistrict] = useState<{
+  //   id: number;
+  //   id_provinsi: string;
+  //   id_kota: string;
+  //   id_kecamatan: string;
+  //   nama: string;
+  // } | null>(null);
 
   return (
     <Layout>
@@ -162,37 +162,37 @@ const RegistrationForm: FC = () => {
             <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
               <div className="grid grid-cols-2 gap-10">
                 {/* provence */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Provinces"}
                   data={provinces}
                   selected={selectedProvince}
                   setSelected={setSelectedProvince}
                   defaultFill={"D.I. Yogyakarta"}
-                />
+                /> */}
                 {/* city */}
-                <ComboBox
+                {/* <ComboBox
                   title={"City/Regency"}
                   data={cities}
                   selected={selectedCities}
                   setSelected={setSelectedCities}
                   defaultFill={"Yogyakarta"}
-                />
+                /> */}
                 {/* district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"District"}
                   data={districts}
                   selected={selectedDistrict}
                   setSelected={setSelectedDistrict}
                   defaultFill={"Gondokusuman"}
-                />
+                /> */}
                 {/* sub-district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Sub-district"}
                   data={subDistricts}
                   selected={selectedSubDistrict}
                   setSelected={setSelectedSubDistrict}
                   defaultFill={"Kotabaru"}
-                />
+                /> */}
                 <div className="flex flex-col gap-1 col-span-2 ">
                   <p className="text-gray-400">Detail</p>
                   <TextAreaWhite
@@ -245,37 +245,37 @@ const RegistrationForm: FC = () => {
             <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
               <div className="grid grid-cols-2 gap-10">
                 {/* provence */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Provinces"}
                   data={provinces}
                   selected={selectedProvince}
                   setSelected={setSelectedProvince}
                   defaultFill={"D.I. Yogyakarta"}
-                />
+                /> */}
                 {/* city */}
-                <ComboBox
+                {/* <ComboBox
                   title={"City/Regency"}
                   data={cities}
                   selected={selectedCities}
                   setSelected={setSelectedCities}
                   defaultFill={"Yogyakarta"}
-                />
+                /> */}
                 {/* district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"District"}
                   data={districts}
                   selected={selectedDistrict}
                   setSelected={setSelectedDistrict}
                   defaultFill={"Gondokusuman"}
-                />
+                /> */}
                 {/* sub-district */}
-                <ComboBox
+                {/* <ComboBox
                   title={"Sub-district"}
                   data={subDistricts}
                   selected={selectedSubDistrict}
                   setSelected={setSelectedSubDistrict}
                   defaultFill={"Kotabaru"}
-                />
+                /> */}
                 <div className="flex flex-col gap-1 col-span-2 ">
                   <p className="text-gray-400">Detail</p>
                   <TextAreaWhite
