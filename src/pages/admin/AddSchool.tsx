@@ -183,12 +183,6 @@ const AddSchool: FC = () => {
 
   const hadlePostSchool: SubmitHandler<Schema> = (data) => {
     console.log(data);
-
-    // const formData = new FormData();
-    // Object.entries(data).forEach(([key, value]) => {
-    //   formData.append(key, value);
-    // });
-
     axios
       .post(`https://go-event.online/school`, data, {
         headers: {
