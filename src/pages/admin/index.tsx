@@ -219,16 +219,8 @@ const Admin: FC = () => {
         setSchoolId(data.id);
         setNoData(false);
       })
-      .catch((error) => {
-        const { message, code } = error.response.data;
-        console.log(code);
+      .catch(() => {
         setNoData(true);
-        // Swal.fire({
-        //   icon: "error",
-        //   title: "Failed",
-        //   text: message,
-        //   showCancelButton: false,
-        // });
       });
   };
 
