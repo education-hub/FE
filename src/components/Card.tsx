@@ -5,11 +5,10 @@ interface AddCostType {
   title?: string;
   price: number;
   image: string;
-  interval?: string;
 }
 
 export const CardCost: FC<AddCostType> = (props) => {
-  const { title, price, image, interval } = props;
+  const { title, price, image } = props;
   return (
     <div className="flex flex-col gap-5">
       <div className="p-10 bg-@light-blue flex flex-col items-center text-lg font-semibold hover:scale-105 duration-500">
