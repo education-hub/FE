@@ -10,7 +10,6 @@ import {
 } from "../../components/Input";
 import axios from "axios";
 import { ComboBox } from "../../components/ComboBox";
-import { Document, Page } from "react-pdf";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
@@ -397,16 +396,6 @@ const EditSchool: FC = () => {
             </div>
           </div>
           <div className="mt-10 bg-@light-blue p-5 flex flex-col gap-10">
-            {pdfFile && (
-              <div>
-                <Document file={pdfFile} onLoadSuccess={onDocumentLoadSuccess}>
-                  <Page pageNumber={pageNumber} />
-                </Document>
-                <p>
-                  Page {pageNumber} of {numPages}
-                </p>
-              </div>
-            )}
             <input
               type="file"
               accept="application/pdf"

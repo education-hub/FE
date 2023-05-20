@@ -43,6 +43,12 @@ const interval = [
 //   interval: string;
 // }
 
+interface GmeetDataType {
+  start_time: string;
+  end_time: string;
+  school_id: number;
+}
+
 interface ExtracurricularDataType {
   school_id: number;
   image: any;
@@ -51,6 +57,20 @@ interface ExtracurricularDataType {
 }
 
 interface UpdateExtracurricularDataType {
+  id: number;
+  image: any;
+  name: string;
+  description: string;
+}
+
+interface AchievementDataType {
+  school_id: number;
+  image: any;
+  title: string;
+  description: string;
+}
+
+interface UpdateAchievementDataType {
   id: number;
   image: any;
   name: string;
@@ -80,7 +100,7 @@ interface QuizDataType {
 
 interface SchoolDataType {
   accreditation: string;
-  achievement: string | null; // belum ketahuan data aslinya jika ditambahkan
+  achievements: string | null; // belum ketahuan data aslinya jika ditambahkan
   city: string;
   description: string;
   detail: string;
@@ -117,10 +137,14 @@ interface SchoolDataType {
 }
 
 const Admin: FC = () => {
+  const [noData, setNoData] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [tomorrow, setTomorrow] = useState<Date>();
   const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
   const [selected, setSelected] = useState(interval[0]);
   const [isOpenAddExtracurricular, setIsOpenAddExtracurricular] =
+    useState<boolean>(false);
+  const [isOpenAddAchievement, setIsOpenAddAchievement] =
     useState<boolean>(false);
   const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
   const [isOpenAchievement, setIsOpenAchievement] = useState(false);
@@ -130,19 +154,22 @@ const Admin: FC = () => {
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const [schoolId, setSchoolId] = useState<number>();
-
+  const [addGmeet, setAddGmeet] = useState<Partial<GmeetDataType>>({});
   const [addExtracurricural, setAddExtracurricular] = useState<
     Partial<ExtracurricularDataType>
-  >({
-    school_id: schoolData.id,
-  });
+  >({});
   const [idExtracurricular, setIdExtracurricular] = useState<number>();
   const [updateExtracurricular, setUpdateExtracurricular] = useState<
     Partial<UpdateExtracurricularDataType>
   >({});
-  const [faq, setFaq] = useState<Partial<FAQDataType>>({
-    school_id: schoolData.id,
-  });
+  const [addAchievement, setAddAchievement] = useState<
+    Partial<AchievementDataType>
+  >({});
+  const [updateAchievement, setUpdateAchievement] = useState<
+    Partial<UpdateAchievementDataType>
+  >({});
+  const [idAchievement, setIdAchievement] = useState<number>();
+  const [faq, setFaq] = useState<Partial<FAQDataType>>({});
   const [idFAQ, setIdFAQ] = useState<number>();
   const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQUpdateDataType>>({
     id: idFAQ,
@@ -170,26 +197,14 @@ const Admin: FC = () => {
 
   useEffect(() => {
     fetchAllData();
+    minTomorrow();
   }, []);
 
-  useEffect(() => {
-    fetchAllData();
-    setUpdateFAQ((prevFaq) => ({ ...prevFaq, id: idFAQ }));
-  }, [isOpenFAQ]);
-
-  useEffect(() => {
-    setAddExtracurricular((prevExtracurriculer) => ({
-      ...prevExtracurriculer,
-      school_id: schoolData.id,
-    }));
-  }, [isOpenAddExtracurricular]);
-
-  useEffect(() => {
-    setUpdateExtracurricular((prevExtracurriculer) => ({
-      ...prevExtracurriculer,
-      id: idExtracurricular,
-    }));
-  }, [isOpenExtracurriculer]);
+  const minTomorrow = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setTomorrow(tomorrow);
+  };
 
   const fetchAllData = () => {
     axios
@@ -202,16 +217,102 @@ const Admin: FC = () => {
         const { data } = response.data;
         setSchoolData(data);
         setSchoolId(data.id);
+        setNoData(false);
+      })
+      .catch((error) => {
+        const { message, code } = error.response.data;
+        console.log(code);
+        setNoData(true);
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Failed",
+        //   text: message,
+        //   showCancelButton: false,
+        // });
+      });
+  };
+
+  const deleteDataSchool = () => {
+    console.log(schoolId);
+    Swal.fire({
+      title: "Are you sure want to delete?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/school/${schoolId}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.tkn}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete !!",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
+
+  console.log(noData);
+
+  // G-meet handle
+
+  const handleAddGmeet = () => {
+    setAddGmeet((prevAddGmeet) => ({ ...prevAddGmeet, school_id: schoolId }));
+    const requestData = { ...addGmeet, school_id: schoolId };
+    console.log(requestData);
+    axios
+      .post(`https://go-event.online/gmeet`, requestData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message, data } = response.data;
+        console.log(data.redirect);
+        Swal.fire({
+          icon: "success",
+          title: "Create G-meet Success!!",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setAddGmeet({});
+            window.open(data.redirect, "_blank");
+          }
+        });
       })
       .catch((error) => {
         const { message } = error.response.data;
+        setNoData;
         Swal.fire({
           icon: "error",
-          title: "Failed",
-          text: message,
+          title: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => fetchAllData());
   };
 
   // Extracurriculer Handle
@@ -238,9 +339,16 @@ const Admin: FC = () => {
   };
 
   const handleSubmitExtracurriculer = () => {
-    console.log(addExtracurricural);
+    setAddExtracurricular((prevExtracurriculer) => ({
+      ...prevExtracurriculer,
+      school_id: schoolData.id,
+    }));
+
+    const requestData = { ...addExtracurricural, school_id: schoolId };
+
+    console.log(requestData);
     axios
-      .post(`https://go-event.online/extracurriculars`, addExtracurricural, {
+      .post(`https://go-event.online/extracurriculars`, requestData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -262,6 +370,7 @@ const Admin: FC = () => {
       })
       .catch((error) => {
         const { message } = error.response.data;
+        setNoData;
         Swal.fire({
           icon: "error",
           title: message,
@@ -272,14 +381,15 @@ const Admin: FC = () => {
   };
 
   const handleUpdateExtracurricular = () => {
-    console.log(updateExtracurricular);
-    const formData = new FormData();
-    let key: keyof typeof updateExtracurricular;
-    for (key in updateExtracurricular) {
-      formData.append(key, updateExtracurricular[key]);
-    }
+    setUpdateExtracurricular((prevExtracurriculer) => ({
+      ...prevExtracurriculer,
+      id: idExtracurricular,
+    }));
+
+    const requestData = { ...updateExtracurricular, id: idExtracurricular };
+    console.log(requestData);
     axios
-      .put(`https://go-event.online/extracurriculars`, formData, {
+      .put(`https://go-event.online/extracurriculars`, requestData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -354,6 +464,154 @@ const Admin: FC = () => {
     });
   };
 
+  // Achievement Handle
+
+  const handleChangeAchievement = (
+    value: string | File | number | null,
+    key: keyof typeof addExtracurricural
+  ) => {
+    const temp = { ...addAchievement };
+    if (value === null) {
+      temp[key] = null;
+    } else {
+      temp[key] = value;
+    }
+    setAddAchievement(temp);
+  };
+
+  const handleChangeUpdateAchievement = (
+    value: string | File,
+    key: keyof typeof updateAchievement
+  ) => {
+    const temp = { ...updateAchievement };
+    temp[key] = value;
+    setUpdateAchievement(temp);
+  };
+
+  const handleAddAchievement = () => {
+    setAddAchievement((prevAddAcheivement) => ({
+      ...prevAddAcheivement,
+      school_id: schoolId,
+    }));
+
+    const requestData = { ...addAchievement, school_id: schoolId };
+    console.log(requestData);
+    axios
+      .post(`https://go-event.online/achievements`, requestData, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Submit Achievemetn Success!!",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setIsOpenAddAchievement(false);
+            setAddAchievement({});
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        setNoData;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchAllData());
+  };
+
+  const handleUpdateAchievement = () => {
+    setUpdateAchievement((prevUpdateAchievement) => ({
+      ...prevUpdateAchievement,
+      id: idAchievement,
+    }));
+    const requestData = { ...updateAchievement, id: idAchievement };
+    console.log(requestData);
+    axios
+      .put(`https://go-event.online/achievements`, requestData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data && response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Update Success",
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setUpdateAchievement({});
+            setIsOpenAchievement(false);
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => {
+        fetchAllData();
+      });
+  };
+
+  const handleDeleteAchievement = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/achievements/${id}`, {
+            headers: {
+              Authorization: `Bearer ${checkToken}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete !!",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
+
   // Cost Handle
 
   // const handleSubmitCost: SubmitHandler<SchemaExtracurriculer> = (data) => {
@@ -364,8 +622,9 @@ const Admin: FC = () => {
 
   const handleSubmitFAQ = () => {
     setFaq((prevFaq) => ({ ...prevFaq, school_id: schoolData.id }));
+    const requestData = { ...faq, school_id: schoolId };
     axios
-      .post(`https://go-event.online/faqs`, faq, {
+      .post(`https://go-event.online/faqs`, requestData, {
         headers: {
           Authorization: `Bearer ${checkToken}`,
         },
@@ -390,11 +649,11 @@ const Admin: FC = () => {
       .finally(() => fetchAllData());
   };
 
-  const handleUpdateFAQ = (faqId: number) => {
-    console.log(faqId);
-    console.log(updateFAQ);
+  const handleUpdateFAQ = () => {
+    setUpdateFAQ((prevFaq) => ({ ...prevFaq, id: idFAQ }));
+    const requestData = { ...updateFAQ, id: idFAQ };
     axios
-      .put(`https://go-event.online/faqs`, updateFAQ, {
+      .put(`https://go-event.online/faqs`, requestData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${checkToken}`,
@@ -573,11 +832,11 @@ const Admin: FC = () => {
   };
 
   console.log(schoolData);
-  console.log(idExtracurricular);
+  // console.log(idExtracurricular);
 
   return (
     <>
-      {schoolData ? (
+      {!noData ? (
         <LayoutAdmin>
           <div>
             {/* Section 1 */}
@@ -679,7 +938,10 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="flex space-x-10">
-                <ButtonCancelDelete label="Delete School" />
+                <ButtonCancelDelete
+                  label="Delete School"
+                  onClick={() => deleteDataSchool()}
+                />
                 <ButtonSubmit
                   label="Edit School"
                   onClick={() =>
@@ -693,15 +955,45 @@ const Admin: FC = () => {
               <div className="grid grid-cols-2 gap-10">
                 <div className="flex flex-col gap-1">
                   <p>Start Time</p>
-                  <InputLightBlue type="datetime-local" />
+                  <InputLightBlue
+                    type="datetime-local"
+                    min={`${tomorrow && tomorrow.toISOString().slice(0, 16)}`}
+                    onChange={(event) =>
+                      setAddGmeet({
+                        ...addGmeet,
+                        start_time: event.target.value + ":00",
+                      })
+                    }
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <p>End Time</p>
-                  <InputLightBlue type="datetime-local" />
+                  <InputLightBlue
+                    type="datetime-local"
+                    min={`${tomorrow && tomorrow.toISOString().slice(0, 16)}`}
+                    onChange={(event) =>
+                      setAddGmeet({
+                        ...addGmeet,
+                        end_time: event.target.value + ":00",
+                      })
+                    }
+                  />
                 </div>
               </div>
               <div className="flex items-end justify-end">
-                <ButtonSubmit label="CREATE G-MEET" />
+                <ButtonSubmit
+                  label="CREATE G-MEET"
+                  onClick={() => handleAddGmeet()}
+                />
+              </div>
+              <div className="text-lg font-semibold flex gap-3">
+                link G-meet :{" "}
+                <button
+                  className="text-@orange"
+                  onClick={() => window.open(schoolData?.gmeet, "_blank")}
+                >
+                  <p>{schoolData?.gmeet}</p>
+                </button>
               </div>
             </div>
             {/* Section 4  extracurriculer*/}
@@ -748,53 +1040,45 @@ const Admin: FC = () => {
                 )}
               </div>
               <div className="flex flex-col gap-10">
-                <ButtonSubmit label="ADD ACHIEVEMENT" />
-                <div className="bg-@light-blue p-10 flex flex-col gap-10">
-                  <div className="flex  space-x-10">
-                    <img src="/math.png" alt="" className="h-32 w-auto" />
-                    <div className="w-full flex flex-col gap-4">
-                      <h1 className="text-2xl font-semibold">
-                        1’st Matematic Olympiade{" "}
-                      </h1>
-                      <p className="text-lg">
-                        The material tested or contested in the Mathematics
-                        Olympiad consists of several branches of mathematics,
-                        including; number theory, algebra, geometry and
-                        combinatorics.
-                      </p>
+                <ButtonSubmit
+                  label="ADD ACHIEVEMENT"
+                  onClick={() => setIsOpenAddAchievement(true)}
+                />
+                {Array.isArray(schoolData.achievements) ? (
+                  schoolData.achievements.map((e) => (
+                    <div
+                      className="bg-@light-blue p-10 flex flex-col gap-10"
+                      key={e.id}
+                    >
+                      <div className="flex space-x-10">
+                        <img
+                          src={`https://storage.googleapis.com/prj1ropel/${e.img}`}
+                          alt=""
+                          className="h-32 w-auto"
+                        />
+                        <div className="w-full flex flex-col gap-4">
+                          <h1 className="text-2xl font-semibold">{e.name}</h1>
+                          <p className="text-lg">{e.description}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-44">
+                        <ButtonCancelDelete
+                          label="Delete"
+                          onClick={() => handleDeleteAchievement(e.id)}
+                        />
+                        <ButtonSubmit
+                          label="Edit"
+                          onClick={() => {
+                            setIdAchievement(e.id);
+                            setIsOpenAchievement(true);
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="grid  grid-cols-2 gap-44">
-                    <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit
-                      label="Edit"
-                      onClick={() => setIsOpenAchievement(true)}
-                    />
-                  </div>
-                </div>
-                <div className="bg-@light-blue p-10 h-96 flex flex-col gap-10">
-                  <div className="flex  space-x-10">
-                    <img src="/math.png" alt="" className="h-32 w-auto" />
-                    <div className="w-full flex flex-col gap-4">
-                      <h1 className="text-2xl font-semibold">
-                        1’st Matematic Olympiade{" "}
-                      </h1>
-                      <p className="text-lg">
-                        The material tested or contested in the Mathematics
-                        Olympiad consists of several branches of mathematics,
-                        including; number theory, algebra, geometry and
-                        combinatorics.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid  grid-cols-2 gap-44">
-                    <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit
-                      label="Edit"
-                      onClick={() => setIsOpenAchievement(true)}
-                    />
-                  </div>
-                </div>
+                  ))
+                ) : (
+                  <p>No extracurricular data available</p>
+                )}
               </div>
             </div>
             {/* Secton 5 */}
@@ -1377,7 +1661,131 @@ const Admin: FC = () => {
             </Transition>
           </>
           <>
-            {/* modal achievement */}
+            {/* modal Add Achievement */}
+            <Transition appear show={isOpenAddAchievement} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenAddAchievement}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-black bg-opacity-25" />
+                </Transition.Child>
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 scale-95"
+                      enterTo="opacity-100 scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 scale-100"
+                      leaveTo="opacity-0 scale-95"
+                    >
+                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                        >
+                          Add Achievement
+                        </Dialog.Title>
+                        <form>
+                          <div className="mt-2 flex flex-col items-center justify-center">
+                            <div className="w-full flex flex-col items-center justify-center">
+                              <div className="w-full">
+                                <img
+                                  src={
+                                    addAchievement.image
+                                      ? URL.createObjectURL(
+                                          addAchievement.image
+                                        )
+                                      : "/photo.png"
+                                  }
+                                  alt="Achievement-image"
+                                  className="w-full h-auto border-1 border-black "
+                                />
+                              </div>
+                              <input
+                                placeholder=""
+                                id="upload-image"
+                                type="file"
+                                className="p-4"
+                                onChange={(event) => {
+                                  if (!event.currentTarget.files) {
+                                    return;
+                                  }
+                                  setAddAchievement({
+                                    ...addAchievement,
+                                    image: URL.createObjectURL(
+                                      event.currentTarget.files[0]
+                                    ),
+                                  });
+                                  handleChangeAchievement(
+                                    event.currentTarget.files[0],
+                                    "image"
+                                  );
+                                }}
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 my-5 w-full">
+                              <p>Title</p>
+                              <InputLightBlue
+                                type="text"
+                                onChange={(event) =>
+                                  setAddAchievement({
+                                    ...addAchievement,
+                                    title: event.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 my-5 w-full">
+                              <p>Description</p>
+                              <TextAreaLightBlue
+                                onChange={(event) =>
+                                  setAddAchievement({
+                                    ...addAchievement,
+                                    description: event.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                          <div className="mt-4 flex space-x-5 justify-end">
+                            <ButtonCancelDelete
+                              label="Cancel"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setIsOpenAddAchievement(false);
+                              }}
+                            />
+                            <ButtonSubmit
+                              label="Add"
+                              type="submit"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                handleAddAchievement();
+                              }}
+                            />
+                          </div>
+                        </form>
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
+          </>
+          <>
+            {/* modal Edit achievement */}
             <Transition appear show={isOpenAchievement} as={Fragment}>
               <Dialog
                 as="div"
@@ -1413,66 +1821,95 @@ const Admin: FC = () => {
                         >
                           Edit Achievement
                         </Dialog.Title>
-                        <div className="mt-2 flex flex-col items-center justify-center">
-                          <div className="w-full flex flex-col items-center justify-center">
-                            {image ? (
-                              <div>
-                                <img
-                                  src={URL.createObjectURL(image)}
-                                  alt="Selected"
-                                  className="h-auto w-96"
-                                />
-                              </div>
-                            ) : (
-                              <div>
-                                <img
-                                  src="/math.png"
-                                  alt="Default"
-                                  className="h-auto w-52"
-                                />
-                              </div>
-                            )}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setImage(file);
-                                }
-                              }}
-                              className="bg-@light-blue w-full p-5"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Title</p>
-                            <InputLightBlue
-                              type="text"
-                              defaultValue={"1’st Matematic Olympiade"}
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Description</p>
-                            <TextAreaLightBlue
-                              defaultValue={
-                                "The material tested or contested in the Mathematics Olympiad consists of several branches of mathematics, including; number theory, algebra, geometry and combinatorics."
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex space-x-5 justify-end">
-                          <ButtonCancelDelete
-                            label="Cancel"
-                            onClick={() => setIsOpenAchievement(false)}
-                          />
-                          <ButtonSubmit
-                            label="Update"
-                            onClick={() => {
-                              alert("update");
-                              setIsOpenAchievement(false);
-                            }}
-                          />
-                        </div>
+                        {Array.isArray(schoolData.achievements) ? (
+                          schoolData.achievements?.map((e) => (
+                            <div>
+                              {e.id === idAchievement ? (
+                                <div>
+                                  <div className="mt-2 flex flex-col items-center justify-center">
+                                    <div className="w-full">
+                                      <img
+                                        src={
+                                          updateAchievement.image
+                                            ? URL.createObjectURL(
+                                                updateAchievement.image
+                                              )
+                                            : `https://storage.googleapis.com/prj1ropel/${e.img}`
+                                        }
+                                        alt="user-avatar"
+                                        className="w-full h-auto border-1 border-black "
+                                      />
+                                    </div>
+                                    <input
+                                      placeholder=""
+                                      id="upload-image"
+                                      type="file"
+                                      className="bg-@light-blue w-full p-5"
+                                      onChange={(event) => {
+                                        if (!event.currentTarget.files) {
+                                          return;
+                                        }
+                                        setUpdateAchievement({
+                                          ...updateAchievement,
+                                          image: URL.createObjectURL(
+                                            event.currentTarget.files[0]
+                                          ),
+                                        });
+                                        handleChangeUpdateAchievement(
+                                          event.currentTarget.files[0],
+                                          "image"
+                                        );
+                                      }}
+                                    />
+                                    <div className="flex flex-col gap-1 my-5 w-full">
+                                      <p>Title</p>
+                                      <InputLightBlue
+                                        type="text"
+                                        defaultValue={e.name}
+                                        onChange={(event) =>
+                                          setUpdateAchievement({
+                                            ...updateAchievement,
+                                            name: event.target.value,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                    <div className="flex flex-col gap-1 my-5 w-full">
+                                      <p>Description</p>
+                                      <TextAreaLightBlue
+                                        defaultValue={e.description}
+                                        onChange={(event) =>
+                                          setUpdateAchievement({
+                                            ...updateAchievement,
+                                            description: event.target.value,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="mt-4 flex space-x-5 justify-end">
+                                    <ButtonCancelDelete
+                                      label="Cancel"
+                                      onClick={() =>
+                                        setIsOpenAchievement(false)
+                                      }
+                                    />
+                                    <ButtonSubmit
+                                      label="Update"
+                                      onClick={() => {
+                                        handleUpdateAchievement();
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <></>
+                        )}
                       </Dialog.Panel>
                     </Transition.Child>
                   </div>
@@ -1659,7 +2096,7 @@ const Admin: FC = () => {
                                   <ButtonSubmit
                                     label="Update"
                                     onClick={() => {
-                                      handleUpdateFAQ(e.id);
+                                      handleUpdateFAQ();
                                     }}
                                   />
                                 </div>
