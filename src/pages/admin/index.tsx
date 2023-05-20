@@ -15,6 +15,9 @@ import { Listbox, Transition, Dialog } from "@headlessui/react";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { ProgressBar } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -29,19 +32,11 @@ import { CardAddQuiz, CardCost } from "../../components/Card";
 import { AccordionFAQ } from "../../components/Accordion";
 
 const interval = [
-  { interval: "Onetime Payment" },
-  { interval: "Every 1 Month" },
-  { interval: "Every 3 Month" },
-  { interval: "Every 6 Month" },
+  { interval: 0, name: "One time payment" },
+  { interval: 1, name: "Every 1 month" },
+  { interval: 3, name: "Every 3 month" },
+  { interval: 6, name: "Every 6 month" },
 ];
-
-// interface CostDataType {
-//   id: number;
-//   image: any;
-//   description: string;
-//   price: number;
-//   interval: string;
-// }
 
 interface GmeetDataType {
   start_time: string;
@@ -88,6 +83,22 @@ interface FAQUpdateDataType {
   answer: string;
 }
 
+interface AddCostDataType {
+  school_id: number;
+  description: string;
+  price: number;
+  image: any;
+  interval: number;
+}
+
+interface CostDataType {
+  id: number;
+  description: string;
+  price: number;
+  image: any;
+  interval: string;
+}
+
 interface QuizDataType {
   school_id: number;
   question?: string;
@@ -111,9 +122,9 @@ interface SchoolDataType {
   image: any;
   name: string;
   npsn: string;
-  payment: {
-    interval: string | null; // belum ketahuan data aslinya jika ditambahkan
-    onetime: string | null; // belum ketahuan data aslinya jika ditambahkan
+  payments: {
+    interval: string | number | null; // belum ketahuan data aslinya jika ditambahkan
+    onetime: string | number | null; // belum ketahuan data aslinya jika ditambahkan
   };
   pdf: any;
   province: string;
@@ -149,10 +160,11 @@ const Admin: FC = () => {
   const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
   const [isOpenAchievement, setIsOpenAchievement] = useState(false);
   const [isOpenPayment, setIsOpenPayment] = useState(false);
+  const [isOpenIntervalPayment, setisOpenIntervalPayment] =
+    useState<boolean>(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
   const [isOpenQuiz, setIsOpenQuiz] = useState(false);
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
   const [schoolId, setSchoolId] = useState<number>();
   const [addGmeet, setAddGmeet] = useState<Partial<GmeetDataType>>({});
   const [addExtracurricural, setAddExtracurricular] = useState<
@@ -174,6 +186,9 @@ const Admin: FC = () => {
   const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQUpdateDataType>>({
     id: idFAQ,
   });
+  const [addCost, setAddCost] = useState<Partial<AddCostDataType>>({});
+  const [idCost, setIdCost] = useState<number>();
+  const [updateCost, setUpdateCost] = useState<Partial<CostDataType>>({});
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
     school_id: schoolId || 0,
     question: "",
@@ -195,10 +210,30 @@ const Admin: FC = () => {
   const checkToken = cookie.tkn;
   const navigate = useNavigate();
 
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
   useEffect(() => {
     fetchAllData();
     minTomorrow();
+    generatePreview();
   }, []);
+
+  const viewPdf = "/sampel.pdf";
+  const [pdfFile, setPdfFile] = useState<string | null>("");
+
+  const generatePreview = () => {
+    if (viewPdf) {
+      if (typeof viewPdf[0] === "string") {
+        setPdfFile(viewPdf[0]);
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPdfFile(reader.result as string);
+        };
+        reader.readAsDataURL(viewPdf[0]);
+      }
+    }
+  };
 
   const minTomorrow = () => {
     const tomorrow = new Date();
@@ -223,6 +258,8 @@ const Admin: FC = () => {
         setNoData(true);
       });
   };
+
+  console.log(schoolData.payments);
 
   const deleteDataSchool = () => {
     console.log(schoolId);
@@ -606,9 +643,155 @@ const Admin: FC = () => {
 
   // Cost Handle
 
-  // const handleSubmitCost: SubmitHandler<SchemaExtracurriculer> = (data) => {
-  //   console.log(data);
-  // };
+  const handleChangeCost = (
+    value: string | File | number | null,
+    key: keyof typeof addCost
+  ) => {
+    const temp = { ...addCost };
+    if (value === null) {
+      temp[key] = null;
+    } else {
+      temp[key] = value;
+    }
+    setAddCost(temp);
+  };
+
+  const handleChangeUpdateCost = (
+    value: string | File,
+    key: keyof typeof updateCost
+  ) => {
+    const temp = { ...updateCost };
+    temp[key] = value;
+    setUpdateCost(temp);
+  };
+
+  const handleAddCost = () => {
+    setAddCost((prevCost) => ({
+      ...prevCost,
+      interval: selected.interval,
+      school_id: schoolId,
+    }));
+    const requestData = {
+      ...addCost,
+      interval: selected.interval,
+      school_id: schoolId,
+    };
+    console.log(requestData);
+
+    axios
+      .post(`https://go-event.online/payments`, requestData, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Add Cost Success!!",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setAddCost({});
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchAllData());
+  };
+
+  const handleUpdateCost = () => {
+    setUpdateCost((prevUpdateCost) => ({
+      ...prevUpdateCost,
+      id: idCost,
+    }));
+    const requestData = { ...updateCost, id: idCost };
+    console.log(requestData);
+    axios
+      .put(`https://go-event.online/payments`, requestData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data && response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Update Success",
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setUpdateCost({});
+            setIsOpenPayment(false);
+            setisOpenIntervalPayment;
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => {
+        fetchAllData();
+      });
+  };
+
+  const handleDeleteCost = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete ?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/payments/${id}`, {
+            headers: {
+              Authorization: `Bearer ${checkToken}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete !!",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
 
   // FAQ Handle
 
@@ -1003,7 +1186,7 @@ const Admin: FC = () => {
                     >
                       <div className="flex space-x-10">
                         <img
-                          src={`https://storage.googleapis.com/prj1ropel/${e.img}`}
+                          src={`https://storage.googleapis.com/prj1ropel/${e.image}`}
                           alt=""
                           className="h-32 w-auto"
                         />
@@ -1044,7 +1227,7 @@ const Admin: FC = () => {
                     >
                       <div className="flex space-x-10">
                         <img
-                          src={`https://storage.googleapis.com/prj1ropel/${e.img}`}
+                          src={`https://storage.googleapis.com/prj1ropel/${e.image}`}
                           alt=""
                           className="h-32 w-auto"
                         />
@@ -1078,20 +1261,59 @@ const Admin: FC = () => {
               <div className="grid grid-cols-3 gap-20">
                 <div className="bg-@light-blue">
                   <div className=" p-10">
-                    <img src="/school.png" alt="" />
+                    <img
+                      src={
+                        addCost.image
+                          ? URL.createObjectURL(addCost.image)
+                          : "/photo.png"
+                      }
+                      alt="cost-image"
+                      className="w-full h-auto border-1 border-black "
+                    />
                   </div>
-                  <div className="bg-cyan-100 p-5">
-                    <p>Choose File</p>
-                  </div>
+                  <input
+                    placeholder=""
+                    id="upload-image"
+                    type="file"
+                    className="p-4"
+                    onChange={(event) => {
+                      if (!event.currentTarget.files) {
+                        return;
+                      }
+                      setAddCost({
+                        ...addCost,
+                        image: URL.createObjectURL(
+                          event.currentTarget.files[0]
+                        ),
+                      });
+                      handleChangeCost(event.currentTarget.files[0], "image");
+                    }}
+                  />
                 </div>
                 <div className="flex flex-col gap-10">
                   <div className="flex flex-col gap-1">
                     <p>Cost Description</p>
-                    <InputLightBlue type="text" />
+                    <InputLightBlue
+                      type="text"
+                      onChange={(event) =>
+                        setAddCost({
+                          ...addCost,
+                          description: event.target.value,
+                        })
+                      }
+                    />
                   </div>
                   <div className="flex flex-col gap-1">
                     <p>Price</p>
-                    <InputLightBlue type="number" />
+                    <InputLightBlue
+                      type="number"
+                      onChange={(event) =>
+                        setAddCost({
+                          ...addCost,
+                          price: Number(event.target.value),
+                        })
+                      }
+                    />
                   </div>
                 </div>
                 <div>
@@ -1102,7 +1324,7 @@ const Admin: FC = () => {
                         <div className="relative">
                           <Listbox.Button className="relative w-full cursor-default bg-@light-blue h-16 pl-3 text-left focus:outline-none text-lg text-@dark ">
                             <span className="block truncate">
-                              {selected.interval}
+                              {selected.name}
                             </span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                               <TbArrowsMoveVertical
@@ -1139,7 +1361,7 @@ const Admin: FC = () => {
                                             : "font-normal"
                                         }`}
                                       >
-                                        {interval.interval}
+                                        {interval.name}
                                       </span>
                                       {selected ? (
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-@orange">
@@ -1162,7 +1384,10 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="flex justify-end">
-                <ButtonSubmit label="Add Cost" />
+                <ButtonSubmit
+                  label="Add Cost"
+                  onClick={() => handleAddCost()}
+                />
               </div>
             </div>
             <div className="bg-gray-200 p-20">
@@ -1171,48 +1396,32 @@ const Admin: FC = () => {
                   <h1 className="text-lg font-bold">ONETIME PAYMENT</h1>
                 </div>
                 <div className="grid grid-cols-5 gap-20">
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/registration.png"}
-                      title={"Her Registration"}
-                      price={1000000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/school.png"}
-                      title={"Building"}
-                      price={2000000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"books.png"}
-                      title={"Books"}
-                      price={2000000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
+                  {Array.isArray(schoolData.payments?.onetime) ? (
+                    schoolData.payments?.onetime.map((e: CostDataType) => (
+                      <div className="flex flex-col gap-5">
+                        <CardCost
+                          image={`https://storage.googleapis.com/prj1ropel/${e.image}`}
+                          title={e.description}
+                          price={e.price}
+                        />
+                        <div className="flex flex-col gap-5 bg-gray-200">
+                          <ButtonSubmit
+                            label="Edit"
+                            onClick={() => {
+                              setIdCost(e.id);
+                              setIsOpenPayment(true);
+                            }}
+                          />
+                          <ButtonCancelDelete
+                            label="Delete"
+                            onClick={() => handleDeleteCost(e.id)}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No one time Cost data available</p>
+                  )}
                 </div>
               </div>
               <div>
@@ -1220,34 +1429,32 @@ const Admin: FC = () => {
                   <h1 className="text-lg font-bold">INTERVAL PAYMENT</h1>
                 </div>
                 <div className="grid grid-cols-5 gap-20">
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/spp.png"}
-                      title={"SPP/1 Month"}
-                      price={500000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/cleaning.png"}
-                      title={"Cleaning/3 Month"}
-                      price={100000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
+                  {Array.isArray(schoolData.payments?.interval) ? (
+                    schoolData.payments?.interval.map((e: CostDataType) => (
+                      <div className="flex flex-col gap-5">
+                        <CardCost
+                          image={`https://storage.googleapis.com/prj1ropel/${e.image}`}
+                          title={e.interval}
+                          price={e.price}
+                        />
+                        <div className="flex flex-col gap-5 bg-gray-200">
+                          <ButtonSubmit
+                            label="Edit"
+                            onClick={() => {
+                              setIdCost(e.id);
+                              setisOpenIntervalPayment(true);
+                            }}
+                          />
+                          <ButtonCancelDelete
+                            label="Delete"
+                            onClick={() => handleDeleteCost(e.id)}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No Interval time Cost data available</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -1371,7 +1578,12 @@ const Admin: FC = () => {
                   label="Reset Data"
                   onClick={() => window.location.reload()}
                 />
-                <ButtonSubmit label="View Quiz" />
+                <ButtonSubmit
+                  label="View Quiz"
+                  onClick={() =>
+                    window.open(schoolData.quizLinkPreview, "_blank")
+                  }
+                />
                 <ButtonSubmit
                   label="Submit"
                   onClick={() => setIsOpenDisclaimer(true)}
@@ -1569,7 +1781,7 @@ const Admin: FC = () => {
                                             ? URL.createObjectURL(
                                                 updateExtracurricular.image
                                               )
-                                            : `https://storage.googleapis.com/prj1ropel/${e.img}`
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
                                         }
                                         alt="user-avatar"
                                         className="w-full h-auto border-1 border-black "
@@ -1826,7 +2038,7 @@ const Admin: FC = () => {
                                             ? URL.createObjectURL(
                                                 updateAchievement.image
                                               )
-                                            : `https://storage.googleapis.com/prj1ropel/${e.img}`
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
                                         }
                                         alt="user-avatar"
                                         className="w-full h-auto border-1 border-black "
@@ -1910,7 +2122,7 @@ const Admin: FC = () => {
             </Transition>
           </>
           <>
-            {/* modal payment */}
+            {/* modal Edit ontime payment */}
             <Transition appear show={isOpenPayment} as={Fragment}>
               <Dialog
                 as="div"
@@ -1944,67 +2156,230 @@ const Admin: FC = () => {
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
                         >
-                          Edit Achievement
+                          Edit One Time Cost
                         </Dialog.Title>
-                        <div className="mt-2 flex flex-col items-center justify-center">
-                          <div className="w-full flex flex-col items-center justify-center">
-                            {image ? (
+                        {Array.isArray(schoolData.payments?.onetime) ? (
+                          schoolData.payments?.onetime.map((e) =>
+                            e.id === idCost ? (
                               <div>
-                                <img
-                                  src={URL.createObjectURL(image)}
-                                  alt="Selected"
-                                  className="h-auto w-96"
-                                />
+                                <div className="mt-2 flex flex-col items-center justify-center">
+                                  <div className="w-full flex flex-col items-center justify-center">
+                                    <div className="w-full">
+                                      <img
+                                        src={
+                                          updateCost.image
+                                            ? URL.createObjectURL(
+                                                updateCost.image
+                                              )
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
+                                        }
+                                        alt="user-avatar"
+                                        className="w-full h-auto border-1 border-black "
+                                      />
+                                      <input
+                                        placeholder=""
+                                        id="upload-image"
+                                        type="file"
+                                        className="bg-@light-blue w-full p-5"
+                                        onChange={(event) => {
+                                          if (!event.currentTarget.files) {
+                                            return;
+                                          }
+                                          setUpdateCost({
+                                            ...updateCost,
+                                            image: URL.createObjectURL(
+                                              event.currentTarget.files[0]
+                                            ),
+                                          });
+                                          handleChangeUpdateCost(
+                                            event.currentTarget.files[0],
+                                            "image"
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Title</p>
+                                    <InputLightBlue
+                                      type="text"
+                                      defaultValue={e.description}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          description: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Price</p>
+                                    <InputLightBlue
+                                      type="number"
+                                      defaultValue={e.price}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          price: Number(event.target.value),
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="mt-4 flex space-x-5 justify-end">
+                                  <ButtonCancelDelete
+                                    label="Cancel"
+                                    onClick={() => setIsOpenPayment(false)}
+                                  />
+                                  <ButtonSubmit
+                                    label="Update"
+                                    onClick={() => {
+                                      handleUpdateCost();
+                                    }}
+                                  />
+                                </div>
                               </div>
                             ) : (
+                              <></>
+                            )
+                          )
+                        ) : (
+                          <></>
+                        )}
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
+          </>
+          <>
+            {/* modal Edit interval payment */}
+            <Transition appear show={isOpenIntervalPayment} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenIntervalPayment}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-black bg-opacity-25" />
+                </Transition.Child>
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 scale-95"
+                      enterTo="opacity-100 scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 scale-100"
+                      leaveTo="opacity-0 scale-95"
+                    >
+                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                        >
+                          Edit Interval Time Cost
+                        </Dialog.Title>
+                        {Array.isArray(schoolData.payments?.interval) ? (
+                          schoolData.payments?.interval.map((e) =>
+                            e.id === idCost ? (
                               <div>
-                                <img
-                                  src="/spp.png"
-                                  alt="Default"
-                                  className="h-auto w-52"
-                                />
+                                <div className="mt-2 flex flex-col items-center justify-center">
+                                  <div className="w-full flex flex-col items-center justify-center">
+                                    <div className="w-full">
+                                      <img
+                                        src={
+                                          updateCost.image
+                                            ? URL.createObjectURL(
+                                                updateCost.image
+                                              )
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
+                                        }
+                                        alt="user-avatar"
+                                        className="w-full h-auto border-1 border-black "
+                                      />
+                                      <input
+                                        placeholder=""
+                                        id="upload-image"
+                                        type="file"
+                                        className="bg-@light-blue w-full p-5"
+                                        onChange={(event) => {
+                                          if (!event.currentTarget.files) {
+                                            return;
+                                          }
+                                          setUpdateCost({
+                                            ...updateCost,
+                                            image: URL.createObjectURL(
+                                              event.currentTarget.files[0]
+                                            ),
+                                          });
+                                          handleChangeUpdateCost(
+                                            event.currentTarget.files[0],
+                                            "image"
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Title</p>
+                                    <InputLightBlue
+                                      type="text"
+                                      defaultValue={e.description}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          description: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Price</p>
+                                    <InputLightBlue
+                                      type="number"
+                                      defaultValue={e.price}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          price: Number(event.target.value),
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="mt-4 flex space-x-5 justify-end">
+                                  <ButtonCancelDelete
+                                    label="Cancel"
+                                    onClick={() =>
+                                      setisOpenIntervalPayment(false)
+                                    }
+                                  />
+                                  <ButtonSubmit
+                                    label="Update"
+                                    onClick={() => {
+                                      handleUpdateCost();
+                                    }}
+                                  />
+                                </div>
                               </div>
-                            )}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setImage(file);
-                                }
-                              }}
-                              className="bg-@light-blue w-full p-5"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Title</p>
-                            <InputLightBlue
-                              type="text"
-                              defaultValue={"SPP/1 Month"}
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Price</p>
-                            <InputLightBlue
-                              type="number"
-                              defaultValue={500000}
-                            />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex space-x-5 justify-end">
-                          <ButtonCancelDelete
-                            label="Cancel"
-                            onClick={() => setIsOpenPayment(false)}
-                          />
-                          <ButtonSubmit
-                            label="Update"
-                            onClick={() => {
-                              alert("update");
-                              setIsOpenPayment(false);
-                            }}
-                          />
-                        </div>
+                            ) : (
+                              <></>
+                            )
+                          )
+                        ) : (
+                          <></>
+                        )}
                       </Dialog.Panel>
                     </Transition.Child>
                   </div>
@@ -2334,9 +2709,24 @@ const Admin: FC = () => {
                           >
                             View Brochure
                           </Dialog.Title>
-                          <Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js">
-                            <Viewer fileUrl={"/sampel.pdf"} />
-                          </Worker>
+                          {pdfFile && (
+                            <div className="h-[500px]">
+                              <h3>PDF Preview:</h3>
+                              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                                <Viewer
+                                  fileUrl={pdfFile}
+                                  plugins={[defaultLayoutPluginInstance]}
+                                  renderLoader={(percentages: number) => (
+                                    <div>
+                                      <ProgressBar
+                                        progress={Math.round(percentages)}
+                                      />
+                                    </div>
+                                  )}
+                                />
+                              </Worker>
+                            </div>
+                          )}
                           <ButtonCancelDelete
                             label="close"
                             onClick={() => setIsOpen(false)}
