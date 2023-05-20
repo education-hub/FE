@@ -124,8 +124,6 @@ const EditSchool: FC = () => {
   const [video, setVideo] = useState("");
   const [src, setSrc] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [numPages, setNumPages] = useState<number | null>(null);
-  const [pageNumber] = useState(1);
   const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
@@ -154,6 +152,8 @@ const EditSchool: FC = () => {
     resolver: zodResolver(schema),
     mode: "onChange",
   });
+
+  console.log(pdfFile);
 
   const fetchProvince = () => {
     axios
@@ -205,10 +205,6 @@ const EditSchool: FC = () => {
     event.preventDefault();
     setSrc(video);
     console.log(src);
-  };
-
-  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
-    setNumPages(numPages);
   };
 
   const handlePdfInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
