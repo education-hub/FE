@@ -23,14 +23,36 @@ import ForgetPassword from "../pages/auth/ForgetPassword";
 import NewPassword from "../pages/auth/NewPassword";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import { useEffect, useState } from "react";
 
 axios.defaults.baseURL =
   "https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0";
 const Router = () => {
+  const [noData, setNoData] = useState<boolean>(true);
   const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
   const checkRole = cookie.role;
   console.log(checkToken, checkRole);
+
+  useEffect(() => {
+    fetchDataSchool();
+  }, []);
+
+  const fetchDataSchool = () => {
+    axios
+      .get(`https://go-event.online/admin/school`, {
+        headers: {
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
+      .then(() => {
+        setNoData(false);
+      })
+      .catch(() => {
+        setNoData(true);
+      });
+  };
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -39,11 +61,11 @@ const Router = () => {
 
     {
       path: "/login",
-      element: <Login />,
+      element: checkToken ? <Home /> : <Login />,
     },
     {
       path: "/register",
-      element: <Register />,
+      element: checkToken ? <Home /> : <Register />,
     },
     {
       path: "/pwd-reset",
@@ -174,7 +196,11 @@ const Router = () => {
     {
       path: "/admin/add-school",
       element:
-        checkToken && checkRole === "administrator" ? <AddSchool /> : <Home />,
+        checkToken && checkRole === "administrator" && noData ? (
+          <AddSchool />
+        ) : (
+          <Home />
+        ),
     },
     {
       path: "/admin/admission",

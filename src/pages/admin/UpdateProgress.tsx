@@ -1,11 +1,12 @@
 import { FC, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
+import axios from "axios";
+
+import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { LayoutAdmin } from "../../components/Layout";
 import { RadioLightBlue } from "../../components/Input";
-import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { useCookies } from "react-cookie";
-import { useParams } from "react-router-dom";
 
 interface objAddType {
   progress_status: string;
@@ -25,6 +26,8 @@ const UpdateProgress: FC = () => {
   const params = useParams();
   const { id } = params;
 
+  document.title = "Update Progress | Admin Management";
+
   console.log(selectedStep, status);
   console.log(checkToken);
   console.log(student);
@@ -35,7 +38,6 @@ const UpdateProgress: FC = () => {
 
   const fetchData = () => {
     setLoading(true);
-    // https://go-event.online
     axios
       .get(`https://go-event.online/admin/school/progress/${id}`, {
         headers: {
@@ -61,7 +63,6 @@ const UpdateProgress: FC = () => {
   };
 
   const updateStatus = () => {
-    // https://go-event.online
     axios
       .put(`https://go-event.online/admin/school/progress/${id}`, objAdd, {
         headers: {

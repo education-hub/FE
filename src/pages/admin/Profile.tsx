@@ -6,35 +6,29 @@ import {
   FormEvent,
   MouseEvent,
 } from "react";
-import { LayoutAdmin } from "../../components/Layout";
-import { BsFacebook, BsTwitter, BsInstagram } from "react-icons/bs";
-import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { Transition, Dialog } from "@headlessui/react";
-import { InputLightBlue, TextAreaLightBlue } from "../../components/Input";
-import { useCookies } from "react-cookie";
-import axios from "axios";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
+import axios from "axios";
 
-interface user {
-  username: string;
-  fname: string;
-  sname: string;
-  email: string;
-  password: string;
-  address: string;
-  image: any;
-}
+import { InputLightBlue, TextAreaLightBlue } from "../../components/Input";
+import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
+import { BsFacebook, BsTwitter, BsInstagram } from "react-icons/bs";
+import { LayoutAdmin } from "../../components/Layout";
+import { user } from "../../utils/user";
 
 const AdminProfile: FC = () => {
+  const [objSubmit, setObjSubmit] = useState<Partial<user>>({});
   const [user, setUser] = useState<Partial<user>>({});
+  const [isOpen, setIsOpen] = useState(false);
 
   const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  // const [image, setImage] = useState<File | null>(null);
-  const [objSubmit, setObjSubmit] = useState<Partial<user>>({});
   const checkToken = cookie.tkn;
+
+  document.title = "Profile | Admin Management";
+
+  const navigate = useNavigate();
 
   const closeModal = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -64,7 +58,7 @@ const AdminProfile: FC = () => {
         const { message } = error.response.data;
         Swal.fire({
           icon: "error",
-          title: "Success",
+          title: "Failed",
           text: message,
           showCancelButton: false,
         });

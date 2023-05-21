@@ -1,35 +1,48 @@
-import { Fragment, FC, useEffect, useState, MouseEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { LayoutAdmin } from "../../components/Layout";
-import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
-import { VideoBackground } from "../../components/videoBackground";
-import { NavbarIndexAdmin } from "../../components/Navbar";
-import { Footer } from "../../components/Footer";
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   TbWorldWww,
   TbMapPin,
   TbArrowsMoveVertical,
   TbCheck,
 } from "react-icons/tb";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { Fragment, FC, useEffect, useState, MouseEvent } from "react";
 import { Listbox, Transition, Dialog } from "@headlessui/react";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import { ProgressBar } from "@react-pdf-viewer/core";
+import { Link, useNavigate } from "react-router-dom";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import { ProgressBar } from "@react-pdf-viewer/core";
-import "@react-pdf-viewer/default-layout/lib/styles/index.css";
-
-import axios from "axios";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 import {
   InputLightBlue,
   InputWhite,
   TextAreaLightBlue,
 } from "../../components/Input";
+import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
+import { VideoBackground } from "../../components/videoBackground";
 import { CardAddQuiz, CardCost } from "../../components/Card";
+import { NavbarIndexAdmin } from "../../components/Navbar";
 import { AccordionFAQ } from "../../components/Accordion";
+import { LayoutAdmin } from "../../components/Layout";
+import { Footer } from "../../components/Footer";
+import {
+  GmeetDataType,
+  ExtracurricularDataType,
+  UpdateExtracurricularDataType,
+  AchievementDataType,
+  UpdateAchievementDataType,
+  FAQDataType,
+  DetailSchoolDataType,
+  FAQUpdateDataType,
+  AddCostDataType,
+  CostDataType,
+  QuizDataType,
+} from "../../utils/user";
 
 const interval = [
   { interval: 0, name: "One time payment" },
@@ -38,157 +51,11 @@ const interval = [
   { interval: 6, name: "Every 6 month" },
 ];
 
-interface GmeetDataType {
-  start_time: string;
-  end_time: string;
-  school_id: number;
-}
-
-interface ExtracurricularDataType {
-  school_id: number;
-  image: any;
-  title: string;
-  description: string;
-}
-
-interface UpdateExtracurricularDataType {
-  id: number;
-  image: any;
-  name: string;
-  description: string;
-}
-
-interface AchievementDataType {
-  school_id: number;
-  image: any;
-  title: string;
-  description: string;
-}
-
-interface UpdateAchievementDataType {
-  id: number;
-  image: any;
-  name: string;
-  description: string;
-}
-
-interface FAQDataType {
-  school_id: number;
-  question: string;
-  answer: string;
-}
-interface FAQUpdateDataType {
-  id: number;
-  question: string;
-  answer: string;
-}
-
-interface AddCostDataType {
-  school_id: number;
-  description: string;
-  price: number;
-  image: any;
-  interval: number;
-}
-
-interface CostDataType {
-  id: number;
-  description: string;
-  price: number;
-  image: any;
-  interval: string;
-}
-
-interface QuizDataType {
-  school_id: number;
-  question?: string;
-  option1?: string;
-  option2?: string;
-  option3?: string;
-  option4?: string;
-  answer?: number;
-}
-
-interface SchoolDataType {
-  accreditation: string;
-  achievements: string | null; // belum ketahuan data aslinya jika ditambahkan
-  city: string;
-  description: string;
-  detail: string;
-  district: string;
-  extracurriculars: string | null; // belum ketahuan data aslinya jika ditambahkan
-  gmeet: string;
-  id: number;
-  image: any;
-  name: string;
-  npsn: string;
-  payments: {
-    interval: string | number | null; // belum ketahuan data aslinya jika ditambahkan
-    onetime: string | number | null; // belum ketahuan data aslinya jika ditambahkan
-  };
-  pdf: any;
-  province: string;
-  quizLinkPreview: string;
-  quizLinkPub: string;
-  reviews: string | null; // belum ketahuan data aslinya jika ditambahkan
-  staff: string;
-  students: string;
-  teachers: string;
-  video: string;
-  village: string;
-  web: string;
-  zipcode: string;
-  faqs: [
-    {
-      id: number;
-      question: string;
-      answer: string;
-    }
-  ];
-}
-
 const Admin: FC = () => {
-  const [noData, setNoData] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [tomorrow, setTomorrow] = useState<Date>();
-  const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
-  const [selected, setSelected] = useState(interval[0]);
-  const [isOpenAddExtracurricular, setIsOpenAddExtracurricular] =
-    useState<boolean>(false);
-  const [isOpenAddAchievement, setIsOpenAddAchievement] =
-    useState<boolean>(false);
-  const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
-  const [isOpenAchievement, setIsOpenAchievement] = useState(false);
-  const [isOpenPayment, setIsOpenPayment] = useState(false);
-  const [isOpenIntervalPayment, setisOpenIntervalPayment] =
-    useState<boolean>(false);
-  const [isOpenFAQ, setIsOpenFAQ] = useState(false);
-  const [isOpenQuiz, setIsOpenQuiz] = useState(false);
-  const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
-  const [schoolId, setSchoolId] = useState<number>();
-  const [addGmeet, setAddGmeet] = useState<Partial<GmeetDataType>>({});
-  const [addExtracurricural, setAddExtracurricular] = useState<
-    Partial<ExtracurricularDataType>
-  >({});
   const [idExtracurricular, setIdExtracurricular] = useState<number>();
-  const [updateExtracurricular, setUpdateExtracurricular] = useState<
-    Partial<UpdateExtracurricularDataType>
-  >({});
-  const [addAchievement, setAddAchievement] = useState<
-    Partial<AchievementDataType>
-  >({});
-  const [updateAchievement, setUpdateAchievement] = useState<
-    Partial<UpdateAchievementDataType>
-  >({});
-  const [idAchievement, setIdAchievement] = useState<number>();
-  const [faq, setFaq] = useState<Partial<FAQDataType>>({});
-  const [idFAQ, setIdFAQ] = useState<number>();
-  const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQUpdateDataType>>({
-    id: idFAQ,
-  });
-  const [addCost, setAddCost] = useState<Partial<AddCostDataType>>({});
+  const [schoolId, setSchoolId] = useState<number>();
   const [idCost, setIdCost] = useState<number>();
-  const [updateCost, setUpdateCost] = useState<Partial<CostDataType>>({});
+  const [idFAQ, setIdFAQ] = useState<number>();
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
     school_id: schoolId || 0,
     question: "",
@@ -198,80 +65,64 @@ const Admin: FC = () => {
     option4: "",
     answer: 0,
   });
+  const [updateExtracurricular, setUpdateExtracurricular] = useState<
+    Partial<UpdateExtracurricularDataType>
+  >({});
+  const [updateAchievement, setUpdateAchievement] = useState<
+    Partial<UpdateAchievementDataType>
+  >({});
+  const [addExtracurricural, setAddExtracurricular] = useState<
+    Partial<ExtracurricularDataType>
+  >({});
+  const [isOpenAddExtracurricular, setIsOpenAddExtracurricular] =
+    useState<boolean>(false);
+  const [addAchievement, setAddAchievement] = useState<
+    Partial<AchievementDataType>
+  >({});
+  const [isOpenIntervalPayment, setisOpenIntervalPayment] =
+    useState<boolean>(false);
+  const [isOpenAddAchievement, setIsOpenAddAchievement] =
+    useState<boolean>(false);
+  const [schoolData, setSchoolData] = useState<Partial<DetailSchoolDataType>>(
+    {}
+  );
+  const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQUpdateDataType>>({});
+  const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
+  const [updateCost, setUpdateCost] = useState<Partial<CostDataType>>({});
+  const [addGmeet, setAddGmeet] = useState<Partial<GmeetDataType>>({});
+  const [addCost, setAddCost] = useState<Partial<AddCostDataType>>({});
   const [updatedQuestion, setUpdatedQuestion] = useState<string>("");
+  const [isOpenAchievement, setIsOpenAchievement] = useState(false);
   const [updatedOption1, setUpdatedOption1] = useState<string>("");
   const [updatedOption2, setUpdatedOption2] = useState<string>("");
   const [updatedOption3, setUpdatedOption3] = useState<string>("");
   const [updatedOption4, setUpdatedOption4] = useState<string>("");
-  const [updatedAnswer, setUpdatedAnswer] = useState<number>();
-  const [quiz, setQuiz] = useState<QuizDataType[]>([]);
   const [addQuiz, setAddQuiz] = useState<Partial<QuizDataType>>({});
+  const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
+  const [idAchievement, setIdAchievement] = useState<number>();
+  const [updatedAnswer, setUpdatedAnswer] = useState<number>();
+  const [isOpenPayment, setIsOpenPayment] = useState(false);
+  const [faq, setFaq] = useState<Partial<FAQDataType>>({});
+  const [selected, setSelected] = useState(interval[0]);
+  const [noData, setNoData] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [quiz, setQuiz] = useState<QuizDataType[]>([]);
+  const [isOpenQuiz, setIsOpenQuiz] = useState(false);
+  const [isOpenFAQ, setIsOpenFAQ] = useState(false);
+  const [tomorrow, setTomorrow] = useState<Date>();
+
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
   const navigate = useNavigate();
+
+  document.title = "Detail School | Admin Management";
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   useEffect(() => {
     fetchAllData();
     minTomorrow();
-    // generatePreview();
   }, []);
-
-  const viewPdf = `https://storage.googleapis.com/prj1ropel/${schoolData.pdf}`;
-
-  const [pdfFile, setPdfFile] = useState<string | null>(null);
-
-  console.log(pdfFile);
-
-  // const generatePreview = () => {
-  //   if (viewPdf) {
-  //     if (typeof viewPdf === "string") {
-  //       setPdfFile(viewPdf);
-  //     } else {
-  //       fetch(viewPdf)
-  //         .then((response) => response.blob())
-  //         .then((blob) => {
-  //           const reader = new FileReader();
-  //           reader.onloadend = () => {
-  //             setPdfFile(reader.result as string);
-  //           };
-  //           reader.readAsDataURL(blob);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error generating PDF preview:", error);
-  //           // Handle any errors that occurred during PDF generation
-  //         });
-  //     }
-  //   }
-  // };
-
-  const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = event.target.files;
-
-    if (files && files.length > 0) {
-      const file = files[0]; // Get the first selected file
-
-      if (file.type === "application/pdf") {
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-          const pdfDataUrl = reader.result as string;
-          setPdfFile(pdfDataUrl);
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        // Invalid file type
-        setPdfFile(null);
-      }
-    } else {
-      // No file selected
-      setPdfFile(null);
-    }
-  };
 
   const minTomorrow = () => {
     const tomorrow = new Date();
@@ -298,7 +149,6 @@ const Admin: FC = () => {
   };
 
   const deleteDataSchool = () => {
-    console.log(schoolId);
     Swal.fire({
       title: "Are you sure want to delete?",
       text: "This process cannot be undone!",
@@ -343,7 +193,6 @@ const Admin: FC = () => {
   const handleAddGmeet = () => {
     setAddGmeet((prevAddGmeet) => ({ ...prevAddGmeet, school_id: schoolId }));
     const requestData = { ...addGmeet, school_id: schoolId };
-    console.log(requestData);
     axios
       .post(`https://go-event.online/gmeet`, requestData, {
         headers: {
@@ -353,7 +202,6 @@ const Admin: FC = () => {
       })
       .then((response) => {
         const { message, data } = response.data;
-        console.log(data.redirect);
         Swal.fire({
           icon: "success",
           title: "Create G-meet Success!!",
@@ -409,7 +257,6 @@ const Admin: FC = () => {
 
     const requestData = { ...addExtracurricural, school_id: schoolId };
 
-    console.log(requestData);
     axios
       .post(`https://go-event.online/extracurriculars`, requestData, {
         headers: {
@@ -450,7 +297,6 @@ const Admin: FC = () => {
     }));
 
     const requestData = { ...updateExtracurricular, id: idExtracurricular };
-    console.log(requestData);
     axios
       .put(`https://go-event.online/extracurriculars`, requestData, {
         headers: {
@@ -558,7 +404,6 @@ const Admin: FC = () => {
     }));
 
     const requestData = { ...addAchievement, school_id: schoolId };
-    console.log(requestData);
     axios
       .post(`https://go-event.online/achievements`, requestData, {
         headers: {
@@ -598,7 +443,6 @@ const Admin: FC = () => {
       id: idAchievement,
     }));
     const requestData = { ...updateAchievement, id: idAchievement };
-    console.log(requestData);
     axios
       .put(`https://go-event.online/achievements`, requestData, {
         headers: {
@@ -710,7 +554,6 @@ const Admin: FC = () => {
       interval: selected.interval,
       school_id: schoolId,
     };
-    console.log(requestData);
 
     axios
       .post(`https://go-event.online/payments`, requestData, {
@@ -750,7 +593,6 @@ const Admin: FC = () => {
       id: idCost,
     }));
     const requestData = { ...updateCost, id: idCost };
-    console.log(requestData);
     axios
       .put(`https://go-event.online/payments`, requestData, {
         headers: {
@@ -1041,9 +883,6 @@ const Admin: FC = () => {
       .finally(() => window.location.reload());
   };
 
-  console.log(schoolData);
-  // console.log(idExtracurricular);
-
   return (
     <>
       {!noData ? (
@@ -1137,26 +976,6 @@ const Admin: FC = () => {
                   allowFullScreen
                 />
                 <div className="flex flex-col">
-                  {/* <div className="h-[700px]">
-                    <h3>PDF Preview:</h3>
-                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                      <Viewer
-                        fileUrl={schoolData.pdf}
-                        plugins={[defaultLayoutPluginInstance]}
-                        renderLoader={(percentages: number) => (
-                          <div>
-                            <ProgressBar progress={Math.round(percentages)} />
-                          </div>
-                        )}
-                      />
-                    </Worker>
-                  </div> */}
-                  <InputLightBlue
-                    type="file"
-                    label="Pdf"
-                    accept="application/pdf"
-                    onChange={(event) => handleFileInputChange(event)}
-                  />
                   <ButtonSubmit
                     label="View Brochure"
                     onClick={() => setIsOpen(true)}
@@ -2753,31 +2572,28 @@ const Admin: FC = () => {
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                       >
-                        <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden bg-white py-5 px-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden bg-white pb-5 px-16 text-left align-middle shadow-xl transition-all">
                           <Dialog.Title
                             as="h3"
                             className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
                           >
                             View Brochure
                           </Dialog.Title>
-                          {pdfFile && (
-                            <div className="h-[700px]">
-                              <h3>PDF Preview:</h3>
-                              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                                <Viewer
-                                  fileUrl={pdfFile}
-                                  plugins={[defaultLayoutPluginInstance]}
-                                  renderLoader={(percentages: number) => (
-                                    <div>
-                                      <ProgressBar
-                                        progress={Math.round(percentages)}
-                                      />
-                                    </div>
-                                  )}
-                                />
-                              </Worker>
-                            </div>
-                          )}
+                          <div className="h-[700px]">
+                            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                              <Viewer
+                                fileUrl={`data:application/pdf;base64,${schoolData.pdf}`}
+                                plugins={[defaultLayoutPluginInstance]}
+                                renderLoader={(percentages: number) => (
+                                  <div>
+                                    <ProgressBar
+                                      progress={Math.round(percentages)}
+                                    />
+                                  </div>
+                                )}
+                              />
+                            </Worker>
+                          </div>
                           <div className="mt-16">
                             <ButtonCancelDelete
                               label="close"
@@ -2823,4 +2639,4 @@ const Admin: FC = () => {
   );
 };
 
-export default Admi;
+export default Admin;

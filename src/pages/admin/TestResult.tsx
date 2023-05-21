@@ -1,20 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useEffect, useState } from "react";
-import { LayoutAdmin } from "../../components/Layout";
 import { useCookies } from "react-cookie";
-import axios from "axios";
 import Swal from "sweetalert2";
+import axios from "axios";
 
-interface ResultDataType {
-  name: string;
-  email: string;
-  result: string;
-}
+import { LayoutAdmin } from "../../components/Layout";
+import { ResultDataType } from "../../utils/user";
 
 const TestResult: FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
   const [TestResult, setTestResult] = useState<ResultDataType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
+
+  document.title = "Test Result | Admin Management";
 
   useEffect(() => {
     fetchData();
@@ -22,7 +22,6 @@ const TestResult: FC = () => {
 
   const fetchData = () => {
     setLoading(true);
-    // https://go-event.online
     axios
       .get(`https://go-event.online/admin/school/test`, {
         headers: {
