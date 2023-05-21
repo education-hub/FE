@@ -217,7 +217,9 @@ const DetailSchool: FC = () => {
             allowFullScreen
           />
           <div className="grid grid-cols-3 gap-10">
-            <ButtonSubmit label="Register" />
+            <Link to={`/student/registration-form/${id}`}>
+              <ButtonSubmit label="Register" />
+            </Link>
             <ButtonSubmit label="Brochure" />
             {/* {data.pdf} */}
             <ButtonSubmit label="FAQ" onClick={openModalFAQ} />
