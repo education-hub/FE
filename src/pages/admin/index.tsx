@@ -215,63 +215,7 @@ const Admin: FC = () => {
   useEffect(() => {
     fetchAllData();
     minTomorrow();
-    // generatePreview();
   }, []);
-
-  const viewPdf = `https://storage.googleapis.com/prj1ropel/${schoolData.pdf}`;
-
-  const [pdfFile, setPdfFile] = useState<string | null>(null);
-
-  console.log(pdfFile);
-
-  // const generatePreview = () => {
-  //   if (viewPdf) {
-  //     if (typeof viewPdf === "string") {
-  //       setPdfFile(viewPdf);
-  //     } else {
-  //       fetch(viewPdf)
-  //         .then((response) => response.blob())
-  //         .then((blob) => {
-  //           const reader = new FileReader();
-  //           reader.onloadend = () => {
-  //             setPdfFile(reader.result as string);
-  //           };
-  //           reader.readAsDataURL(blob);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error generating PDF preview:", error);
-  //           // Handle any errors that occurred during PDF generation
-  //         });
-  //     }
-  //   }
-  // };
-
-  const handleFileInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = event.target.files;
-
-    if (files && files.length > 0) {
-      const file = files[0]; // Get the first selected file
-
-      if (file.type === "application/pdf") {
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-          const pdfDataUrl = reader.result as string;
-          setPdfFile(pdfDataUrl);
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        // Invalid file type
-        setPdfFile(null);
-      }
-    } else {
-      // No file selected
-      setPdfFile(null);
-    }
-  };
 
   const minTomorrow = () => {
     const tomorrow = new Date();
@@ -1137,26 +1081,6 @@ const Admin: FC = () => {
                   allowFullScreen
                 />
                 <div className="flex flex-col">
-                  {/* <div className="h-[700px]">
-                    <h3>PDF Preview:</h3>
-                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                      <Viewer
-                        fileUrl={schoolData.pdf}
-                        plugins={[defaultLayoutPluginInstance]}
-                        renderLoader={(percentages: number) => (
-                          <div>
-                            <ProgressBar progress={Math.round(percentages)} />
-                          </div>
-                        )}
-                      />
-                    </Worker>
-                  </div> */}
-                  <InputLightBlue
-                    type="file"
-                    label="Pdf"
-                    accept="application/pdf"
-                    onChange={(event) => handleFileInputChange(event)}
-                  />
                   <ButtonSubmit
                     label="View Brochure"
                     onClick={() => setIsOpen(true)}
@@ -2753,31 +2677,28 @@ const Admin: FC = () => {
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                       >
-                        <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden bg-white py-5 px-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden bg-white pb-5 px-16 text-left align-middle shadow-xl transition-all">
                           <Dialog.Title
                             as="h3"
                             className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
                           >
                             View Brochure
                           </Dialog.Title>
-                          {pdfFile && (
-                            <div className="h-[700px]">
-                              <h3>PDF Preview:</h3>
-                              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                                <Viewer
-                                  fileUrl={pdfFile}
-                                  plugins={[defaultLayoutPluginInstance]}
-                                  renderLoader={(percentages: number) => (
-                                    <div>
-                                      <ProgressBar
-                                        progress={Math.round(percentages)}
-                                      />
-                                    </div>
-                                  )}
-                                />
-                              </Worker>
-                            </div>
-                          )}
+                          <div className="h-[700px]">
+                            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                              <Viewer
+                                fileUrl={`data:application/pdf;base64,${schoolData.pdf}`}
+                                plugins={[defaultLayoutPluginInstance]}
+                                renderLoader={(percentages: number) => (
+                                  <div>
+                                    <ProgressBar
+                                      progress={Math.round(percentages)}
+                                    />
+                                  </div>
+                                )}
+                              />
+                            </Worker>
+                          </div>
                           <div className="mt-16">
                             <ButtonCancelDelete
                               label="close"
@@ -2823,4 +2744,4 @@ const Admin: FC = () => {
   );
 };
 
-export default Admi;
+export default Admin;

@@ -64,7 +64,7 @@ const AdminProfile: FC = () => {
         const { message } = error.response.data;
         Swal.fire({
           icon: "error",
-          title: "Success",
+          title: "Failed",
           text: message,
           showCancelButton: false,
         });

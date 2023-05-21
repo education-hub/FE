@@ -6,6 +6,7 @@ import { UseFormSetValue } from "react-hook-form";
 import { Schema } from "../pages/admin/AddSchool";
 
 interface ComboBoxType {
+  defaultFill?: string | number;
   title: string;
   datas: any[];
   name: string | any;
@@ -20,7 +21,16 @@ interface Location {
 }
 
 export const ComboBox: FC<ComboBoxType> = (props) => {
-  const { title, datas, register, name, error, onChange, setValue } = props;
+  const {
+    title,
+    datas,
+    register,
+    name,
+    error,
+    onChange,
+    setValue,
+    defaultFill,
+  } = props;
   const [selected, setSelected] = useState<any>([]);
   const [query, setQuery] = useState("");
   const filteredDatas =
@@ -50,7 +60,9 @@ export const ComboBox: FC<ComboBoxType> = (props) => {
               {...(register ? register(name) : {})}
               className="border-none text-@dark w-full py-2 px-10 pl-3 leading-5 relative focus:outline-none focus:ring-0"
               onChange={(event) => setQuery(event.target.value)}
-              displayValue={(location: Location) => location?.nama}
+              displayValue={(location: Location) =>
+                location?.nama || defaultFill
+              }
             />
             <Combobox.Button className="flex pr-2 inset-y-0 right-0 absolute items-center">
               <TbArrowsMoveVertical

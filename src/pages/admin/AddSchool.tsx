@@ -1,17 +1,18 @@
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { FC, Fragment, useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { ProgressBar } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import { Viewer } from "@react-pdf-viewer/core";
+import { Worker } from "@react-pdf-viewer/core";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { Worker } from "@react-pdf-viewer/core";
-import { Viewer } from "@react-pdf-viewer/core";
-import "@react-pdf-viewer/core/lib/styles/index.css";
-import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
-import { ProgressBar } from "@react-pdf-viewer/core";
-import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import * as z from "zod";
 
-import { LayoutAdmin } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
   InputLightBlue,
@@ -19,9 +20,15 @@ import {
   TextAreaLightBlue,
   TextAreaWhite,
 } from "../../components/Input";
-import { ComboBox } from "../../components/ComboBox";
 import { Dialog, Transition } from "@headlessui/react";
-import { useCookies } from "react-cookie";
+import { LayoutAdmin } from "../../components/Layout";
+import { ComboBox } from "../../components/ComboBox";
+import {
+  ProvinceDataType,
+  CitiesDataType,
+  DistrictDataType,
+  SubDistrictDataType,
+} from "../../utils/user";
 
 const schema = z.object({
   npsn: z.string().min(8, { message: "npsn mush 8 number" }),
@@ -68,31 +75,6 @@ const schema = z.object({
 
 export type Schema = z.infer<typeof schema>;
 
-interface ProvinceDataType {
-  id: number;
-  nama: string;
-}
-
-interface CitiesDataType {
-  id: number;
-  id_provinsi: string;
-  name: string;
-}
-
-interface DistrictDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  name: string;
-}
-
-interface SubDistrictDataType {
-  id: number;
-  id_provinsi: string;
-  id_kota: string;
-  name: string;
-}
-
 const AddSchool: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [src, setSrc] = useState("");
@@ -105,6 +87,10 @@ const AddSchool: FC = () => {
 
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
+
+  const navigate = useNavigate();
+
+  document.title = "Add School | Admin Management";
 
   useEffect(() => {
     fetchProvince();
@@ -181,16 +167,12 @@ const AddSchool: FC = () => {
     }
   };
 
-  console.log(pdfFile);
-
   const handleSubmitVideo = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setSrc(video);
   };
 
   const hadlePostSchool: SubmitHandler<Schema> = (data) => {
-    console.log(data);
-
     const formData = new FormData();
     let key: keyof typeof data;
     for (key in data) {
@@ -207,12 +189,15 @@ const AddSchool: FC = () => {
       })
       .then((response) => {
         const { message } = response.data;
-        console.log(response);
         Swal.fire({
           icon: "success",
           title: "Post School Success!!",
           text: message,
           showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/admin");
+          }
         });
       })
       .catch((error) => {
@@ -224,7 +209,7 @@ const AddSchool: FC = () => {
         });
       });
   };
-  console.log(pdfFile);
+
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit(hadlePostSchool)}>
@@ -369,7 +354,7 @@ const AddSchool: FC = () => {
                       ? URL.createObjectURL(watch("image")[0])
                       : "/photo.png"
                   }
-                  alt="Profile"
+                  alt="School-image"
                 />
               </div>
               <InputLightBlue
