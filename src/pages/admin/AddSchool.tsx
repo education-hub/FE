@@ -45,7 +45,14 @@ const schema = z.object({
     .string()
     .min(1, { message: "school website is required" })
     .url({ message: "Must be a valid video URL" }),
-  image: z.any().refine((files) => files?.length === 1, "Image is required."),
+  image: z.any().refine((files) => {
+    if (files?.length === 1) {
+      const acceptedFormats = ["jpg", "jpeg", "png", "gif"];
+      const fileExtension = files[0].name.split(".").pop().toLowerCase();
+      return acceptedFormats.includes(fileExtension);
+    }
+    return false;
+  }, "Image is required and should be in a specific format. jpg, jpeg, png, and gif"),
   video: z
     .string()
     .min(1, { message: "Youtube url is required" })
@@ -184,16 +191,18 @@ const AddSchool: FC = () => {
   const hadlePostSchool: SubmitHandler<Schema> = (data) => {
     console.log(data);
 
-    // const formData = new FormData();
-    // Object.entries(data).forEach(([key, value]) => {
-    //   formData.append(key, value);
-    // });
+    const formData = new FormData();
+    let key: keyof typeof data;
+    for (key in data) {
+      if (key === "image" || key === "pdf") formData.append(key, data[key][0]);
+      formData.append(key, data[key]);
+    }
 
     axios
-      .post(`https://go-event.online/school`, data, {
+      .post(`https://go-event.online/school`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((response) => {
@@ -399,7 +408,7 @@ const AddSchool: FC = () => {
             </div>
             <div className="flex flex-col mt-10 p-2 gap-10">
               {pdfFile && (
-                <div className="h-[500px]">
+                <div className="h-[600px]">
                   <h3>PDF Preview:</h3>
                   <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                     <Viewer

@@ -15,6 +15,9 @@ import { Listbox, Transition, Dialog } from "@headlessui/react";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
 import "@react-pdf-viewer/core/lib/styles/index.css";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { ProgressBar } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -29,19 +32,17 @@ import { CardAddQuiz, CardCost } from "../../components/Card";
 import { AccordionFAQ } from "../../components/Accordion";
 
 const interval = [
-  { interval: "Onetime Payment" },
-  { interval: "Every 1 Month" },
-  { interval: "Every 3 Month" },
-  { interval: "Every 6 Month" },
+  { interval: 0, name: "One time payment" },
+  { interval: 1, name: "Every 1 month" },
+  { interval: 3, name: "Every 3 month" },
+  { interval: 6, name: "Every 6 month" },
 ];
 
-// interface CostDataType {
-//   id: number;
-//   image: any;
-//   description: string;
-//   price: number;
-//   interval: string;
-// }
+interface GmeetDataType {
+  start_time: string;
+  end_time: string;
+  school_id: number;
+}
 
 interface ExtracurricularDataType {
   school_id: number;
@@ -51,6 +52,20 @@ interface ExtracurricularDataType {
 }
 
 interface UpdateExtracurricularDataType {
+  id: number;
+  image: any;
+  name: string;
+  description: string;
+}
+
+interface AchievementDataType {
+  school_id: number;
+  image: any;
+  title: string;
+  description: string;
+}
+
+interface UpdateAchievementDataType {
   id: number;
   image: any;
   name: string;
@@ -68,6 +83,22 @@ interface FAQUpdateDataType {
   answer: string;
 }
 
+interface AddCostDataType {
+  school_id: number;
+  description: string;
+  price: number;
+  image: any;
+  interval: number;
+}
+
+interface CostDataType {
+  id: number;
+  description: string;
+  price: number;
+  image: any;
+  interval: string;
+}
+
 interface QuizDataType {
   school_id: number;
   question?: string;
@@ -80,7 +111,7 @@ interface QuizDataType {
 
 interface SchoolDataType {
   accreditation: string;
-  achievement: string | null; // belum ketahuan data aslinya jika ditambahkan
+  achievements: string | null; // belum ketahuan data aslinya jika ditambahkan
   city: string;
   description: string;
   detail: string;
@@ -91,9 +122,9 @@ interface SchoolDataType {
   image: any;
   name: string;
   npsn: string;
-  payment: {
-    interval: string | null; // belum ketahuan data aslinya jika ditambahkan
-    onetime: string | null; // belum ketahuan data aslinya jika ditambahkan
+  payments: {
+    interval: string | number | null; // belum ketahuan data aslinya jika ditambahkan
+    onetime: string | number | null; // belum ketahuan data aslinya jika ditambahkan
   };
   pdf: any;
   province: string;
@@ -117,36 +148,47 @@ interface SchoolDataType {
 }
 
 const Admin: FC = () => {
+  const [noData, setNoData] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [tomorrow, setTomorrow] = useState<Date>();
   const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
   const [selected, setSelected] = useState(interval[0]);
   const [isOpenAddExtracurricular, setIsOpenAddExtracurricular] =
     useState<boolean>(false);
+  const [isOpenAddAchievement, setIsOpenAddAchievement] =
+    useState<boolean>(false);
   const [isOpenExtracurriculer, setIsOpenExtracurriculer] = useState(false);
   const [isOpenAchievement, setIsOpenAchievement] = useState(false);
   const [isOpenPayment, setIsOpenPayment] = useState(false);
+  const [isOpenIntervalPayment, setisOpenIntervalPayment] =
+    useState<boolean>(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
   const [isOpenQuiz, setIsOpenQuiz] = useState(false);
   const [isOpenDisclaimer, setIsOpenDisclaimer] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
   const [schoolId, setSchoolId] = useState<number>();
-
+  const [addGmeet, setAddGmeet] = useState<Partial<GmeetDataType>>({});
   const [addExtracurricural, setAddExtracurricular] = useState<
     Partial<ExtracurricularDataType>
-  >({
-    school_id: schoolData.id,
-  });
+  >({});
   const [idExtracurricular, setIdExtracurricular] = useState<number>();
   const [updateExtracurricular, setUpdateExtracurricular] = useState<
     Partial<UpdateExtracurricularDataType>
   >({});
-  const [faq, setFaq] = useState<Partial<FAQDataType>>({
-    school_id: schoolData.id,
-  });
+  const [addAchievement, setAddAchievement] = useState<
+    Partial<AchievementDataType>
+  >({});
+  const [updateAchievement, setUpdateAchievement] = useState<
+    Partial<UpdateAchievementDataType>
+  >({});
+  const [idAchievement, setIdAchievement] = useState<number>();
+  const [faq, setFaq] = useState<Partial<FAQDataType>>({});
   const [idFAQ, setIdFAQ] = useState<number>();
   const [updateFAQ, setUpdateFAQ] = useState<Partial<FAQUpdateDataType>>({
     id: idFAQ,
   });
+  const [addCost, setAddCost] = useState<Partial<AddCostDataType>>({});
+  const [idCost, setIdCost] = useState<number>();
+  const [updateCost, setUpdateCost] = useState<Partial<CostDataType>>({});
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
     school_id: schoolId || 0,
     question: "",
@@ -168,28 +210,74 @@ const Admin: FC = () => {
   const checkToken = cookie.tkn;
   const navigate = useNavigate();
 
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
   useEffect(() => {
     fetchAllData();
+    minTomorrow();
+    // generatePreview();
   }, []);
 
-  useEffect(() => {
-    fetchAllData();
-    setUpdateFAQ((prevFaq) => ({ ...prevFaq, id: idFAQ }));
-  }, [isOpenFAQ]);
+  const viewPdf = `https://storage.googleapis.com/prj1ropel/${schoolData.pdf}`;
 
-  useEffect(() => {
-    setAddExtracurricular((prevExtracurriculer) => ({
-      ...prevExtracurriculer,
-      school_id: schoolData.id,
-    }));
-  }, [isOpenAddExtracurricular]);
+  const [pdfFile, setPdfFile] = useState<string | null>(null);
 
-  useEffect(() => {
-    setUpdateExtracurricular((prevExtracurriculer) => ({
-      ...prevExtracurriculer,
-      id: idExtracurricular,
-    }));
-  }, [isOpenExtracurriculer]);
+  console.log(pdfFile);
+
+  // const generatePreview = () => {
+  //   if (viewPdf) {
+  //     if (typeof viewPdf === "string") {
+  //       setPdfFile(viewPdf);
+  //     } else {
+  //       fetch(viewPdf)
+  //         .then((response) => response.blob())
+  //         .then((blob) => {
+  //           const reader = new FileReader();
+  //           reader.onloadend = () => {
+  //             setPdfFile(reader.result as string);
+  //           };
+  //           reader.readAsDataURL(blob);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error generating PDF preview:", error);
+  //           // Handle any errors that occurred during PDF generation
+  //         });
+  //     }
+  //   }
+  // };
+
+  const handleFileInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+
+    if (files && files.length > 0) {
+      const file = files[0]; // Get the first selected file
+
+      if (file.type === "application/pdf") {
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+          const pdfDataUrl = reader.result as string;
+          setPdfFile(pdfDataUrl);
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        // Invalid file type
+        setPdfFile(null);
+      }
+    } else {
+      // No file selected
+      setPdfFile(null);
+    }
+  };
+
+  const minTomorrow = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setTomorrow(tomorrow);
+  };
 
   const fetchAllData = () => {
     axios
@@ -202,16 +290,92 @@ const Admin: FC = () => {
         const { data } = response.data;
         setSchoolData(data);
         setSchoolId(data.id);
+        setNoData(false);
+      })
+      .catch(() => {
+        setNoData(true);
+      });
+  };
+
+  const deleteDataSchool = () => {
+    console.log(schoolId);
+    Swal.fire({
+      title: "Are you sure want to delete?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/school/${schoolId}`, {
+            headers: {
+              Authorization: `Bearer ${checkToken}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete !!",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
+
+  // G-meet handle
+
+  const handleAddGmeet = () => {
+    setAddGmeet((prevAddGmeet) => ({ ...prevAddGmeet, school_id: schoolId }));
+    const requestData = { ...addGmeet, school_id: schoolId };
+    console.log(requestData);
+    axios
+      .post(`https://go-event.online/gmeet`, requestData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message, data } = response.data;
+        console.log(data.redirect);
+        Swal.fire({
+          icon: "success",
+          title: "Create G-meet Success!!",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setAddGmeet({});
+            window.open(data.redirect, "_blank");
+          }
+        });
       })
       .catch((error) => {
         const { message } = error.response.data;
+        setNoData;
         Swal.fire({
           icon: "error",
-          title: "Failed",
-          text: message,
+          title: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => fetchAllData());
   };
 
   // Extracurriculer Handle
@@ -238,9 +402,16 @@ const Admin: FC = () => {
   };
 
   const handleSubmitExtracurriculer = () => {
-    console.log(addExtracurricural);
+    setAddExtracurricular((prevExtracurriculer) => ({
+      ...prevExtracurriculer,
+      school_id: schoolData.id,
+    }));
+
+    const requestData = { ...addExtracurricural, school_id: schoolId };
+
+    console.log(requestData);
     axios
-      .post(`https://go-event.online/extracurriculars`, addExtracurricural, {
+      .post(`https://go-event.online/extracurriculars`, requestData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -262,6 +433,7 @@ const Admin: FC = () => {
       })
       .catch((error) => {
         const { message } = error.response.data;
+        setNoData;
         Swal.fire({
           icon: "error",
           title: message,
@@ -272,14 +444,15 @@ const Admin: FC = () => {
   };
 
   const handleUpdateExtracurricular = () => {
-    console.log(updateExtracurricular);
-    const formData = new FormData();
-    let key: keyof typeof updateExtracurricular;
-    for (key in updateExtracurricular) {
-      formData.append(key, updateExtracurricular[key]);
-    }
+    setUpdateExtracurricular((prevExtracurriculer) => ({
+      ...prevExtracurriculer,
+      id: idExtracurricular,
+    }));
+
+    const requestData = { ...updateExtracurricular, id: idExtracurricular };
+    console.log(requestData);
     axios
-      .put(`https://go-event.online/extracurriculars`, formData, {
+      .put(`https://go-event.online/extracurriculars`, requestData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -354,18 +527,314 @@ const Admin: FC = () => {
     });
   };
 
+  // Achievement Handle
+
+  const handleChangeAchievement = (
+    value: string | File | number | null,
+    key: keyof typeof addExtracurricural
+  ) => {
+    const temp = { ...addAchievement };
+    if (value === null) {
+      temp[key] = null;
+    } else {
+      temp[key] = value;
+    }
+    setAddAchievement(temp);
+  };
+
+  const handleChangeUpdateAchievement = (
+    value: string | File,
+    key: keyof typeof updateAchievement
+  ) => {
+    const temp = { ...updateAchievement };
+    temp[key] = value;
+    setUpdateAchievement(temp);
+  };
+
+  const handleAddAchievement = () => {
+    setAddAchievement((prevAddAcheivement) => ({
+      ...prevAddAcheivement,
+      school_id: schoolId,
+    }));
+
+    const requestData = { ...addAchievement, school_id: schoolId };
+    console.log(requestData);
+    axios
+      .post(`https://go-event.online/achievements`, requestData, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Submit Achievemetn Success!!",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setIsOpenAddAchievement(false);
+            setAddAchievement({});
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        setNoData;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchAllData());
+  };
+
+  const handleUpdateAchievement = () => {
+    setUpdateAchievement((prevUpdateAchievement) => ({
+      ...prevUpdateAchievement,
+      id: idAchievement,
+    }));
+    const requestData = { ...updateAchievement, id: idAchievement };
+    console.log(requestData);
+    axios
+      .put(`https://go-event.online/achievements`, requestData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data && response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Update Success",
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setUpdateAchievement({});
+            setIsOpenAchievement(false);
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => {
+        fetchAllData();
+      });
+  };
+
+  const handleDeleteAchievement = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/achievements/${id}`, {
+            headers: {
+              Authorization: `Bearer ${checkToken}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete !!",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
+
   // Cost Handle
 
-  // const handleSubmitCost: SubmitHandler<SchemaExtracurriculer> = (data) => {
-  //   console.log(data);
-  // };
+  const handleChangeCost = (
+    value: string | File | number | null,
+    key: keyof typeof addCost
+  ) => {
+    const temp = { ...addCost };
+    if (value === null) {
+      temp[key] = null;
+    } else {
+      temp[key] = value;
+    }
+    setAddCost(temp);
+  };
+
+  const handleChangeUpdateCost = (
+    value: string | File,
+    key: keyof typeof updateCost
+  ) => {
+    const temp = { ...updateCost };
+    temp[key] = value;
+    setUpdateCost(temp);
+  };
+
+  const handleAddCost = () => {
+    setAddCost((prevCost) => ({
+      ...prevCost,
+      interval: selected.interval,
+      school_id: schoolId,
+    }));
+    const requestData = {
+      ...addCost,
+      interval: selected.interval,
+      school_id: schoolId,
+    };
+    console.log(requestData);
+
+    axios
+      .post(`https://go-event.online/payments`, requestData, {
+        headers: {
+          Authorization: `Bearer ${checkToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        const { message } = response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Add Cost Success!!",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setAddCost({});
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchAllData());
+  };
+
+  const handleUpdateCost = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setUpdateCost((prevUpdateCost) => ({
+      ...prevUpdateCost,
+      id: idCost,
+    }));
+    const requestData = { ...updateCost, id: idCost };
+    console.log(requestData);
+    axios
+      .put(`https://go-event.online/payments`, requestData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${checkToken}`,
+        },
+      })
+      .then((response) => {
+        const { message } = response.data && response.data;
+        Swal.fire({
+          icon: "success",
+          title: "Update Success",
+          text: message,
+          showCancelButton: false,
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setUpdateCost({});
+            setIsOpenPayment(false);
+            setisOpenIntervalPayment(false);
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => {
+        fetchAllData();
+      });
+  };
+
+  const handleDeleteCost = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete ?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/payments/${id}`, {
+            headers: {
+              Authorization: `Bearer ${checkToken}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success Delete !!",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(() => fetchAllData());
+      }
+    });
+  };
 
   // FAQ Handle
 
   const handleSubmitFAQ = () => {
     setFaq((prevFaq) => ({ ...prevFaq, school_id: schoolData.id }));
+    const requestData = { ...faq, school_id: schoolId };
     axios
-      .post(`https://go-event.online/faqs`, faq, {
+      .post(`https://go-event.online/faqs`, requestData, {
         headers: {
           Authorization: `Bearer ${checkToken}`,
         },
@@ -390,11 +859,11 @@ const Admin: FC = () => {
       .finally(() => fetchAllData());
   };
 
-  const handleUpdateFAQ = (faqId: number) => {
-    console.log(faqId);
-    console.log(updateFAQ);
+  const handleUpdateFAQ = () => {
+    setUpdateFAQ((prevFaq) => ({ ...prevFaq, id: idFAQ }));
+    const requestData = { ...updateFAQ, id: idFAQ };
     axios
-      .put(`https://go-event.online/faqs`, updateFAQ, {
+      .put(`https://go-event.online/faqs`, requestData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${checkToken}`,
@@ -573,11 +1042,11 @@ const Admin: FC = () => {
   };
 
   console.log(schoolData);
-  console.log(idExtracurricular);
+  // console.log(idExtracurricular);
 
   return (
     <>
-      {schoolData ? (
+      {!noData ? (
         <LayoutAdmin>
           <div>
             {/* Section 1 */}
@@ -625,13 +1094,13 @@ const Admin: FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col">
-                <div
-                  className={`relative z-10 bg-[url('/sman3.jpg')] h-96 w-full bg-cover bg-center`}
-                >
-                  <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60 "></div>
-                </div>
-                <div className="flex pl-10 py-7 bg-@light-blue items-center space-x-5">
+              <div className="flex flex-col bg-@light-blue">
+                <img
+                  src={`https://storage.googleapis.com/prj1ropel/${schoolData.image}`}
+                  alt=""
+                  className="relative z-10 h-auto w-full"
+                />
+                <div className="flex pl-10 py-7 items-center space-x-5">
                   <TbMapPin className="text-3xl text-@blue" />
                   <p className="text-lg font-semibold">{schoolData.city}</p>
                 </div>
@@ -661,10 +1130,6 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-10">
-                {/* <video controls width="100%">
-                  <source src={src} type="video/mp4" />
-                  Sorry, your browser doesn't support videos.
-                </video> */}
                 <iframe
                   className="w-full h-96"
                   src={schoolData.video}
@@ -672,6 +1137,26 @@ const Admin: FC = () => {
                   allowFullScreen
                 />
                 <div className="flex flex-col">
+                  {/* <div className="h-[700px]">
+                    <h3>PDF Preview:</h3>
+                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                      <Viewer
+                        fileUrl={schoolData.pdf}
+                        plugins={[defaultLayoutPluginInstance]}
+                        renderLoader={(percentages: number) => (
+                          <div>
+                            <ProgressBar progress={Math.round(percentages)} />
+                          </div>
+                        )}
+                      />
+                    </Worker>
+                  </div> */}
+                  <InputLightBlue
+                    type="file"
+                    label="Pdf"
+                    accept="application/pdf"
+                    onChange={(event) => handleFileInputChange(event)}
+                  />
                   <ButtonSubmit
                     label="View Brochure"
                     onClick={() => setIsOpen(true)}
@@ -679,7 +1164,10 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="flex space-x-10">
-                <ButtonCancelDelete label="Delete School" />
+                <ButtonCancelDelete
+                  label="Delete School"
+                  onClick={() => deleteDataSchool()}
+                />
                 <ButtonSubmit
                   label="Edit School"
                   onClick={() =>
@@ -693,15 +1181,45 @@ const Admin: FC = () => {
               <div className="grid grid-cols-2 gap-10">
                 <div className="flex flex-col gap-1">
                   <p>Start Time</p>
-                  <InputLightBlue type="datetime-local" />
+                  <InputLightBlue
+                    type="datetime-local"
+                    min={`${tomorrow && tomorrow.toISOString().slice(0, 16)}`}
+                    onChange={(event) =>
+                      setAddGmeet({
+                        ...addGmeet,
+                        start_time: event.target.value + ":00",
+                      })
+                    }
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <p>End Time</p>
-                  <InputLightBlue type="datetime-local" />
+                  <InputLightBlue
+                    type="datetime-local"
+                    min={`${tomorrow && tomorrow.toISOString().slice(0, 16)}`}
+                    onChange={(event) =>
+                      setAddGmeet({
+                        ...addGmeet,
+                        end_time: event.target.value + ":00",
+                      })
+                    }
+                  />
                 </div>
               </div>
               <div className="flex items-end justify-end">
-                <ButtonSubmit label="CREATE G-MEET" />
+                <ButtonSubmit
+                  label="CREATE G-MEET"
+                  onClick={() => handleAddGmeet()}
+                />
+              </div>
+              <div className="text-lg font-semibold flex gap-3">
+                link G-meet :{" "}
+                <button
+                  className="text-@orange"
+                  onClick={() => window.open(schoolData?.gmeet, "_blank")}
+                >
+                  <p>{schoolData?.gmeet}</p>
+                </button>
               </div>
             </div>
             {/* Section 4  extracurriculer*/}
@@ -719,7 +1237,7 @@ const Admin: FC = () => {
                     >
                       <div className="flex space-x-10">
                         <img
-                          src={`https://storage.googleapis.com/prj1ropel/${e.img}`}
+                          src={`https://storage.googleapis.com/prj1ropel/${e.image}`}
                           alt=""
                           className="h-32 w-auto"
                         />
@@ -748,53 +1266,45 @@ const Admin: FC = () => {
                 )}
               </div>
               <div className="flex flex-col gap-10">
-                <ButtonSubmit label="ADD ACHIEVEMENT" />
-                <div className="bg-@light-blue p-10 flex flex-col gap-10">
-                  <div className="flex  space-x-10">
-                    <img src="/math.png" alt="" className="h-32 w-auto" />
-                    <div className="w-full flex flex-col gap-4">
-                      <h1 className="text-2xl font-semibold">
-                        1’st Matematic Olympiade{" "}
-                      </h1>
-                      <p className="text-lg">
-                        The material tested or contested in the Mathematics
-                        Olympiad consists of several branches of mathematics,
-                        including; number theory, algebra, geometry and
-                        combinatorics.
-                      </p>
+                <ButtonSubmit
+                  label="ADD ACHIEVEMENT"
+                  onClick={() => setIsOpenAddAchievement(true)}
+                />
+                {Array.isArray(schoolData.achievements) ? (
+                  schoolData.achievements.map((e) => (
+                    <div
+                      className="bg-@light-blue p-10 flex flex-col gap-10"
+                      key={e.id}
+                    >
+                      <div className="flex space-x-10">
+                        <img
+                          src={`https://storage.googleapis.com/prj1ropel/${e.image}`}
+                          alt=""
+                          className="h-32 w-auto"
+                        />
+                        <div className="w-full flex flex-col gap-4">
+                          <h1 className="text-2xl font-semibold">{e.name}</h1>
+                          <p className="text-lg">{e.description}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-44">
+                        <ButtonCancelDelete
+                          label="Delete"
+                          onClick={() => handleDeleteAchievement(e.id)}
+                        />
+                        <ButtonSubmit
+                          label="Edit"
+                          onClick={() => {
+                            setIdAchievement(e.id);
+                            setIsOpenAchievement(true);
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="grid  grid-cols-2 gap-44">
-                    <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit
-                      label="Edit"
-                      onClick={() => setIsOpenAchievement(true)}
-                    />
-                  </div>
-                </div>
-                <div className="bg-@light-blue p-10 h-96 flex flex-col gap-10">
-                  <div className="flex  space-x-10">
-                    <img src="/math.png" alt="" className="h-32 w-auto" />
-                    <div className="w-full flex flex-col gap-4">
-                      <h1 className="text-2xl font-semibold">
-                        1’st Matematic Olympiade{" "}
-                      </h1>
-                      <p className="text-lg">
-                        The material tested or contested in the Mathematics
-                        Olympiad consists of several branches of mathematics,
-                        including; number theory, algebra, geometry and
-                        combinatorics.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid  grid-cols-2 gap-44">
-                    <ButtonCancelDelete label="Delete" />
-                    <ButtonSubmit
-                      label="Edit"
-                      onClick={() => setIsOpenAchievement(true)}
-                    />
-                  </div>
-                </div>
+                  ))
+                ) : (
+                  <p>No extracurricular data available</p>
+                )}
               </div>
             </div>
             {/* Secton 5 */}
@@ -802,20 +1312,59 @@ const Admin: FC = () => {
               <div className="grid grid-cols-3 gap-20">
                 <div className="bg-@light-blue">
                   <div className=" p-10">
-                    <img src="/school.png" alt="" />
+                    <img
+                      src={
+                        addCost.image
+                          ? URL.createObjectURL(addCost.image)
+                          : "/photo.png"
+                      }
+                      alt="cost-image"
+                      className="w-full h-auto border-1 border-black "
+                    />
                   </div>
-                  <div className="bg-cyan-100 p-5">
-                    <p>Choose File</p>
-                  </div>
+                  <input
+                    placeholder=""
+                    id="upload-image"
+                    type="file"
+                    className="p-4"
+                    onChange={(event) => {
+                      if (!event.currentTarget.files) {
+                        return;
+                      }
+                      setAddCost({
+                        ...addCost,
+                        image: URL.createObjectURL(
+                          event.currentTarget.files[0]
+                        ),
+                      });
+                      handleChangeCost(event.currentTarget.files[0], "image");
+                    }}
+                  />
                 </div>
                 <div className="flex flex-col gap-10">
                   <div className="flex flex-col gap-1">
                     <p>Cost Description</p>
-                    <InputLightBlue type="text" />
+                    <InputLightBlue
+                      type="text"
+                      onChange={(event) =>
+                        setAddCost({
+                          ...addCost,
+                          description: event.target.value,
+                        })
+                      }
+                    />
                   </div>
                   <div className="flex flex-col gap-1">
                     <p>Price</p>
-                    <InputLightBlue type="number" />
+                    <InputLightBlue
+                      type="number"
+                      onChange={(event) =>
+                        setAddCost({
+                          ...addCost,
+                          price: Number(event.target.value),
+                        })
+                      }
+                    />
                   </div>
                 </div>
                 <div>
@@ -826,7 +1375,7 @@ const Admin: FC = () => {
                         <div className="relative">
                           <Listbox.Button className="relative w-full cursor-default bg-@light-blue h-16 pl-3 text-left focus:outline-none text-lg text-@dark ">
                             <span className="block truncate">
-                              {selected.interval}
+                              {selected.name}
                             </span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                               <TbArrowsMoveVertical
@@ -863,7 +1412,7 @@ const Admin: FC = () => {
                                             : "font-normal"
                                         }`}
                                       >
-                                        {interval.interval}
+                                        {interval.name}
                                       </span>
                                       {selected ? (
                                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-@orange">
@@ -886,7 +1435,10 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="flex justify-end">
-                <ButtonSubmit label="Add Cost" />
+                <ButtonSubmit
+                  label="Add Cost"
+                  onClick={() => handleAddCost()}
+                />
               </div>
             </div>
             <div className="bg-gray-200 p-20">
@@ -895,48 +1447,32 @@ const Admin: FC = () => {
                   <h1 className="text-lg font-bold">ONETIME PAYMENT</h1>
                 </div>
                 <div className="grid grid-cols-5 gap-20">
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/registration.png"}
-                      title={"Her Registration"}
-                      price={1000000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/school.png"}
-                      title={"Building"}
-                      price={2000000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"books.png"}
-                      title={"Books"}
-                      price={2000000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
+                  {Array.isArray(schoolData.payments?.onetime) ? (
+                    schoolData.payments?.onetime.map((e: CostDataType) => (
+                      <div className="flex flex-col gap-5">
+                        <CardCost
+                          image={`https://storage.googleapis.com/prj1ropel/${e.image}`}
+                          title={e.description}
+                          price={e.price}
+                        />
+                        <div className="flex flex-col gap-5 bg-gray-200">
+                          <ButtonSubmit
+                            label="Edit"
+                            onClick={() => {
+                              setIdCost(e.id);
+                              setIsOpenPayment(true);
+                            }}
+                          />
+                          <ButtonCancelDelete
+                            label="Delete"
+                            onClick={() => handleDeleteCost(e.id)}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No one time Cost data available</p>
+                  )}
                 </div>
               </div>
               <div>
@@ -944,34 +1480,32 @@ const Admin: FC = () => {
                   <h1 className="text-lg font-bold">INTERVAL PAYMENT</h1>
                 </div>
                 <div className="grid grid-cols-5 gap-20">
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/spp.png"}
-                      title={"SPP/1 Month"}
-                      price={500000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-5">
-                    <CardCost
-                      image={"/cleaning.png"}
-                      title={"Cleaning/3 Month"}
-                      price={100000}
-                    />
-                    <div className="flex flex-col gap-5 bg-gray-200">
-                      <ButtonSubmit
-                        label="Edit"
-                        onClick={() => setIsOpenPayment(true)}
-                      />
-                      <ButtonCancelDelete label="Delete" />
-                    </div>
-                  </div>
+                  {Array.isArray(schoolData.payments?.interval) ? (
+                    schoolData.payments?.interval.map((e: CostDataType) => (
+                      <div className="flex flex-col gap-5">
+                        <CardCost
+                          image={`https://storage.googleapis.com/prj1ropel/${e.image}`}
+                          title={e.interval}
+                          price={e.price}
+                        />
+                        <div className="flex flex-col gap-5 bg-gray-200">
+                          <ButtonSubmit
+                            label="Edit"
+                            onClick={() => {
+                              setIdCost(e.id);
+                              setisOpenIntervalPayment(true);
+                            }}
+                          />
+                          <ButtonCancelDelete
+                            label="Delete"
+                            onClick={() => handleDeleteCost(e.id)}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No Interval time Cost data available</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -1095,7 +1629,12 @@ const Admin: FC = () => {
                   label="Reset Data"
                   onClick={() => window.location.reload()}
                 />
-                <ButtonSubmit label="View Quiz" />
+                <ButtonSubmit
+                  label="View Quiz"
+                  onClick={() =>
+                    window.open(schoolData.quizLinkPreview, "_blank")
+                  }
+                />
                 <ButtonSubmit
                   label="Submit"
                   onClick={() => setIsOpenDisclaimer(true)}
@@ -1293,7 +1832,7 @@ const Admin: FC = () => {
                                             ? URL.createObjectURL(
                                                 updateExtracurricular.image
                                               )
-                                            : `https://storage.googleapis.com/prj1ropel/${e.img}`
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
                                         }
                                         alt="user-avatar"
                                         className="w-full h-auto border-1 border-black "
@@ -1377,7 +1916,131 @@ const Admin: FC = () => {
             </Transition>
           </>
           <>
-            {/* modal achievement */}
+            {/* modal Add Achievement */}
+            <Transition appear show={isOpenAddAchievement} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenAddAchievement}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-black bg-opacity-25" />
+                </Transition.Child>
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 scale-95"
+                      enterTo="opacity-100 scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 scale-100"
+                      leaveTo="opacity-0 scale-95"
+                    >
+                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                        >
+                          Add Achievement
+                        </Dialog.Title>
+                        <form>
+                          <div className="mt-2 flex flex-col items-center justify-center">
+                            <div className="w-full flex flex-col items-center justify-center">
+                              <div className="w-full">
+                                <img
+                                  src={
+                                    addAchievement.image
+                                      ? URL.createObjectURL(
+                                          addAchievement.image
+                                        )
+                                      : "/photo.png"
+                                  }
+                                  alt="Achievement-image"
+                                  className="w-full h-auto border-1 border-black "
+                                />
+                              </div>
+                              <input
+                                placeholder=""
+                                id="upload-image"
+                                type="file"
+                                className="p-4"
+                                onChange={(event) => {
+                                  if (!event.currentTarget.files) {
+                                    return;
+                                  }
+                                  setAddAchievement({
+                                    ...addAchievement,
+                                    image: URL.createObjectURL(
+                                      event.currentTarget.files[0]
+                                    ),
+                                  });
+                                  handleChangeAchievement(
+                                    event.currentTarget.files[0],
+                                    "image"
+                                  );
+                                }}
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 my-5 w-full">
+                              <p>Title</p>
+                              <InputLightBlue
+                                type="text"
+                                onChange={(event) =>
+                                  setAddAchievement({
+                                    ...addAchievement,
+                                    title: event.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1 my-5 w-full">
+                              <p>Description</p>
+                              <TextAreaLightBlue
+                                onChange={(event) =>
+                                  setAddAchievement({
+                                    ...addAchievement,
+                                    description: event.target.value,
+                                  })
+                                }
+                              />
+                            </div>
+                          </div>
+                          <div className="mt-4 flex space-x-5 justify-end">
+                            <ButtonCancelDelete
+                              label="Cancel"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setIsOpenAddAchievement(false);
+                              }}
+                            />
+                            <ButtonSubmit
+                              label="Add"
+                              type="submit"
+                              onClick={(event) => {
+                                event.preventDefault();
+                                handleAddAchievement();
+                              }}
+                            />
+                          </div>
+                        </form>
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
+          </>
+          <>
+            {/* modal Edit achievement */}
             <Transition appear show={isOpenAchievement} as={Fragment}>
               <Dialog
                 as="div"
@@ -1413,66 +2076,95 @@ const Admin: FC = () => {
                         >
                           Edit Achievement
                         </Dialog.Title>
-                        <div className="mt-2 flex flex-col items-center justify-center">
-                          <div className="w-full flex flex-col items-center justify-center">
-                            {image ? (
-                              <div>
-                                <img
-                                  src={URL.createObjectURL(image)}
-                                  alt="Selected"
-                                  className="h-auto w-96"
-                                />
-                              </div>
-                            ) : (
-                              <div>
-                                <img
-                                  src="/math.png"
-                                  alt="Default"
-                                  className="h-auto w-52"
-                                />
-                              </div>
-                            )}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setImage(file);
-                                }
-                              }}
-                              className="bg-@light-blue w-full p-5"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Title</p>
-                            <InputLightBlue
-                              type="text"
-                              defaultValue={"1’st Matematic Olympiade"}
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Description</p>
-                            <TextAreaLightBlue
-                              defaultValue={
-                                "The material tested or contested in the Mathematics Olympiad consists of several branches of mathematics, including; number theory, algebra, geometry and combinatorics."
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex space-x-5 justify-end">
-                          <ButtonCancelDelete
-                            label="Cancel"
-                            onClick={() => setIsOpenAchievement(false)}
-                          />
-                          <ButtonSubmit
-                            label="Update"
-                            onClick={() => {
-                              alert("update");
-                              setIsOpenAchievement(false);
-                            }}
-                          />
-                        </div>
+                        {Array.isArray(schoolData.achievements) ? (
+                          schoolData.achievements?.map((e) => (
+                            <div>
+                              {e.id === idAchievement ? (
+                                <div>
+                                  <div className="mt-2 flex flex-col items-center justify-center">
+                                    <div className="w-full">
+                                      <img
+                                        src={
+                                          updateAchievement.image
+                                            ? URL.createObjectURL(
+                                                updateAchievement.image
+                                              )
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
+                                        }
+                                        alt="user-avatar"
+                                        className="w-full h-auto border-1 border-black "
+                                      />
+                                    </div>
+                                    <input
+                                      placeholder=""
+                                      id="upload-image"
+                                      type="file"
+                                      className="bg-@light-blue w-full p-5"
+                                      onChange={(event) => {
+                                        if (!event.currentTarget.files) {
+                                          return;
+                                        }
+                                        setUpdateAchievement({
+                                          ...updateAchievement,
+                                          image: URL.createObjectURL(
+                                            event.currentTarget.files[0]
+                                          ),
+                                        });
+                                        handleChangeUpdateAchievement(
+                                          event.currentTarget.files[0],
+                                          "image"
+                                        );
+                                      }}
+                                    />
+                                    <div className="flex flex-col gap-1 my-5 w-full">
+                                      <p>Title</p>
+                                      <InputLightBlue
+                                        type="text"
+                                        defaultValue={e.name}
+                                        onChange={(event) =>
+                                          setUpdateAchievement({
+                                            ...updateAchievement,
+                                            name: event.target.value,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                    <div className="flex flex-col gap-1 my-5 w-full">
+                                      <p>Description</p>
+                                      <TextAreaLightBlue
+                                        defaultValue={e.description}
+                                        onChange={(event) =>
+                                          setUpdateAchievement({
+                                            ...updateAchievement,
+                                            description: event.target.value,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="mt-4 flex space-x-5 justify-end">
+                                    <ButtonCancelDelete
+                                      label="Cancel"
+                                      onClick={() =>
+                                        setIsOpenAchievement(false)
+                                      }
+                                    />
+                                    <ButtonSubmit
+                                      label="Update"
+                                      onClick={() => {
+                                        handleUpdateAchievement();
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <></>
+                        )}
                       </Dialog.Panel>
                     </Transition.Child>
                   </div>
@@ -1481,7 +2173,7 @@ const Admin: FC = () => {
             </Transition>
           </>
           <>
-            {/* modal payment */}
+            {/* modal Edit ontime payment */}
             <Transition appear show={isOpenPayment} as={Fragment}>
               <Dialog
                 as="div"
@@ -1515,67 +2207,230 @@ const Admin: FC = () => {
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
                         >
-                          Edit Achievement
+                          Edit One Time Cost
                         </Dialog.Title>
-                        <div className="mt-2 flex flex-col items-center justify-center">
-                          <div className="w-full flex flex-col items-center justify-center">
-                            {image ? (
+                        {Array.isArray(schoolData.payments?.onetime) ? (
+                          schoolData.payments?.onetime.map((e) =>
+                            e.id === idCost ? (
                               <div>
-                                <img
-                                  src={URL.createObjectURL(image)}
-                                  alt="Selected"
-                                  className="h-auto w-96"
-                                />
+                                <div className="mt-2 flex flex-col items-center justify-center">
+                                  <div className="w-full flex flex-col items-center justify-center">
+                                    <div className="w-full">
+                                      <img
+                                        src={
+                                          updateCost.image
+                                            ? URL.createObjectURL(
+                                                updateCost.image
+                                              )
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
+                                        }
+                                        alt="user-avatar"
+                                        className="w-full h-auto border-1 border-black "
+                                      />
+                                      <input
+                                        placeholder=""
+                                        id="upload-image"
+                                        type="file"
+                                        className="bg-@light-blue w-full p-5"
+                                        onChange={(event) => {
+                                          if (!event.currentTarget.files) {
+                                            return;
+                                          }
+                                          setUpdateCost({
+                                            ...updateCost,
+                                            image: URL.createObjectURL(
+                                              event.currentTarget.files[0]
+                                            ),
+                                          });
+                                          handleChangeUpdateCost(
+                                            event.currentTarget.files[0],
+                                            "image"
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Title</p>
+                                    <InputLightBlue
+                                      type="text"
+                                      defaultValue={e.description}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          description: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Price</p>
+                                    <InputLightBlue
+                                      type="number"
+                                      defaultValue={e.price}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          price: Number(event.target.value),
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="mt-4 flex space-x-5 justify-end">
+                                  <ButtonCancelDelete
+                                    label="Cancel"
+                                    onClick={() => setIsOpenPayment(false)}
+                                  />
+                                  <ButtonSubmit
+                                    label="Update"
+                                    onClick={(event) => {
+                                      handleUpdateCost(event);
+                                    }}
+                                  />
+                                </div>
                               </div>
                             ) : (
+                              <></>
+                            )
+                          )
+                        ) : (
+                          <></>
+                        )}
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
+                </div>
+              </Dialog>
+            </Transition>
+          </>
+          <>
+            {/* modal Edit interval payment */}
+            <Transition appear show={isOpenIntervalPayment} as={Fragment}>
+              <Dialog
+                as="div"
+                className="relative z-10"
+                onClose={() => !isOpenIntervalPayment}
+              >
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <div className="fixed inset-0 bg-black bg-opacity-25" />
+                </Transition.Child>
+                <div className="fixed inset-0 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-out duration-300"
+                      enterFrom="opacity-0 scale-95"
+                      enterTo="opacity-100 scale-100"
+                      leave="ease-in duration-200"
+                      leaveFrom="opacity-100 scale-100"
+                      leaveTo="opacity-0 scale-95"
+                    >
+                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Title
+                          as="h3"
+                          className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
+                        >
+                          Edit Interval Time Cost
+                        </Dialog.Title>
+                        {Array.isArray(schoolData.payments?.interval) ? (
+                          schoolData.payments?.interval.map((e) =>
+                            e.id === idCost ? (
                               <div>
-                                <img
-                                  src="/spp.png"
-                                  alt="Default"
-                                  className="h-auto w-52"
-                                />
+                                <div className="mt-2 flex flex-col items-center justify-center">
+                                  <div className="w-full flex flex-col items-center justify-center">
+                                    <div className="w-full">
+                                      <img
+                                        src={
+                                          updateCost.image
+                                            ? URL.createObjectURL(
+                                                updateCost.image
+                                              )
+                                            : `https://storage.googleapis.com/prj1ropel/${e.image}`
+                                        }
+                                        alt="user-avatar"
+                                        className="w-full h-auto border-1 border-black "
+                                      />
+                                      <input
+                                        placeholder=""
+                                        id="upload-image"
+                                        type="file"
+                                        className="bg-@light-blue w-full p-5"
+                                        onChange={(event) => {
+                                          if (!event.currentTarget.files) {
+                                            return;
+                                          }
+                                          setUpdateCost({
+                                            ...updateCost,
+                                            image: URL.createObjectURL(
+                                              event.currentTarget.files[0]
+                                            ),
+                                          });
+                                          handleChangeUpdateCost(
+                                            event.currentTarget.files[0],
+                                            "image"
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Title</p>
+                                    <InputLightBlue
+                                      type="text"
+                                      defaultValue={e.description}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          description: event.target.value,
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                  <div className="flex flex-col gap-1 my-5 w-full">
+                                    <p>Price</p>
+                                    <InputLightBlue
+                                      type="number"
+                                      defaultValue={e.price}
+                                      onChange={(event) =>
+                                        setUpdateCost({
+                                          ...updateCost,
+                                          price: Number(event.target.value),
+                                        })
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="mt-4 flex space-x-5 justify-end">
+                                  <ButtonCancelDelete
+                                    label="Cancel"
+                                    onClick={() =>
+                                      setisOpenIntervalPayment(false)
+                                    }
+                                  />
+                                  <ButtonSubmit
+                                    label="Update"
+                                    onClick={(event) => {
+                                      handleUpdateCost(event);
+                                    }}
+                                  />
+                                </div>
                               </div>
-                            )}
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setImage(file);
-                                }
-                              }}
-                              className="bg-@light-blue w-full p-5"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Title</p>
-                            <InputLightBlue
-                              type="text"
-                              defaultValue={"SPP/1 Month"}
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1 my-5 w-full">
-                            <p>Price</p>
-                            <InputLightBlue
-                              type="number"
-                              defaultValue={500000}
-                            />
-                          </div>
-                        </div>
-                        <div className="mt-4 flex space-x-5 justify-end">
-                          <ButtonCancelDelete
-                            label="Cancel"
-                            onClick={() => setIsOpenPayment(false)}
-                          />
-                          <ButtonSubmit
-                            label="Update"
-                            onClick={() => {
-                              alert("update");
-                              setIsOpenPayment(false);
-                            }}
-                          />
-                        </div>
+                            ) : (
+                              <></>
+                            )
+                          )
+                        ) : (
+                          <></>
+                        )}
                       </Dialog.Panel>
                     </Transition.Child>
                   </div>
@@ -1659,7 +2514,7 @@ const Admin: FC = () => {
                                   <ButtonSubmit
                                     label="Update"
                                     onClick={() => {
-                                      handleUpdateFAQ(e.id);
+                                      handleUpdateFAQ();
                                     }}
                                   />
                                 </div>
@@ -1898,20 +2753,37 @@ const Admin: FC = () => {
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                       >
-                        <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden bg-white py-5 px-16 text-left align-middle shadow-xl transition-all">
                           <Dialog.Title
                             as="h3"
                             className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
                           >
                             View Brochure
                           </Dialog.Title>
-                          <Worker workerUrl="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js">
-                            <Viewer fileUrl={"/sampel.pdf"} />
-                          </Worker>
-                          <ButtonCancelDelete
-                            label="close"
-                            onClick={() => setIsOpen(false)}
-                          />
+                          {pdfFile && (
+                            <div className="h-[700px]">
+                              <h3>PDF Preview:</h3>
+                              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                                <Viewer
+                                  fileUrl={pdfFile}
+                                  plugins={[defaultLayoutPluginInstance]}
+                                  renderLoader={(percentages: number) => (
+                                    <div>
+                                      <ProgressBar
+                                        progress={Math.round(percentages)}
+                                      />
+                                    </div>
+                                  )}
+                                />
+                              </Worker>
+                            </div>
+                          )}
+                          <div className="mt-16">
+                            <ButtonCancelDelete
+                              label="close"
+                              onClick={() => setIsOpen(false)}
+                            />
+                          </div>
                         </Dialog.Panel>
                       </Transition.Child>
                     </div>
@@ -1951,4 +2823,4 @@ const Admin: FC = () => {
   );
 };
 
-export default Admin;
+export default Admi;

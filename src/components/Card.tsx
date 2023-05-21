@@ -2,7 +2,7 @@ import { FC } from "react";
 import { ButtonSubmit, ButtonCancelDelete } from "./Button";
 
 interface AddCostType {
-  title: string;
+  title?: string;
   price: number;
   image: string;
 }
