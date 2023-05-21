@@ -215,23 +215,61 @@ const Admin: FC = () => {
   useEffect(() => {
     fetchAllData();
     minTomorrow();
-    generatePreview();
+    // generatePreview();
   }, []);
 
-  const viewPdf = "/sampel.pdf";
-  const [pdfFile, setPdfFile] = useState<string | null>("");
+  const viewPdf = `https://storage.googleapis.com/prj1ropel/${schoolData.pdf}`;
 
-  const generatePreview = () => {
-    if (viewPdf) {
-      if (typeof viewPdf[0] === "string") {
-        setPdfFile(viewPdf[0]);
-      } else {
+  const [pdfFile, setPdfFile] = useState<string | null>(null);
+
+  console.log(pdfFile);
+
+  // const generatePreview = () => {
+  //   if (viewPdf) {
+  //     if (typeof viewPdf === "string") {
+  //       setPdfFile(viewPdf);
+  //     } else {
+  //       fetch(viewPdf)
+  //         .then((response) => response.blob())
+  //         .then((blob) => {
+  //           const reader = new FileReader();
+  //           reader.onloadend = () => {
+  //             setPdfFile(reader.result as string);
+  //           };
+  //           reader.readAsDataURL(blob);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error generating PDF preview:", error);
+  //           // Handle any errors that occurred during PDF generation
+  //         });
+  //     }
+  //   }
+  // };
+
+  const handleFileInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+
+    if (files && files.length > 0) {
+      const file = files[0]; // Get the first selected file
+
+      if (file.type === "application/pdf") {
         const reader = new FileReader();
+
         reader.onloadend = () => {
-          setPdfFile(reader.result as string);
+          const pdfDataUrl = reader.result as string;
+          setPdfFile(pdfDataUrl);
         };
-        reader.readAsDataURL(viewPdf[0]);
+
+        reader.readAsDataURL(file);
+      } else {
+        // Invalid file type
+        setPdfFile(null);
       }
+    } else {
+      // No file selected
+      setPdfFile(null);
     }
   };
 
@@ -259,8 +297,6 @@ const Admin: FC = () => {
       });
   };
 
-  console.log(schoolData.payments);
-
   const deleteDataSchool = () => {
     console.log(schoolId);
     Swal.fire({
@@ -276,7 +312,7 @@ const Admin: FC = () => {
         axios
           .delete(`https://go-event.online/school/${schoolId}`, {
             headers: {
-              Authorization: `Bearer ${cookie.tkn}`,
+              Authorization: `Bearer ${checkToken}`,
             },
           })
           .then((response) => {
@@ -301,8 +337,6 @@ const Admin: FC = () => {
       }
     });
   };
-
-  console.log(noData);
 
   // G-meet handle
 
@@ -709,7 +743,8 @@ const Admin: FC = () => {
       .finally(() => fetchAllData());
   };
 
-  const handleUpdateCost = () => {
+  const handleUpdateCost = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     setUpdateCost((prevUpdateCost) => ({
       ...prevUpdateCost,
       id: idCost,
@@ -735,7 +770,7 @@ const Admin: FC = () => {
           if (result.isConfirmed) {
             setUpdateCost({});
             setIsOpenPayment(false);
-            setisOpenIntervalPayment;
+            setisOpenIntervalPayment(false);
           }
         });
       })
@@ -1059,13 +1094,13 @@ const Admin: FC = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col">
-                <div
-                  className={`relative z-10 bg-[url('/sman3.jpg')] h-96 w-full bg-cover bg-center`}
-                >
-                  <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60 "></div>
-                </div>
-                <div className="flex pl-10 py-7 bg-@light-blue items-center space-x-5">
+              <div className="flex flex-col bg-@light-blue">
+                <img
+                  src={`https://storage.googleapis.com/prj1ropel/${schoolData.image}`}
+                  alt=""
+                  className="relative z-10 h-auto w-full"
+                />
+                <div className="flex pl-10 py-7 items-center space-x-5">
                   <TbMapPin className="text-3xl text-@blue" />
                   <p className="text-lg font-semibold">{schoolData.city}</p>
                 </div>
@@ -1095,10 +1130,6 @@ const Admin: FC = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-10">
-                {/* <video controls width="100%">
-                  <source src={src} type="video/mp4" />
-                  Sorry, your browser doesn't support videos.
-                </video> */}
                 <iframe
                   className="w-full h-96"
                   src={schoolData.video}
@@ -1106,6 +1137,26 @@ const Admin: FC = () => {
                   allowFullScreen
                 />
                 <div className="flex flex-col">
+                  {/* <div className="h-[700px]">
+                    <h3>PDF Preview:</h3>
+                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                      <Viewer
+                        fileUrl={schoolData.pdf}
+                        plugins={[defaultLayoutPluginInstance]}
+                        renderLoader={(percentages: number) => (
+                          <div>
+                            <ProgressBar progress={Math.round(percentages)} />
+                          </div>
+                        )}
+                      />
+                    </Worker>
+                  </div> */}
+                  <InputLightBlue
+                    type="file"
+                    label="Pdf"
+                    accept="application/pdf"
+                    onChange={(event) => handleFileInputChange(event)}
+                  />
                   <ButtonSubmit
                     label="View Brochure"
                     onClick={() => setIsOpen(true)}
@@ -2233,8 +2284,8 @@ const Admin: FC = () => {
                                   />
                                   <ButtonSubmit
                                     label="Update"
-                                    onClick={() => {
-                                      handleUpdateCost();
+                                    onClick={(event) => {
+                                      handleUpdateCost(event);
                                     }}
                                   />
                                 </div>
@@ -2367,8 +2418,8 @@ const Admin: FC = () => {
                                   />
                                   <ButtonSubmit
                                     label="Update"
-                                    onClick={() => {
-                                      handleUpdateCost();
+                                    onClick={(event) => {
+                                      handleUpdateCost(event);
                                     }}
                                   />
                                 </div>
@@ -2702,7 +2753,7 @@ const Admin: FC = () => {
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                       >
-                        <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden bg-white py-5 px-16 text-left align-middle shadow-xl transition-all">
                           <Dialog.Title
                             as="h3"
                             className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -2710,7 +2761,7 @@ const Admin: FC = () => {
                             View Brochure
                           </Dialog.Title>
                           {pdfFile && (
-                            <div className="h-[500px]">
+                            <div className="h-[700px]">
                               <h3>PDF Preview:</h3>
                               <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                                 <Viewer
@@ -2727,10 +2778,12 @@ const Admin: FC = () => {
                               </Worker>
                             </div>
                           )}
-                          <ButtonCancelDelete
-                            label="close"
-                            onClick={() => setIsOpen(false)}
-                          />
+                          <div className="mt-16">
+                            <ButtonCancelDelete
+                              label="close"
+                              onClick={() => setIsOpen(false)}
+                            />
+                          </div>
                         </Dialog.Panel>
                       </Transition.Child>
                     </div>
@@ -2770,4 +2823,4 @@ const Admin: FC = () => {
   );
 };
 
-export default Admin;
+export default Admi;
