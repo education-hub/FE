@@ -62,7 +62,7 @@ const Router = () => {
       element: <DetailSchool />,
     },
     {
-      path: "/student/registration-form",
+      path: "/student/registration-form/:id",
       element: checkToken ? (
         checkRole === "student" ? (
           <RegistrationForm />
