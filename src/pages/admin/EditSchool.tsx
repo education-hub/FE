@@ -77,6 +77,8 @@ const EditSchool: FC = () => {
 
   const navigate = useNavigate();
 
+  document.title = "Edit School | Admin Management";
+
   useEffect(() => {
     fetchSchoolData();
     fetchProvince();

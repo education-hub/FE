@@ -1,12 +1,11 @@
-import { FC, useState, useEffect } from "react";
-import { LayoutAdmin } from "../../components/Layout";
-import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
+import axios from "axios";
 
-// interface DetailAdmissionType {}
+import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
+import { LayoutAdmin } from "../../components/Layout";
 
 const DetailAdmission: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -14,18 +13,22 @@ const DetailAdmission: FC = () => {
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
 
+  console.log(student);
+
   const navigate = useNavigate();
 
   const params = useParams();
   const { id } = params;
 
+  document.title = "Detail Students Admission | Admin Management";
+
   useEffect(() => {
     fetcData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetcData = () => {
     setLoading(true);
-    // https://go-event.online
     axios
       .get(`/admin/school/admission/${id}`, {
         headers: {
@@ -49,7 +52,7 @@ const DetailAdmission: FC = () => {
         setLoading(false);
       });
   };
-  console.log(student);
+
   return (
     <LayoutAdmin>
       {loading ? (

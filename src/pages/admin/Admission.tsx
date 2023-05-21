@@ -1,28 +1,23 @@
 import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
+import axios from "axios";
+
 import { LayoutAdmin } from "../../components/Layout";
 import { ButtonSubmit } from "../../components/Button";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { useCookies } from "react-cookie";
-
-interface StudentType {
-  submission_id: number;
-  progress_id: number;
-  user_image: any;
-  user_id: number;
-  user_name: string;
-}
+import { StudentType } from "../../utils/user";
 
 const Admission: FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
   const [student, setStudent] = useState<StudentType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
 
-  console.log(student);
-
   const navigate = useNavigate();
+
+  document.title = "Students Admission | Admin Management";
 
   useEffect(() => {
     fetcData();
@@ -31,7 +26,6 @@ const Admission: FC = () => {
 
   const fetcData = () => {
     setLoading(true);
-    // https://go-event.online
     axios
       .get(`https://go-event.online/admin/admission`, {
         headers: {
@@ -41,7 +35,6 @@ const Admission: FC = () => {
       .then((response) => {
         const { data } = response;
         setStudent(data.data);
-        // console.log(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -57,7 +50,6 @@ const Admission: FC = () => {
       });
   };
 
-  console.log(student);
   return (
     <LayoutAdmin>
       <div className="p-20 flex flex-col gap-10">
