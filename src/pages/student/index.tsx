@@ -101,7 +101,7 @@ const Student: FC = () => {
                         <p>Akreditasi</p>
                         <p>{data.accreditation}</p>
                       </div>
-                      <div className="text-gray-700 text-base font-semibold">
+                      <div className="text-gray-700 text-base font-semibold justify-items-end">
                         <p>Location</p>
                         <p>{data.location}</p>
                       </div>
