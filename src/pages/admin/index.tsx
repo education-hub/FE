@@ -134,7 +134,7 @@ const Admin: FC = () => {
     axios
       .get(`https://go-event.online/admin/school`, {
         headers: {
-          Authorization: `Bearer ${cookie.tkn}`,
+          Authorization: `Bearer ${checkToken}`,
         },
       })
       .then((response) => {
@@ -147,6 +147,8 @@ const Admin: FC = () => {
         setNoData(true);
       });
   };
+
+  console.log(schoolData);
 
   const deleteDataSchool = () => {
     Swal.fire({
