@@ -242,7 +242,7 @@ const Register: FC = () => {
               {buttonSubmit ? (
                 <ButtonSubmit label="Sign up" type="submit" />
               ) : (
-                <></>
+                <ButtonSubmit label="Sign up" type="submit" disabled />
               )}
             </form>
             <div className="pt-4 flex flex-col items-center justify-center">
@@ -271,14 +271,12 @@ const Register: FC = () => {
               ) : (
                 <></>
               )}
-              {buttonGetCapthca ? (
-                <ButtonSubmit
-                  label="Show Submit Button"
-                  onClick={() => getCaptcha()}
-                />
-              ) : (
-                <></>
-              )}
+
+              <input
+                type="checkbox"
+                placeholder="Show Submit Button"
+                onChange={() => getCaptcha()}
+              />
 
               {loading ? <div>loading...</div> : <></>}
               <p className="text-center font-semibold text-base text-black pt-4">

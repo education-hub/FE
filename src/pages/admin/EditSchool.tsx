@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ComboBox } from "../../components/ComboBox";
+import { ComboBoxEditSchool } from "../../components/ComboBox";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { ProgressBar } from "@react-pdf-viewer/core";
 import { Worker } from "@react-pdf-viewer/core";
@@ -31,7 +32,6 @@ import {
 } from "../../utils/user";
 
 const schema = z.object({
-  npsn: z.string().min(8, { message: "npsn mush 8 number" }),
   name: z.string().min(3, { message: "School name is required" }),
   description: z
     .string()
@@ -57,7 +57,7 @@ const schema = z.object({
   pdf: z.any(),
 });
 
-export type Schema = z.infer<typeof schema>;
+export type SchemaEditchSchool = z.infer<typeof schema>;
 
 const EditSchool: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -90,7 +90,7 @@ const EditSchool: FC = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<Schema>({
+  } = useForm<SchemaEditchSchool>({
     resolver: zodResolver(schema),
     mode: "onChange",
   });
@@ -169,7 +169,6 @@ const EditSchool: FC = () => {
       .then((res) => {
         const {
           accreditation,
-          npsn,
           name,
           description,
           web,
@@ -186,7 +185,6 @@ const EditSchool: FC = () => {
         } = res.data.data;
         const { data } = res.data;
         setSchoolData(data);
-        setValue("npsn", npsn);
         setValue("accreditation", accreditation);
         setValue("name", name);
         setValue("description", description);
@@ -213,13 +211,20 @@ const EditSchool: FC = () => {
       });
   };
 
-  const handleUpdateSchool: SubmitHandler<Schema> = (data) => {
+  const handleUpdateSchool: SubmitHandler<SchemaEditchSchool> = (data) => {
     setLoading(true);
-    console.log(data);
-    const requestData = { ...data, school_id: id };
-    console.log(requestData);
+
+    const requestData = { ...data, id: id };
+
+    const formData = new FormData();
+    let key: keyof typeof requestData;
+    for (key in requestData) {
+      if (key === "image" || key === "pdf") formData.append(key, data[key][0]);
+      formData.append(key, requestData[key]);
+    }
+
     axios
-      .put(`https://go-event.online/admin/school`, requestData, {
+      .put(`https://go-event.online/school`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${checkToken}`,
@@ -260,12 +265,11 @@ const EditSchool: FC = () => {
           <div>
             <div className="flex flex-col gap-1">
               <InputLightBlue
+                defaultValue={schoolData.npsn}
                 label="National School Identification Number (NPSN)"
                 type="number"
                 name="npsn"
                 id="input-npsn"
-                register={register}
-                error={errors.npsn?.message}
               />
             </div>
             <InputLightBlue
@@ -296,7 +300,7 @@ const EditSchool: FC = () => {
               <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
                 <div className="grid grid-cols-2 gap-10">
                   {/* provence */}
-                  <ComboBox
+                  <ComboBoxEditSchool
                     defaultFill={`${schoolData.province}`}
                     title={"Provinces"}
                     datas={provinces}
@@ -307,7 +311,7 @@ const EditSchool: FC = () => {
                     error={errors.province?.message}
                   />
                   {/* city */}
-                  <ComboBox
+                  <ComboBoxEditSchool
                     defaultFill={`${schoolData.city}`}
                     title={"City/Regency"}
                     datas={cities}
@@ -318,7 +322,7 @@ const EditSchool: FC = () => {
                     error={errors.city?.message}
                   />
                   {/* district */}
-                  <ComboBox
+                  <ComboBoxEditSchool
                     defaultFill={`${schoolData.district}`}
                     title={"District"}
                     datas={districts}
@@ -329,7 +333,7 @@ const EditSchool: FC = () => {
                     error={errors.district?.message}
                   />
                   {/* sub-district */}
-                  <ComboBox
+                  <ComboBoxEditSchool
                     defaultFill={`${schoolData.village}`}
                     title={"Sub-district"}
                     datas={subDistricts}
