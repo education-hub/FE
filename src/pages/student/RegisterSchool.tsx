@@ -25,7 +25,7 @@ const RegisterSchool: FC = () => {
     axios
       .get(`https://go-event.online/users/progress`, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${cookie.tkn}`,
         },
       })
