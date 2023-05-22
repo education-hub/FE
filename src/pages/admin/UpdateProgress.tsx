@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -145,6 +146,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Check File Registration");
                     }}
+                    checked={
+                      student === "Check File Registration" ||
+                      selectedStep === "Check File Registration"
+                    }
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap"></td>
@@ -161,6 +166,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("File Approved");
                     }}
+                    checked={
+                      student === "File Approved" ||
+                      selectedStep === "File Approved"
+                    }
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -170,6 +179,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Failed File Approaved");
                     }}
+                    checked={
+                      student === "Failed File Approaved" ||
+                      selectedStep === "Failed File Approaved"
+                    }
                   />
                 </td>
               </tr>
@@ -185,6 +198,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Send Detail Costs Registration");
                     }}
+                    checked={
+                      student === "Send Detail Costs Registration" ||
+                      selectedStep === "Send Detail Costs Registration"
+                    }
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap"></td>
@@ -201,6 +218,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Done Payment");
                     }}
+                    checked={
+                      student === "Done Payment" ||
+                      selectedStep === "Done Payment"
+                    }
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap"></td>
@@ -217,6 +238,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Send Test Link");
                     }}
+                    checked={
+                      student === "Send Test Link" ||
+                      selectedStep === "Send Test Link"
+                    }
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap"></td>
@@ -233,6 +258,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Check Test Result");
                     }}
+                    checked={
+                      student === "Check Test Result" ||
+                      selectedStep === "Check Test Result"
+                    }
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap"></td>
@@ -247,6 +276,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Test Result");
                     }}
+                    checked={
+                      student === "Test Result" ||
+                      selectedStep === "Test Result"
+                    }
                   />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -256,6 +289,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Failed Test Result");
                     }}
+                    checked={
+                      student === "Failed Test Result" ||
+                      selectedStep === "Failed Test Result"
+                    }
                   />
                 </td>
               </tr>
@@ -271,6 +308,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Send Detail Costs Her-Registration");
                     }}
+                    checked={
+                      student === "Send Detail Costs Her-Registration" ||
+                      selectedStep === "Send Detail Costs Her-Registration"
+                    }
                   />
                 </td>
                 <td></td>
@@ -287,6 +328,10 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Already Paid Her-Registration");
                     }}
+                    checked={
+                      student === "Already Paid Her-Registration" ||
+                      selectedStep === "Already Paid Her-Registration"
+                    }
                   />
                 </td>
                 <td></td>
@@ -301,6 +346,7 @@ const UpdateProgress: FC = () => {
                     onClick={() => {
                       setSelectedStep("Finish");
                     }}
+                    checked={student === "Finish" || selectedStep === "Finish"}
                   />
                 </td>
                 <td></td>

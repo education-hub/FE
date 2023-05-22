@@ -52,7 +52,7 @@ const TestResult: FC = () => {
   return (
     <LayoutAdmin>
       {loading ? (
-        <div>Loading..</div>
+        <div className="h-screen">Loading..</div>
       ) : (
         <div className="grid grid-cols-2">
           <div className="pt-20 pl-20 pb-20">
