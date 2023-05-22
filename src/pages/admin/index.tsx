@@ -1033,14 +1033,19 @@ const Admin: FC = () => {
                   onClick={() => handleAddGmeet()}
                 />
               </div>
-              <div className="text-lg font-semibold flex gap-3">
-                link G-meet :{" "}
-                <button
-                  className="text-@orange"
-                  onClick={() => window.open(schoolData?.gmeet, "_blank")}
-                >
-                  <p>{schoolData?.gmeet}</p>
-                </button>
+              <div className="text-lg font-semibold flex flex-col gap-3">
+                <div className="flex gap-3">
+                  <p> link G-meet : </p>
+                  <button
+                    className="text-@orange"
+                    onClick={() => window.open(schoolData?.gmeet, "_blank")}
+                  >
+                    <p>{schoolData?.gmeet}</p>
+                  </button>
+                </div>
+                <div className="flex gap-3">
+                  <p>G-meet Date : </p> <p>{schoolData?.gmeet_date}</p>
+                </div>
               </div>
             </div>
             {/* Section 4  extracurriculer*/}

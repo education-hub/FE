@@ -57,7 +57,6 @@ const Student: FC = () => {
             </h1>
           </div>
         </div>
-
         <div className="max-w-6xl mx-auto mt-8">
           <button className="bg-@blue hover:bg-green-600 text-white py-2 px-16">
             <svg
@@ -77,7 +76,6 @@ const Student: FC = () => {
             Search
           </button>
         </div>
-
         <div className="max-w-6xl mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {/* Card */}
           {datas.map((data) => {

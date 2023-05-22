@@ -7,9 +7,85 @@ import axios from "axios";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { LayoutAdmin } from "../../components/Layout";
 
+interface StudentDataType {
+  school_name: string;
+  date_place: string;
+  parent_data: {
+    gender: string;
+    name: string;
+    job: string;
+    phone: string;
+    religion: string;
+    address: {
+      province: string;
+      city: string;
+      district: string;
+      village: string;
+      detail: string;
+      zip_code: string;
+    };
+  };
+  parent_signature: string;
+  student_data: {
+    gender: string;
+    graduation_from: string;
+    name: string;
+    nisn: number;
+    photo: string;
+    place_date: string;
+    religion: string;
+    address: {
+      province: string;
+      city: string;
+      district: string;
+      village: string;
+      detail: string;
+      zip_code: string;
+    };
+  };
+  student_signature: string;
+}
+
 const DetailAdmission: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [student, setStudent] = useState({});
+  const [student, setStudent] = useState<StudentDataType>({
+    school_name: "",
+    date_place: "",
+    parent_data: {
+      gender: "",
+      name: "",
+      job: "",
+      phone: "",
+      religion: "",
+      address: {
+        province: "",
+        city: "",
+        district: "",
+        village: "",
+        detail: "",
+        zip_code: "",
+      },
+    },
+    parent_signature: "",
+    student_data: {
+      gender: "",
+      graduation_from: "",
+      name: "",
+      nisn: 0,
+      photo: "",
+      place_date: "",
+      religion: "",
+      address: {
+        province: "",
+        city: "",
+        district: "",
+        village: "",
+        detail: "",
+        zip_code: "",
+      },
+    },
+    student_signature: "",
+  });
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
 
@@ -19,7 +95,7 @@ const DetailAdmission: FC = () => {
 
   const params = useParams();
   const { id } = params;
-
+  console.log(id);
   document.title = "Detail Students Admission | Admin Management";
 
   useEffect(() => {
@@ -30,14 +106,14 @@ const DetailAdmission: FC = () => {
   const fetcData = () => {
     setLoading(true);
     axios
-      .get(`/admin/school/admission/${id}`, {
+      .get(`https://go-event.online/admin/admission/${id}`, {
         headers: {
           Authorization: `Bearer ${checkToken}`,
         },
       })
       .then((response) => {
         const { data } = response.data;
-        setStudent(data.data);
+        setStudent(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -53,6 +129,8 @@ const DetailAdmission: FC = () => {
       });
   };
 
+  console.log(student);
+
   return (
     <LayoutAdmin>
       {loading ? (
@@ -62,7 +140,7 @@ const DetailAdmission: FC = () => {
           <div className="text-center text-xl font-bold">
             <h1>Summary</h1>
             <h1>New Student Admission Form</h1>
-            <h1>SMAN 3 Yogyakarta</h1>
+            <h1>{student.school_name}</h1>
           </div>
           <div className="bg-@blue w-full text-white font-semibold text-lg mt-20 flex h-16 items-center px-3 ">
             <p>A. Student Datas</p>
@@ -75,7 +153,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Sochibul Wafa’</p>
+                <p>{student.student_data.name}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -85,7 +163,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Indramayu, 29 Februari 1995</p>
+                <p>{student.student_data.place_date}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -95,7 +173,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Man</p>
+                <p>{student.student_data.gender}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -105,7 +183,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Islam</p>
+                <p>{student.student_data.religion}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -115,7 +193,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>SMPN Kroya 1</p>
+                <p>{student.student_data.graduation_from}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -125,7 +203,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>35218166918283</p>
+                <p>{student.student_data.nisn}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -141,27 +219,27 @@ const DetailAdmission: FC = () => {
                     <div className="">
                       <p className="text-gray-400">Province</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>East Java</p>
+                        <p>{student.student_data.address.province}</p>
                       </div>
                     </div>
                     {/* district */}
                     <div className="">
                       <p className="text-gray-400">District</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Gondokusuman</p>
+                        <p>{student.student_data.address.district}</p>
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
                       <p className="text-gray-400">Detail</p>
                       <div className="bg-white px-3 flex py-3 h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Jalan Laksda Laut Yos Sudarso No : 7 Kotabaru</p>
+                        <p>{student.student_data.address.detail}</p>
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 ">
                       <p className="text-gray-400">Zip Code</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>55224</p>
+                        <p>{student.student_data.address.zip_code}</p>
                       </div>
                     </div>
                   </div>
@@ -175,14 +253,14 @@ const DetailAdmission: FC = () => {
                     <div className="">
                       <p className="text-gray-400">City/Regency</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Indramayu</p>
+                        <p>{student.student_data.address.city}</p>
                       </div>
                     </div>
                     {/* sub-district */}
                     <div className="">
                       <p className="text-gray-400">Sub-District/Village</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Kotabaru</p>
+                        <p>{student.student_data.address.village}</p>
                       </div>
                     </div>
                   </div>
@@ -201,7 +279,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Mas'ud Ali</p>
+                <p>{student.parent_data.name}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -211,7 +289,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Wiraswasta</p>
+                <p>{student.parent_data.job}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -221,7 +299,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Man</p>
+                <p>{student.parent_data.gender}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -231,7 +309,7 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>Islam</p>
+                <p>{student.parent_data.religion}</p>
               </div>
             </div>
             <div className="grid grid-cols-3">
@@ -247,27 +325,27 @@ const DetailAdmission: FC = () => {
                     <div className="">
                       <p className="text-gray-400">Province</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>East Java</p>
+                        <p>{student.parent_data.address.province}</p>
                       </div>
                     </div>
                     {/* district */}
                     <div className="">
                       <p className="text-gray-400">District</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Gondokusuman</p>
+                        <p>{student.parent_data.address.city}</p>
                       </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
                       <p className="text-gray-400">Detail</p>
                       <div className="bg-white px-3 flex py-3 h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Jalan Laksda Laut Yos Sudarso No : 7 Kotabaru</p>
+                        <p>{student.parent_data.address.detail}</p>
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 ">
                       <p className="text-gray-400">Zip Code</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>55224</p>
+                        <p>{student.parent_data.address.zip_code}</p>
                       </div>
                     </div>
                   </div>
@@ -281,14 +359,14 @@ const DetailAdmission: FC = () => {
                     <div className="">
                       <p className="text-gray-400">City/Regency</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Indramayu</p>
+                        <p>{student.parent_data.address.city}</p>
                       </div>
                     </div>
                     {/* sub-district */}
                     <div className="">
                       <p className="text-gray-400">Sub-District/Village</p>
                       <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>Kotabaru</p>
+                        <p>{student.parent_data.address.village}</p>
                       </div>
                     </div>
                   </div>
@@ -302,12 +380,12 @@ const DetailAdmission: FC = () => {
               </div>
               <div className="flex gap-5">
                 <p>:</p>
-                <p>082330920789</p>
+                <p>{student.parent_data.phone}</p>
               </div>
             </div>
           </div>
           <div className="flex justify-end my-5 text-lg">
-            <p>Indramayu, 15/05/2023</p>
+            <p>{student.date_place}</p>
           </div>
           <div className="text-center text-lg my-10">
             <p>Signature,</p>
@@ -315,13 +393,21 @@ const DetailAdmission: FC = () => {
           <div className="flex justify-center gap-20">
             <div className="w-[30%] text-lg text-center flex flex-col items-center gap-3">
               <p>Parent,</p>
-              <img src="/signature1.png" alt="" className="w-[50%]" />
-              <p>Mas'ud Ali</p>
+              <img
+                src={`https://storage.googleapis.com/prj1ropel/${student.parent_signature}`}
+                alt="parent signature"
+                className="w-[50%]"
+              />
+              <p>{student.parent_data.name}</p>
             </div>
             <div className="w-[30%] text-lg text-center flex flex-col items-center gap-3">
               <p>Student,</p>
-              <img src="/signature2.png" alt="" className="w-[50%]" />
-              <p>Sochibul Wafa’</p>
+              <img
+                src={`https://storage.googleapis.com/prj1ropel/${student.student_signature}`}
+                alt="studnet signature"
+                className="w-[50%]"
+              />
+              <p>{student.student_data.name}</p>
             </div>
           </div>
           <div className="flex justify-end mt-10 gap-10">
@@ -329,7 +415,7 @@ const DetailAdmission: FC = () => {
               label="back"
               onClick={() => navigate("/admin/admission")}
             />
-            <ButtonSubmit label="print" />
+            <ButtonSubmit label="print" onClick={() => window.print()} />
           </div>
         </div>
       )}
