@@ -951,24 +951,22 @@ const Admin: FC = () => {
             <div className="bg-gray-200 grid grid-cols-2 p-20 gap-20 text-@dark text-lg">
               <div className="flex flex-col gap-10">
                 <h1 className="text-2xl font-bold">Review</h1>
-                <div className="flex space-x-10 h-16">
-                  <img src="/org1.png" alt="" className="h- w-auto" />
-                  <div className=" flex items-center bg-@light-blue w-full px-10 h-full">
-                    <p>The school is good, the admin is also friendly</p>
-                  </div>
-                </div>
-                <div className="flex space-x-10 h-16">
-                  <img src="/org1.png" alt="" className="h- w-auto" />
-                  <div className=" flex items-center bg-@light-blue w-full px-10 h-full">
-                    <p>The yard is nice, the school is clean</p>
-                  </div>
-                </div>
-                <div className="flex space-x-10 h-16">
-                  <img src="/org1.png" alt="" className="h- w-auto" />
-                  <div className=" flex items-center bg-@light-blue w-full px-10 h-full">
-                    <p>I don't regret sending my child to this school</p>
-                  </div>
-                </div>
+                {Array.isArray(schoolData.reviews) ? (
+                  schoolData.reviews?.map((e) => (
+                    <div className="flex space-x-10 h-16">
+                      <img
+                        src={`https://storage.googleapis.com/prj1ropel/${e.image}`}
+                        alt=""
+                        className="h-16 w-16"
+                      />
+                      <div className=" flex items-center bg-@light-blue w-full px-10 h-full">
+                        <p>{e.review}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="flex flex-col gap-10">
                 <iframe

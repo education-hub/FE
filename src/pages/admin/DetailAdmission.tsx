@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
@@ -415,7 +415,9 @@ const DetailAdmission: FC = () => {
               label="back"
               onClick={() => navigate("/admin/admission")}
             />
-            <ButtonSubmit label="print" onClick={() => window.print()} />
+            <Link to={`/admin/admission/pdf/${id}`} target="_blank">
+              <ButtonSubmit label="Download" />
+            </Link>
           </div>
         </div>
       )}
