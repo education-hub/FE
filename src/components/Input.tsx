@@ -5,6 +5,10 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   register?: any;
   error?: string;
   label: string;
+  option1?: string;
+  option2?: string;
+  valueoption1?: string;
+  valueoption2?: string;
 }
 
 export const InputWhite: FC<Partial<Props>> = (props) => {
@@ -112,10 +116,17 @@ export const RadioLightBlue: FC<InputHTMLAttributes<HTMLInputElement>> = (
 };
 
 export const SelectLightBlue: FC<Props> = (props) => {
-  const { register, name, error } = props;
+  const {
+    register,
+    name,
+    error,
+    option1,
+    option2,
+    valueoption1,
+    valueoption2,
+  } = props;
   return (
     <div>
-      <label className="block text-gray-700 font-bold">Role</label>
       <div className="relative">
         <select
           className="bg-@light-blue h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full"
@@ -125,8 +136,8 @@ export const SelectLightBlue: FC<Props> = (props) => {
           <option value="" disabled hidden>
             Select your role
           </option>
-          <option value="administrator">Administrator</option>
-          <option value="student">Student</option>
+          <option value={option1}>{valueoption1}</option>
+          <option value={option2}>{valueoption2}</option>
         </select>
         {error && (
           <label className="label">
