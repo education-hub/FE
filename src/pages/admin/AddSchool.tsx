@@ -386,6 +386,7 @@ const AddSchool: FC = () => {
               />
               <div className="flex my-5 justify-end">
                 <ButtonSubmit
+                  type="button"
                   label="Preview Video"
                   onClick={(event) => handleSubmitVideo(event)}
                 />
@@ -420,6 +421,7 @@ const AddSchool: FC = () => {
             </div>
             <div className="flex mt-3 justify-end">
               <ButtonSubmit
+                type="button"
                 label="view pdf"
                 onClick={() => {
                   generatePreview();
