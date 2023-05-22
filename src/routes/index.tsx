@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../pages";
 import Register from "../pages/auth/Register";
