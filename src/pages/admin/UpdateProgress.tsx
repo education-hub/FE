@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -14,7 +15,6 @@ interface objAddType {
 
 const UpdateProgress: FC = () => {
   const [selectedStep, setSelectedStep] = useState<string>("");
-  const [status, setStatus] = useState<string>("");
   const [student, setStudent] = useState({});
   const [loading, setLoading] = useState<boolean>(false);
   const [cookie] = useCookies(["tkn"]);
@@ -25,6 +25,7 @@ const UpdateProgress: FC = () => {
 
   const params = useParams();
   const { id } = params;
+  console.log(id);
 
   document.title = "Update Progress | Admin Management";
 
@@ -39,14 +40,14 @@ const UpdateProgress: FC = () => {
   const fetchData = () => {
     setLoading(true);
     axios
-      .get(`https://go-event.online/admin/school/progress/${id}`, {
+      .get(`https://go-event.online/progresses/${id}`, {
         headers: {
           Authorization: `Bearer ${checkToken}`,
         },
       })
       .then((response) => {
         const { data } = response.data;
-        setStudent(data.data);
+        setStudent(data.progress_status);
       })
       .catch((error) => {
         const { message } = error;
@@ -62,9 +63,13 @@ const UpdateProgress: FC = () => {
       });
   };
 
+  console.log(student);
+
   const updateStatus = () => {
+    const requesBody = { ...objAdd, progress_status: selectedStep };
+    console.log(requesBody);
     axios
-      .put(`https://go-event.online/admin/school/progress/${id}`, objAdd, {
+      .put(`https://go-event.online/progresses/${id}`, requesBody, {
         headers: {
           Authorization: `Bearer ${checkToken}`,
         },
@@ -138,8 +143,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Check file Registration");
-                      setStatus("passed");
+                      setSelectedStep("Check File Registration");
                     }}
                   />
                 </td>
@@ -155,8 +159,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("File Approaved");
-                      setStatus("passed");
+                      setSelectedStep("File Approved");
                     }}
                   />
                 </td>
@@ -165,8 +168,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("File Approaved");
-                      setStatus("failed");
+                      setSelectedStep("Failed File Approaved");
                     }}
                   />
                 </td>
@@ -181,8 +183,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Send Detail costs registration");
-                      setStatus("passed");
+                      setSelectedStep("Send Detail Costs Registration");
                     }}
                   />
                 </td>
@@ -199,7 +200,6 @@ const UpdateProgress: FC = () => {
                     name="selectedStep"
                     onClick={() => {
                       setSelectedStep("Done Payment");
-                      setStatus("passed");
                     }}
                   />
                 </td>
@@ -215,8 +215,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Send test link");
-                      setStatus("passed");
+                      setSelectedStep("Send Test Link");
                     }}
                   />
                 </td>
@@ -225,15 +224,14 @@ const UpdateProgress: FC = () => {
               <tr className={"bg-@light-blue divide-x-2"}>
                 <td className="px-6 py-4 whitespace-nowrap text-center">6</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {"Check test result"}
+                  {"Check Test Result"}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <RadioLightBlue
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Check test result");
-                      setStatus("passed");
+                      setSelectedStep("Check Test Result");
                     }}
                   />
                 </td>
@@ -247,8 +245,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Test result");
-                      setStatus("passed");
+                      setSelectedStep("Test Result");
                     }}
                   />
                 </td>
@@ -257,8 +254,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Test result");
-                      setStatus("failed");
+                      setSelectedStep("Failed Test Result");
                     }}
                   />
                 </td>
@@ -273,8 +269,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Send Detail costs her-registration");
-                      setStatus("passed");
+                      setSelectedStep("Send Detail Costs Her-Registration");
                     }}
                   />
                 </td>
@@ -290,8 +285,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Already paid her-registration");
-                      setStatus("passed");
+                      setSelectedStep("Already Paid Her-Registration");
                     }}
                   />
                 </td>
@@ -305,8 +299,7 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("finish");
-                      setStatus("passed");
+                      setSelectedStep("Finish");
                     }}
                   />
                 </td>
