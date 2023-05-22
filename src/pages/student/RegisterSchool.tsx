@@ -4,22 +4,18 @@ import { ButtonSubmit } from "../../components/Button";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
-interface ApiResponse {
-  limit: number;
-  products: RegisteredSchool[];
-  skip: number;
-  total: number;
-}
+import { useCookies } from "react-cookie";
 
 interface RegisteredSchool {
-  thumbnail: string;
-  title: string;
-  description: string;
+  school_name: string;
+  school_image: string;
+  school_web: string;
+  progress_id: number;
 }
 
 const RegisterSchool: FC = () => {
   const [datas, setDatas] = useState<RegisteredSchool[]>([]);
+  const [cookie] = useCookies(["tkn"]);
 
   useEffect(() => {
     fetchData();
@@ -27,13 +23,16 @@ const RegisterSchool: FC = () => {
 
   function fetchData() {
     axios
-      .get<ApiResponse>(
-        `https://dummyjson.com/products?limit=0&skip=0&select=title,thumbnail,description`
-      )
-      .then(({ data: { products } }) => {
-        const registeredSchools: RegisteredSchool[] = products;
-        setDatas(registeredSchools);
-        console.log(registeredSchools);
+      .get(`https://go-event.online/users/progress`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        setDatas(data);
+        console.log(data);
       })
       .catch((error) => {
         alert(error.toString());
@@ -45,10 +44,13 @@ const RegisterSchool: FC = () => {
       <div className="p-20 grid grid-flow-row auto-rows-max gap-10">
         {datas.map((data) => {
           return (
-            <div className="grid grid-cols-9 gap-4 tracking-normal">
+            <div
+              className="grid grid-cols-9 gap-4 tracking-normal"
+              key={data.progress_id}
+            >
               <div className="flex items-center justify-center">
                 <img
-                  src={data.thumbnail}
+                  src={`https://storage.googleapis.com/prj1ropel/${data.school_image}`}
                   alt="school_pict"
                   className="max-w-[150px] max-h-[100px]"
                 />
@@ -56,19 +58,19 @@ const RegisterSchool: FC = () => {
               <div className="col-span-3 grid grid-rows-3">
                 <p className="font-semibold text-gray-500">School Name</p>
                 <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-full">
-                  {data.title}
+                  {data.school_name}
                 </div>
               </div>
               <div className="col-span-3 grid grid-rows-3">
                 <p className="font-semibold text-gray-500">School Website</p>
                 <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-full">
-                  {data.description}
+                  {data.school_web}
                 </div>
               </div>
               <div className="col-span-2 grid grid-rows-3 h-full w-full">
                 <p className="text-white">Button Submit</p>
                 <div className="row-span-2">
-                  <Link to={`/`}>
+                  <Link to={`/student/progresses/${data.progress_id}`}>
                     <ButtonSubmit label="Detail Progress" />
                   </Link>
                 </div>
