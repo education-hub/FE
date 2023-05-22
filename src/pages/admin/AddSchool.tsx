@@ -370,12 +370,14 @@ const AddSchool: FC = () => {
               <div>
                 <iframe
                   className="h-96 w-full"
-                  src={src ? src : "https://www.youtube.com/embed/LlCwHnp3kL4"}
+                  src={src ? src : "https://www.youtube.com/embed/U1QrZJGHlco"}
                   title="Introduction Video"
                   allowFullScreen
                 />
               </div>
-              <p className="mt-5">Insert Video Youtube URL</p>
+              <p className="mt-5">
+                Look at youtube video above how to add youtube URL embedded
+              </p>
               <InputLightBlue
                 type="text"
                 label="Video"
@@ -386,6 +388,7 @@ const AddSchool: FC = () => {
               />
               <div className="flex my-5 justify-end">
                 <ButtonSubmit
+                  type="button"
                   label="Preview Video"
                   onClick={(event) => handleSubmitVideo(event)}
                 />
@@ -420,6 +423,7 @@ const AddSchool: FC = () => {
             </div>
             <div className="flex mt-3 justify-end">
               <ButtonSubmit
+                type="button"
                 label="view pdf"
                 onClick={() => {
                   generatePreview();

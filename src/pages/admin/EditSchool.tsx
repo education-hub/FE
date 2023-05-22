@@ -52,9 +52,9 @@ const schema = z.object({
     .string()
     .min(1, { message: "school website is required" })
     .url({ message: "Must be a valid video youtube embedded URL" }),
-  image: z.any(),
+  image: z.optional(z.any()),
   video: z.string().min(1, { message: "Youtube url is required" }),
-  pdf: z.any(),
+  pdf: z.optional(z.any()),
 });
 
 export type SchemaEditchSchool = z.infer<typeof schema>;
@@ -440,6 +440,7 @@ const EditSchool: FC = () => {
               />
               <div className="flex justify-end my-5">
                 <ButtonSubmit
+                  type="button"
                   label="Preview Video"
                   onClick={(event) => handleSubmitVideo(event)}
                 />
@@ -476,6 +477,7 @@ const EditSchool: FC = () => {
             </div>
             <div className="flex mt-3 justify-end">
               <ButtonSubmit
+                type="button"
                 label="Preview pdf"
                 onClick={() => {
                   generatePreview();
