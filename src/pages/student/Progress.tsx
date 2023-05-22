@@ -1,7 +1,43 @@
 import { FC } from "react";
 import { Layout } from "../../components/Layout";
 
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+
 const Progress: FC = () => {
+  const [progress, setProgress] = useState(null);
+  const [cookie] = useCookies(["tkn"]);
+
+  const param = useParams();
+  const { id } = param;
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`https://go-event.online/progresses/${id}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
+      .then((res) => {
+        const { progress_status } = res.data.data;
+        setProgress(progress_status);
+        console.log(res.data.data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      });
+  }
+
+  const isProgressActive = (progress_status: string) => {
+    return progress === progress_status;
+  };
+
   return (
     <Layout>
       <div className="flex flex-col justify-center items-center h-full bg-white p-20">
@@ -10,94 +46,157 @@ const Progress: FC = () => {
             Register Steps
           </h1>
           <div className="flex items-center">
-            <div className="relative mr-4">
-              <div className="w-8 h-8 rounded-full bg-gray-400"></div>
-              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Check File Registration")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
             </div>
             <div className="flex-1 border-t-2 border-gray-500"></div>
-            <div className="relative mx-4">
-              <div className="w-8 h-8 rounded-full bg-gray-400"></div>
-              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Failed File Approved")
+                    ? isProgressActive("File Approved")
+                      ? "bg-green-500"
+                      : "bg-red-600"
+                    : "bg-slate-200"
+                }`}
+              />
             </div>
             <div className="flex-1 border-t-2 border-gray-500"></div>
-            <div className="relative mx-4">
-              <div className="w-8 h-8 rounded-full bg-red-600"></div>
-              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Send Detail Costs Registration")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
             </div>
             <div className="flex-1 border-t-2 border-gray-500"></div>
-            <div className="relative mx-4">
-              <div className="w-8 h-8 rounded-full bg-gray-400"></div>
-              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Done Payment")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
             </div>
+            <div className="flex-1 border-t-2 border-gray-500"></div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Send Test Link")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
+            </div>
+            {/*  */}
           </div>
-          <div className="flex items-center mt-2">
-            <div className="text-center w-1/5">
+          <div className="grid grid-cols-5 gap-36">
+            <div className="w-full">
               <p className="font-bold text-black">Checking File Registration</p>
             </div>
-            <div className="text-center w-1/5">
-              <p className="font-bold text-black">File Approved</p>
+            <div className="w-full">
+              {isProgressActive("Failed File Approved") ? (
+                <p className="font-bold text-red-600">File Rejected</p>
+              ) : (
+                <p className="font-bold text-green-600">File Approved</p>
+              )}
             </div>
-            <div className="text-center w-1/5">
+            <div className="w-full">
               <p className="font-bold text-black">
                 Send Detail Cost Registration
               </p>
             </div>
-            <div className="text-center w-1/5">
+            <div className="w-full">
               <p className="font-bold text-black">Done Payment</p>
             </div>
-            <div className="text-center w-1/5">
+            <div className="w-full">
               <p className="font-bold text-black">Send Test Link</p>
             </div>
           </div>
-          <div className="flex items-center mt-2">
-            <div className="flex-1 border-t-2 border-gray-500"></div>
-            <div className="relative mx-4">
-              <div className="w-8 h-8 rounded-full bg-gray-400"></div>
-              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
+          {/*  */}
+          <div className="flex items-center mt-10">
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Check Test Result")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
             </div>
             <div className="flex-1 border-t-2 border-gray-500"></div>
-            <div className="relative mx-4">
-              <div className="w-8 h-8 rounded-full bg-gray-400"></div>
-              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Test Result")
+                    ? "bg-green-500"
+                    : isProgressActive("Failed Test Result")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
             </div>
             <div className="flex-1 border-t-2 border-gray-500"></div>
-            <div className="relative mx-4">
-              <div className="w-8 h-8 rounded-full bg-gray-400"></div>
-              <div className="absolute top-0 right-0 bottom-0 left-0 flex justify-center items-center">
-                <div className="w-3 h-3 rounded-full bg-white"></div>
-              </div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Send Detail Costs Her-Registration")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
             </div>
+            <div className="flex-1 border-t-2 border-gray-500"></div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Already Paid Her-Registration")
+                    ? "bg-red-500"
+                    : "bg-slate-200"
+                }`}
+              />
+            </div>
+            <div className="flex-1 border-t-2 border-gray-500"></div>
+            <div className="relative">
+              <div
+                className={`rounded-full w-10 h-10 ${
+                  isProgressActive("Finish") ? "bg-red-500" : "bg-slate-200"
+                }`}
+              />
+            </div>
+            {/*  */}
           </div>
-          <div className="flex items-center mt-2">
-            <div className="text-center w-1/5">
+          <div className="grid grid-cols-5 gap-36">
+            <div className="w-full">
               <p className="font-bold text-black">Check the Result</p>
             </div>
-            <div className="text-center w-1/5">
-              <p className="font-bold text-black">Test Result</p>
+            <div className="w-full">
+              {isProgressActive("Failed File Approved") ? (
+                <p className="font-bold text-red-600">Test Result Rejected</p>
+              ) : (
+                <p className="font-bold text-green-600">Test Result Approved</p>
+              )}
             </div>
-            <div className="text-center w-1/5">
+            <div className="w-full">
               <p className="font-bold text-black">
                 Send Detail Cost Her-Registration
               </p>
             </div>
-            <div className="text-center w-1/5">
+            <div className="w-full">
               <p className="font-bold text-black">
                 Already Paid Her-Registration
               </p>
             </div>
-            <div className="text-center w-1/5">
+            <div className="w-full">
               <p className="font-bold text-black">Finish</p>
             </div>
           </div>

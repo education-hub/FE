@@ -108,7 +108,7 @@ const Router = () => {
       ),
     },
     {
-      path: "/student/progress",
+      path: "/student/progresses/:id",
       element: checkToken ? (
         checkRole === "student" ? (
           <Progress />
