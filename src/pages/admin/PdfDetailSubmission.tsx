@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Document,
   Page,
@@ -15,8 +15,8 @@ import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
 
 // Define the A4 size
-const PAGE_HEIGHT = 842;
-const PAGE_WIDTH = 595;
+// const PAGE_HEIGHT = 842;
+// const PAGE_WIDTH = 595;
 
 // Define styles for the table
 const styles = StyleSheet.create({
@@ -53,6 +53,8 @@ const PdfSubmission = () => {
 
   const params = useParams();
   const { id } = params;
+
+  console.log(loading, data);
 
   useEffect(() => {
     fetchData();
