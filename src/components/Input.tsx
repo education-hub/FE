@@ -115,7 +115,6 @@ export const SelectLightBlue: FC<Props> = (props) => {
   const { register, name, error } = props;
   return (
     <div>
-      <label className="block text-gray-700 font-bold">Role</label>
       <div className="relative">
         <select
           className="bg-@light-blue h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full"

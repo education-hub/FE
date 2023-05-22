@@ -185,7 +185,6 @@ export interface StudentType {
 }
 
 export interface ResultDataType {
-  name: string;
   email: string;
   result: string;
 }
