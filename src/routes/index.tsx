@@ -209,7 +209,7 @@ const Router = () => {
         checkToken && checkRole === "administrator" ? <Admission /> : <Home />,
     },
     {
-      path: "/admin/admission/:student_id",
+      path: "/admin/admission/:id",
       element:
         checkToken && checkRole === "administrator" ? (
           <DetailAdmission />

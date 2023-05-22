@@ -50,6 +50,8 @@ const Admission: FC = () => {
       });
   };
 
+  console.log(student);
+
   return (
     <LayoutAdmin>
       <div className="p-20 flex flex-col gap-10">

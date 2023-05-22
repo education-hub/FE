@@ -32,6 +32,7 @@ export interface SchoolDataType {
   district: string;
   extracurriculars: string | null; // belum ketahuan data aslinya jika ditambahkan
   gmeet: string;
+  gmeet_date: string;
   id: number;
   image: any;
   name: string;
@@ -135,6 +136,7 @@ export interface DetailSchoolDataType {
   district: string;
   extracurriculars: string | null; // belum ketahuan data aslinya jika ditambahkan
   gmeet: string;
+  gmeet_date: string;
   id: number;
   image: any;
   name: string;
