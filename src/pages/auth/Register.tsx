@@ -48,7 +48,6 @@ const Register: FC = () => {
   const [captchaValue, setCaptchaValue] = useState<string>("");
   const [buttonSubmit, setButtonSubmit] = useState<boolean>(false);
   const [showCaptcha, setShowCaptcha] = useState<boolean>(false);
-  const [buttonGetCapthca, setButtonGetCapthca] = useState<boolean>(true);
 
   const navigate = useNavigate();
 
@@ -64,7 +63,6 @@ const Register: FC = () => {
         console.log(error);
       })
       .finally(() => {
-        setButtonGetCapthca(false);
         setShowCaptcha(true);
         setButtonSubmit(false);
       });
@@ -96,7 +94,6 @@ const Register: FC = () => {
             if (result.isConfirmed) {
               setButtonSubmit(true);
               setShowCaptcha(false);
-              setButtonGetCapthca(false);
               navigate("/login");
             }
           });
@@ -138,7 +135,6 @@ const Register: FC = () => {
           if (result.isConfirmed) {
             setButtonSubmit(true);
             setShowCaptcha(false);
-            setButtonGetCapthca(false);
           }
         });
       })
@@ -148,6 +144,10 @@ const Register: FC = () => {
           icon: "error",
           title: message,
           showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            getCaptcha();
+          }
         });
       });
   };
@@ -246,6 +246,19 @@ const Register: FC = () => {
               )}
             </form>
             <div className="pt-4 flex flex-col items-center justify-center">
+              <label className="flex gap-3 py-3">
+                <input
+                  type="checkbox"
+                  onChange={(event) => {
+                    if (event.target.checked) {
+                      getCaptcha();
+                    } else {
+                      setShowCaptcha(false);
+                    }
+                  }}
+                />
+                Verify that you are not a robot
+              </label>
               {showCaptcha ? (
                 <div className="flex flex-col gap-5">
                   <div className="flex items-center space-x-5">
@@ -271,12 +284,6 @@ const Register: FC = () => {
               ) : (
                 <></>
               )}
-
-              <input
-                type="checkbox"
-                placeholder="Show Submit Button"
-                onChange={() => getCaptcha()}
-              />
 
               {loading ? <div>loading...</div> : <></>}
               <p className="text-center font-semibold text-base text-black pt-4">
