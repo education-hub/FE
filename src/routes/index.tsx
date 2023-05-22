@@ -97,15 +97,16 @@ const Router = () => {
     },
     {
       path: "/student/register-school",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <RegisterSchool />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
+      element: <RegisterSchool />,
+      // element: checkToken ? (
+      //   checkRole === "student" ? (
+      //     <RegisterSchool />
+      //   ) : (
+      //     <Student />
+      //   )
+      // ) : (
+      //   <Home />
+      // ),
     },
     {
       path: "/student/progress",
