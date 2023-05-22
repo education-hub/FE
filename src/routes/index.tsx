@@ -218,7 +218,7 @@ const Router = () => {
         ),
     },
     {
-      path: "/admin/progress/:student_id",
+      path: "/admin/progress/:id",
       element:
         checkToken && checkRole === "administrator" ? (
           <UpdateProgress />

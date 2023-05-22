@@ -54,7 +54,12 @@ const Admission: FC = () => {
 
   return (
     <LayoutAdmin>
-      <div className="p-20 flex flex-col gap-10">
+      <div
+        className="p-20 flex flex-col gap-10 h-screen bg-[url(/bg-2.jpg)] bg-center bg-cover"
+        style={{
+          backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)),url(/bg-2.jpg)`,
+        }}
+      >
         {loading ? (
           <div>Loading..</div>
         ) : (
@@ -68,9 +73,9 @@ const Admission: FC = () => {
                       alt=""
                     />
                   </div>
-                  <div>
+                  <div className="">
                     <p>Student_id</p>
-                    <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                    <div className="bg-@light-blue px-3 flex items-center justify-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
                       <p>{e.user_id}</p>
                     </div>
                   </div>
