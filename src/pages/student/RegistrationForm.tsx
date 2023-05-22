@@ -15,6 +15,9 @@ import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { SelectLightBlue } from "../../components/Input";
+
+const gender = z.enum(["Man", "Woman"]);
 
 const schema = z.object({
   student_photo: z
@@ -26,7 +29,7 @@ const schema = z.object({
   place_date: z
     .string()
     .min(3, { message: "Must contain at least 3 character(s)" }),
-  gender: z.string().min(1, { message: "Choose 1 option" }),
+  gender: gender,
   religion: z.string().min(1, { message: "Choose 1 option" }),
   graduation_from: z
     .string()
@@ -52,6 +55,7 @@ const schema = z.object({
     .string()
     .min(3, { message: "Must contain at least 3 character(s)" }),
   parent_religion: z.string().min(1, { message: "Choose 1 option" }),
+  parent_gender: gender,
   parent_phone: z
     .string()
     .min(10, { message: "Must contain at least 10 character(s)" }),
@@ -270,18 +274,17 @@ const RegistrationForm: FC = () => {
           <div>
             <label className="block text-gray-700 font-bold">Gender</label>
             <div className="relative">
-              <select
-                className="bg-@light-blue h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none w-full"
-                {...register("gender", {
-                  validate: (value) => value !== "" || "Choose 1 option",
-                })}
-              >
-                <option value="" selected disabled hidden>
-                  Choose Gender
-                </option>
-                <option value="administrator">Man</option>
-                <option value="student">Woman</option>
-              </select>
+              <SelectLightBlue
+                label="Gender"
+                name="gender"
+                id="input-gender"
+                option1="Man"
+                valueoption1="Man"
+                option2="Woman"
+                valueoption2="Woman"
+                register={register}
+                error={errors.gender?.message}
+              />
             </div>
             {errors.gender && <p>{errors.gender.message}</p>}
           </div>
@@ -418,6 +421,23 @@ const RegistrationForm: FC = () => {
                 register={register}
                 error={errors.parent_job?.message}
               />
+            </div>
+            <div>
+              <label className="block text-gray-700 font-bold">Gender</label>
+              <div className="relative">
+                <SelectLightBlue
+                  label="Gender"
+                  name="parent_gender"
+                  id="input-parent_gender"
+                  option1="Man"
+                  valueoption1="Man"
+                  option2="Woman"
+                  valueoption2="Woman"
+                  register={register}
+                  error={errors.parent_gender?.message}
+                />
+              </div>
+              {errors.parent_gender && <p>{errors.parent_gender.message}</p>}
             </div>
             <div>
               <label className="block text-gray-700 font-bold">Religion</label>

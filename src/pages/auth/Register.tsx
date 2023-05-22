@@ -236,6 +236,10 @@ const Register: FC = () => {
                 label="Select Role"
                 name="role"
                 id="input-role"
+                option1="administrator"
+                valueoption1="administrator"
+                option2="student"
+                valueoption2="student"
                 register={register}
                 error={errors.role?.message}
               />
