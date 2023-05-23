@@ -18,7 +18,6 @@ import RegisterSchool from "../pages/student/RegisterSchool";
 import Progress from "../pages/student/Progress";
 import FirstRegistration from "../pages/student/FirstRegistration";
 import Transaction from "../pages/student/Transaction";
-import HerRegistration from "../pages/student/HerRegistration";
 import Profile from "../pages/student/Profile";
 import ForgetPassword from "../pages/auth/ForgetPassword";
 import NewPassword from "../pages/auth/NewPassword";
@@ -121,7 +120,7 @@ const Router = () => {
       ),
     },
     {
-      path: "/student/transaction",
+      path: "/student/transactions",
       element: checkToken ? (
         checkRole === "student" ? (
           <Transaction />
@@ -133,22 +132,10 @@ const Router = () => {
       ),
     },
     {
-      path: "/student/first-registration/:id",
+      path: "/student/transactions/:id",
       element: checkToken ? (
         checkRole === "student" ? (
           <FirstRegistration />
-        ) : (
-          <Student />
-        )
-      ) : (
-        <Home />
-      ),
-    },
-    {
-      path: "/student/herregistration",
-      element: checkToken ? (
-        checkRole === "student" ? (
-          <HerRegistration />
         ) : (
           <Student />
         )

@@ -96,16 +96,11 @@ const StudentProfile: FC = () => {
       .then((response) => {
         const { message } = response.data && response.data;
         Swal.fire({
+          position: "top-end",
           icon: "success",
-          title: "Success",
-          text: message,
-          showCancelButton: false,
-          showConfirmButton: true,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setObjSubmit({});
-            setIsOpen(false);
-          }
+          title: message,
+          showConfirmButton: false,
+          timer: 1500,
         });
       })
       .catch((error) => {
