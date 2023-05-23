@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC } from "react";
 import { Layout } from "../../components/Layout";
 import { ButtonSubmit } from "../../components/Button";
@@ -32,7 +33,6 @@ const RegisterSchool: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setDatas(data);
-        console.log(data);
       })
       .catch((error) => {
         alert(error.toString());

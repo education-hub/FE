@@ -118,7 +118,6 @@ const AdminProfile: FC = () => {
 
   const handleUpdate = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(objSubmit);
     const formData = new FormData();
     let key: keyof typeof objSubmit;
     for (key in objSubmit) {

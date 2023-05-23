@@ -188,3 +188,48 @@ export interface ResultDataType {
   email: string;
   result: string;
 }
+
+export interface StudentDataType {
+  school_name: string;
+  date_place: string;
+  parent_data: {
+    gender: string;
+    name: string;
+    job: string;
+    phone: string;
+    religion: string;
+    address: {
+      province: string;
+      city: string;
+      district: string;
+      village: string;
+      detail: string;
+      zip_code: string;
+    };
+  };
+  parent_signature: string;
+  student_data: {
+    gender: string;
+    graduation_from: string;
+    name: string;
+    nisn: number;
+    photo: string;
+    place_date: string;
+    religion: string;
+    address: {
+      province: string;
+      city: string;
+      district: string;
+      village: string;
+      detail: string;
+      zip_code: string;
+    };
+  };
+  student_signature: string;
+}
+
+export interface ImageType {
+  photo: string;
+  parent_signature: string;
+  student_signature: string;
+}

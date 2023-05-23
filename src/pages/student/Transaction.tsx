@@ -31,7 +31,6 @@ const Transaction: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setDatas(data);
-        console.log(data);
       })
       .catch((error) => {
         alert(error.toString());

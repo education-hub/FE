@@ -166,7 +166,6 @@ const RegistrationForm: FC = () => {
   };
 
   const handleRegistrationForm: SubmitHandler<SchemaStudent> = (data) => {
-    console.log(data);
     const formData = new FormData();
     let key: keyof typeof data;
     for (key in data) {

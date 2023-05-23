@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
@@ -6,45 +7,7 @@ import axios from "axios";
 
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { LayoutAdmin } from "../../components/Layout";
-
-interface StudentDataType {
-  school_name: string;
-  date_place: string;
-  parent_data: {
-    gender: string;
-    name: string;
-    job: string;
-    phone: string;
-    religion: string;
-    address: {
-      province: string;
-      city: string;
-      district: string;
-      village: string;
-      detail: string;
-      zip_code: string;
-    };
-  };
-  parent_signature: string;
-  student_data: {
-    gender: string;
-    graduation_from: string;
-    name: string;
-    nisn: number;
-    photo: string;
-    place_date: string;
-    religion: string;
-    address: {
-      province: string;
-      city: string;
-      district: string;
-      village: string;
-      detail: string;
-      zip_code: string;
-    };
-  };
-  student_signature: string;
-}
+import { StudentDataType } from "../../utils/user";
 
 const DetailAdmission: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -86,24 +49,22 @@ const DetailAdmission: FC = () => {
     },
     student_signature: "",
   });
+
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
-
-  console.log(student);
 
   const navigate = useNavigate();
 
   const params = useParams();
   const { id } = params;
-  console.log(id);
+
   document.title = "Detail Students Admission | Admin Management";
 
   useEffect(() => {
-    fetcData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData();
   }, []);
 
-  const fetcData = () => {
+  const fetchData = () => {
     setLoading(true);
     axios
       .get(`https://go-event.online/admin/admission/${id}`, {
@@ -129,18 +90,24 @@ const DetailAdmission: FC = () => {
       });
   };
 
-  console.log(student);
-
   return (
     <LayoutAdmin>
       {loading ? (
-        <div>Loading...</div>
+        <div className="h-screen">Loading...</div>
       ) : (
         <div className="p-20">
           <div className="text-center text-xl font-bold">
-            <h1>Summary</h1>
-            <h1>New Student Admission Form</h1>
-            <h1>{student.school_name}</h1>
+            <div className="relative">
+              <h1>Summary</h1>
+              <h1>New Student Admission Form</h1>
+              <h1>{student.school_name}</h1>
+              <img
+                src={`https://storage.googleapis.com/prj1ropel/${student.student_data.photo}`}
+                alt="image"
+                className="w-32 h-32 absolute right-0 top-0 border-2 p-2 border-@blue"
+              />
+            </div>
+            <div></div>
           </div>
           <div className="bg-@blue w-full text-white font-semibold text-lg mt-20 flex h-16 items-center px-3 ">
             <p>A. Student Datas</p>
@@ -335,7 +302,6 @@ const DetailAdmission: FC = () => {
                         <p>{student.parent_data.address.city}</p>
                       </div>
                     </div>
-
                     <div className="flex flex-col gap-1">
                       <p className="text-gray-400">Detail</p>
                       <div className="bg-white px-3 flex py-3 h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">

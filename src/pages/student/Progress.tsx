@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC } from "react";
 import { Layout } from "../../components/Layout";
 
@@ -27,7 +28,6 @@ const Progress: FC = () => {
       .then((res) => {
         const { progress_status } = res.data.data;
         setProgress(progress_status);
-        console.log(res.data.data);
       })
       .catch((error) => {
         alert(error.toString());

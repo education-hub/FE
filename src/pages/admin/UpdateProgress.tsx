@@ -16,23 +16,16 @@ interface objAddType {
 
 const UpdateProgress: FC = () => {
   const [selectedStep, setSelectedStep] = useState<string>("");
-  const [student, setStudent] = useState({});
+  const [objAdd] = useState<objAddType>({ progress_status: selectedStep });
   const [loading, setLoading] = useState<boolean>(false);
+  const [student, setStudent] = useState({});
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
-  const [objAdd] = useState<objAddType>({
-    progress_status: selectedStep,
-  });
 
   const params = useParams();
   const { id } = params;
-  console.log(id);
 
   document.title = "Update Progress | Admin Management";
-
-  console.log(selectedStep, status);
-  console.log(checkToken);
-  console.log(student);
 
   useEffect(() => {
     fetchData();
@@ -64,11 +57,8 @@ const UpdateProgress: FC = () => {
       });
   };
 
-  console.log(student);
-
   const updateStatus = () => {
     const requesBody = { ...objAdd, progress_status: selectedStep };
-    console.log(requesBody);
     axios
       .put(`https://go-event.online/progresses/${id}`, requesBody, {
         headers: {
@@ -87,7 +77,6 @@ const UpdateProgress: FC = () => {
       })
       .catch((error) => {
         const { message, code } = error.response.data;
-        console.log(error);
         Swal.fire({
           icon: "error",
           title: code,

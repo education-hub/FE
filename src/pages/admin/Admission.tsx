@@ -50,8 +50,6 @@ const Admission: FC = () => {
       });
   };
 
-  console.log(student);
-
   return (
     <LayoutAdmin>
       <div
@@ -67,10 +65,11 @@ const Admission: FC = () => {
             {student.map((e) => {
               return (
                 <>
-                  <div>
+                  <div className="flex justify-end">
                     <img
                       src={`https://storage.googleapis.com/prj1ropel/${e.user_image}`}
                       alt=""
+                      className="h-16 w-auto mt-6"
                     />
                   </div>
                   <div className="">

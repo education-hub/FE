@@ -144,7 +144,6 @@ const DetailSchool: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setData(data);
-        console.log(data);
       })
       .catch((error) => {
         alert(error.toString());
