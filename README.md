@@ -36,6 +36,7 @@ reach your dream school through your hands without having to go anywhere. Find m
 
 - Auth (Register & Login)
 - Role (Administrator or Student)
+- Forget Password
 
 #### As Administrator
 
@@ -103,6 +104,8 @@ npm run dev
 
 ## 🛠️ Built With
 
+- [Vite](https://vitejs.dev/)
+- [TypeScripct](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Headless UI](https://headlessui.com/)
 - [React Hook Form](https://react-hook-form.com/)
@@ -117,5 +120,88 @@ npm run dev
 - [React Icons](https://react-icons.github.io/react-icons/)
 - [Validation Zod](https://zod.dev/)
 
-- [Cookies Next js](https://www.npmjs.com/package/cookies-next)
-- [Local Forage](https://www.npmjs.com/package/localforage)
+## 📁 Folder Structure
+
+```sh
+fe
+├─ public
+├─ src
+│  ├─ assets
+│  ├─ components
+│  │  ├─ Accordion.tsx
+│  │  ├─ AccordionStudent.tsx
+│  │  ├─ Button.tsx
+│  │  ├─ Card.tsx
+│  │  ├─ ComboBox.tsx
+│  │  ├─ Footer.tsx
+│  │  ├─ Input.tsx
+│  │  ├─ Layout.tsx
+│  │  ├─ Navbar.tsx
+│  │  └─ videoBackground.tsx
+│  ├─ pages
+│  │  ├─ Admin
+│  │  │  ├─ AddSchool.tsx
+│  │  │  ├─ Admission.tsx
+│  │  │  ├─ DetailAdmission.tsx
+│  │  │  ├─ EditSchool.tsx
+│  │  │  ├─ index.tsx
+│  │  │  ├─ padfDetailAdmission.tsx
+│  │  │  ├─ Profile.tsx
+│  │  │  ├─ TestResult.tsx
+│  │  │  └─ UpdateProgress.tsx
+│  │  ├─ Auth
+│  │  │  ├─ ForgetPassword.tsx
+│  │  │  ├─ Login.tsx
+│  │  │  ├─ NewPassword.tsx
+│  │  │  └─ Register.tsx
+│  │  ├─ Student
+│  │  │  ├─ DetailSchool.tsx
+│  │  │  ├─ FirstRegistration.tsx
+│  │  │  ├─ HerRegistration.tsx
+│  │  │  ├─ index.tsx
+│  │  │  ├─ Profile.tsx
+│  │  │  ├─ Progress.tsx
+│  │  │  ├─ RegisterSchool.tsx
+│  │  │  ├─ RegisterForm.tsx
+│  │  │  └─ Transaction.tsx
+│  │  └─ index.tsx
+│  ├─ routes
+│  │  └─ index.tsx
+│  ├─ styles
+│  │  └─ index.tsx
+│  ├─ utils
+│  │  └─ user.tsx
+│  └─ main.tsx
+│  └─ vite-env.d.ts
+├─ .eslintrc.cjs
+├─ .gitignore
+├─ index.html
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.json
+├─ README.md
+├─ tailwind.config.json
+├─ tsconfig.json
+├─ tsconfig.node.json
+├─ vercel.json
+└─ vite.config.ts
+
+```
+
+<!-- CONTACT -->
+
+## 🤖 BEST TEAM
+
+#### BE
+
+- Satrio Wibowo
+  - [Github](https://github.com/orgs/education-hub/people/ropel12)
+
+#### FE
+
+- Irwan Hadi
+
+  - [Github](https://github.com/orgs/education-hub/people/IrwanFicoFar)
+
+- Yusuf Ashidicki Pradana
+  - [Github](https://github.com/orgs/education-hub/people/ysfashidicki)
