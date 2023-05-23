@@ -124,10 +124,10 @@ const Register: FC = () => {
         },
       })
       .then((response) => {
-        const { code } = response.data;
         Swal.fire({
           icon: "success",
-          title: "Verified Success!!",
+          title: "Success Registers",
+          text: "check your email to verified!!",
           showCancelButton: false,
         }).then((result) => {
           if (result.isConfirmed) {
