@@ -63,7 +63,7 @@ const Transaction: FC = () => {
               <div className="col-span-3 grid grid-rows-3 h-full w-full">
                 <p className="text-white">Button Detail Transaction</p>
                 <div className="row-span-2">
-                  <Link to={`/student/first-registration/${data.school_id}`}>
+                  <Link to={`/student/transactions/${data.school_id}`}>
                     <ButtonSubmit label="Detail Transaction" />
                   </Link>
                 </div>
