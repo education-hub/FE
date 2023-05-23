@@ -33,7 +33,6 @@ const Router = () => {
   const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
   const checkRole = cookie.role;
-  console.log(checkToken, checkRole);
 
   useEffect(() => {
     fetchDataSchool();

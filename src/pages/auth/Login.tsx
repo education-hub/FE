@@ -34,7 +34,6 @@ const Login: FC = () => {
 
   const Login: SubmitHandler<Schema> = (data) => {
     setLoading(true);
-    console.log(data);
     axios
       .post("https://go-event.online/login", data, {
         headers: {
@@ -43,7 +42,6 @@ const Login: FC = () => {
       })
       .then((response) => {
         const { data } = response.data;
-        console.log(response.headers);
         Swal.fire({
           icon: "success",
           title: "Login Success!!",

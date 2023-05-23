@@ -148,8 +148,6 @@ const Admin: FC = () => {
       });
   };
 
-  console.log(schoolData);
-
   const deleteDataSchool = () => {
     Swal.fire({
       title: "Are you sure want to delete?",

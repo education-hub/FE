@@ -35,7 +35,6 @@ const ForgetPassword: FC = () => {
 
   const submit: SubmitHandler<Schema> = (data) => {
     const { token } = params;
-    console.log(data);
     setLoading(true);
 
     if (data.password !== data.retype_password) {
@@ -53,7 +52,6 @@ const ForgetPassword: FC = () => {
         })
         .then((response) => {
           const { message } = response.data;
-          console.log(response);
           Swal.fire({
             icon: "success",
             title: message,

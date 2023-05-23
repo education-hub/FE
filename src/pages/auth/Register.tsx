@@ -59,8 +59,11 @@ const Register: FC = () => {
         setCaptchaId(data.captchaid);
         setCaptchaImage(data.image);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        Swal.fire({
+          icon: "warning",
+          title: "Failed to get Captcha",
+        });
       })
       .finally(() => {
         setShowCaptcha(true);
@@ -70,7 +73,6 @@ const Register: FC = () => {
 
   const submit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
-    console.log(data);
     if (data.password !== data.retype_password) {
       Swal.fire({
         icon: "warning",
@@ -99,7 +101,6 @@ const Register: FC = () => {
           });
         })
         .catch((error) => {
-          console.log(error);
           const { message } = error.response.data;
           Swal.fire({
             icon: "error",
@@ -116,7 +117,6 @@ const Register: FC = () => {
       captcha_id: captchaId,
       value: captchaValue,
     };
-    console.log(requestBody);
     axios
       .post("https://go-event.online/verifycaptcha", requestBody, {
         headers: {
@@ -124,9 +124,7 @@ const Register: FC = () => {
         },
       })
       .then((response) => {
-        console.log(response);
         const { code } = response.data;
-        console.log(code);
         Swal.fire({
           icon: "success",
           title: "Verified Success!!",
