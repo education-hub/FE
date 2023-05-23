@@ -24,7 +24,7 @@ reach your dream school through your hands without having to go anywhere. Find m
 
 #### ⚙ BE
 
-- ![download](https://github.com/education-hub/FE/assets/41413060/b979ab1f-0f0b-4881-bd77-e234cc419221) [SWAGGER](https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0)
+- [SWAGGER](https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0)
 
 ## 🤝 Collaboration
 
@@ -37,7 +37,7 @@ reach your dream school through your hands without having to go anywhere. Find m
 - Role (Administrator or Student)
 - Forget Password
 
-#### ![Uploading png-transparent-computer-icons-management-admin-silhouette-black-and-white-neck-thumbnail.png…]() As Administrator
+#### :office_worker: As Administrator
 
 - CRUD Profile
 - CRUD School
@@ -59,7 +59,7 @@ reach your dream school through your hands without having to go anywhere. Find m
 - Update Student Admission progress
 
 
-#### ![download](https://github.com/education-hub/FE/assets/41413060/fe753285-2e58-4d06-b24a-733348453061) As Student
+#### :technologist: As Student
 
 - CRUD Profile
 - Searching School
