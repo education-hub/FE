@@ -24,6 +24,7 @@ import NewPassword from "../pages/auth/NewPassword";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
+import PdfSubmission from "../pages/admin/PdfDetailSubmission";
 
 axios.defaults.baseURL =
   "https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0";
@@ -205,7 +206,16 @@ const Router = () => {
         ),
     },
     {
-      path: "/admin/progress/:student_id",
+      path: "/admin/admission/pdf/:id",
+      element:
+        checkToken && checkRole === "administrator" ? (
+          <PdfSubmission />
+        ) : (
+          <Home />
+        ),
+    },
+    {
+      path: "/admin/progress/:id",
       element:
         checkToken && checkRole === "administrator" ? (
           <UpdateProgress />

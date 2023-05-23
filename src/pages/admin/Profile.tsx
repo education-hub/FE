@@ -161,9 +161,14 @@ const AdminProfile: FC = () => {
 
   return (
     <LayoutAdmin>
-      <div className="p-20 grid grid-cols-2 gap-20">
+      <div
+        className="p-20 grid grid-cols-2 gap-20 bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)),url(/bg-3.jpg)`,
+        }}
+      >
         <div>
-          <div className="flex flex-col">
+          <div className="flex flex-col drop-shadow-lg hover:-translate-y-2 duration-700">
             <div className="w-full bg-cover bg-center">
               <img
                 src={
@@ -184,36 +189,36 @@ const AdminProfile: FC = () => {
             </div>
           </div>
         </div>
-        <div>
+        <div className="text-lg fonr-semibold">
           <div className="grid grid-cols-2 gap-10">
             <div className="flex flex-col gap-1 mb-10">
               <p>First Name</p>
-              <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
                 <p>{user.fname}</p>
               </div>
             </div>
             <div className="flex flex-col gap-1 mb-10">
               <p>Last Name</p>
-              <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
                 <p>{user.sname}</p>
               </div>
             </div>
           </div>
           <div className="flex flex-col gap-1 mb-10">
             <p>Username</p>
-            <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+            <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
               <p>{user.username}</p>
             </div>
           </div>
           <div className="flex flex-col gap-1 mb-10">
             <p>Email</p>
-            <div className="bg-@light-blue flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+            <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
               <p>{user.email}</p>
             </div>
           </div>
           <div className="flex flex-col gap-1 mb-10">
             <p>Address</p>
-            <div className="bg-@light-blue flex h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 py-4 focus:outline-none  w-full">
+            <div className="bg-white flex h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 py-4 focus:outline-none  w-full">
               <p>{user.address}</p>
             </div>
           </div>
