@@ -29,7 +29,7 @@ reach your dream school through your hands without having to go anywhere. Find m
 
 ## 🤝 Collaboration
 
-- [GitHub Repository for BackEnd](https://github.com/education-hub/FE.git)
+- [GitHub Repository for FrontEnd](https://github.com/education-hub/FE.git)
 - [GitHub Repository for BackEnd](https://github.com/SyaifulGhifari/LesGoo)
 
 ## 🔮 FEATURES
