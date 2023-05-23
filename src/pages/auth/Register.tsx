@@ -123,7 +123,7 @@ const Register: FC = () => {
           "Content-Type": "application/json",
         },
       })
-      .then((response) => {
+      .then(() => {
         Swal.fire({
           icon: "success",
           title: "Success Registers",
