@@ -56,6 +56,7 @@ const Admin: FC = () => {
   const [schoolId, setSchoolId] = useState<number>();
   const [idCost, setIdCost] = useState<number>();
   const [idFAQ, setIdFAQ] = useState<number>();
+
   const [selectedItem, setSelectedItem] = useState<QuizDataType>({
     school_id: schoolId || 0,
     question: "",
@@ -103,6 +104,7 @@ const Admin: FC = () => {
   const [updatedAnswer, setUpdatedAnswer] = useState<number>();
   const [isOpenPayment, setIsOpenPayment] = useState(false);
   const [faq, setFaq] = useState<Partial<FAQDataType>>({});
+  const [src, setSrc] = useState<string | undefined>("");
   const [selected, setSelected] = useState(interval[0]);
   const [noData, setNoData] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -142,6 +144,13 @@ const Admin: FC = () => {
         setSchoolData(data);
         setSchoolId(data.id);
         setNoData(false);
+        console.log(data.video);
+        const new_string =
+          data.video
+            ?.split(/,|\/|=/)
+            .pop()
+            ?.trim() ?? "";
+        setSrc(new_string);
       })
       .catch(() => {
         setNoData(true);
@@ -971,7 +980,7 @@ const Admin: FC = () => {
               <div className="flex flex-col gap-10">
                 <iframe
                   className="w-full h-96"
-                  src={schoolData.video}
+                  src={`https://www.youtube.com/embed/${src}`}
                   title="Introduction Video"
                   allowFullScreen
                 />

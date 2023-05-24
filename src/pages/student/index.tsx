@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { Link } from "react-router-dom";
@@ -19,7 +20,7 @@ interface schoolDesc {
 
 const Student: FC = () => {
   const [datas, setDatas] = useState<schoolDesc[]>([]);
-
+  const [src, setSrc] = useState<string | undefined>("");
   const [cookie] = useCookies(["tkn"]);
 
   useEffect(() => {

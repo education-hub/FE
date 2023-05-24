@@ -77,7 +77,7 @@ export type Schema = z.infer<typeof schema>;
 
 const AddSchool: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [src, setSrc] = useState("");
+  const [src, setSrc] = useState<string | undefined>("");
   const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
@@ -107,9 +107,9 @@ const AddSchool: FC = () => {
     mode: "onChange",
   });
 
-  const video = watch("video");
   const viewPdf = watch("pdf");
   const [pdfFile, setPdfFile] = useState<string | null>("");
+  const video = watch("video");
 
   const fetchProvince = () => {
     axios
@@ -169,7 +169,12 @@ const AddSchool: FC = () => {
 
   const handleSubmitVideo = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setSrc(video);
+    const new_string =
+      video
+        ?.split(/,|\/|=/)
+        .pop()
+        ?.trim() ?? "";
+    setSrc(new_string);
   };
 
   const hadlePostSchool: SubmitHandler<Schema> = (data) => {
@@ -370,7 +375,11 @@ const AddSchool: FC = () => {
               <div>
                 <iframe
                   className="h-96 w-full"
-                  src={src ? src : "https://www.youtube.com/embed/U1QrZJGHlco"}
+                  src={
+                    src
+                      ? `https://www.youtube.com/embed/${src}`
+                      : "https://www.youtube.com/embed/U1QrZJGHlco"
+                  }
                   title="Introduction Video"
                   allowFullScreen
                 />
@@ -390,7 +399,9 @@ const AddSchool: FC = () => {
                 <ButtonSubmit
                   type="button"
                   label="Preview Video"
-                  onClick={(event) => handleSubmitVideo(event)}
+                  onClick={(event) => {
+                    handleSubmitVideo(event);
+                  }}
                 />
               </div>
             </div>
