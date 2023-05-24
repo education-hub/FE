@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, Fragment, useEffect } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -117,6 +118,7 @@ const DetailSchool: FC = () => {
     review: "",
   });
 
+  const [src, setSrc] = useState<string | undefined>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
 
@@ -144,11 +146,19 @@ const DetailSchool: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setData(data);
+        const new_string =
+          data.video
+            ?.split(/,|\/|=/)
+            .pop()
+            ?.trim() ?? "";
+        setSrc(new_string);
       })
       .catch((error) => {
         alert(error.toString());
       });
   }
+
+  console.log(src);
 
   const AddReview = () => {
     axios
@@ -183,7 +193,7 @@ const DetailSchool: FC = () => {
         fetchData();
       });
   };
-
+  console.log(src);
   return (
     <Layout>
       {/* Section 1 */}
@@ -266,7 +276,7 @@ const DetailSchool: FC = () => {
         <div className="flex flex-col gap-10">
           <iframe
             className="w-full h-96"
-            src={data.video}
+            src={`https://www.youtube.com/embed/${src}`}
             title="Introduction Video"
             allowFullScreen
           />
