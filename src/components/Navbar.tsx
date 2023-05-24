@@ -127,9 +127,9 @@ export const NavbarAdmin: FC = () => {
     <Disclosure as="nav" className="bg-@orange z-50">
       {({ open }) => (
         <>
-          <div className="mx-auto px-2 sm:px-6 lg:px-8">
+          <div className="px-2 sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between py-3">
-              <div className="absolute inset-y-0 right-3 flex items-center sm:hidden">
+              <div className="absolute inset-y-0 right-3 flex items-center lg:hidden">
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 hover:rounded-3xl duration-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -148,28 +148,28 @@ export const NavbarAdmin: FC = () => {
                   />
                 </Link>
                 {checkToken ? (
-                  <div className="hidden sm:block sm:ml-6">
+                  <div className="hidden lg:block sm:ml-6">
                     <div className="flex space-x-4">
                       <Link
                         to="/admin/profile"
-                        className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+                        className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out    "
                       >
                         PROFILE
                       </Link>
                       <Link
                         to="/admin/admission"
-                        className="text-white text-md flex justify-center items-center w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+                        className="text-white text-md flex justify-center items-center w-52 xl:w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out    "
                       >
                         STUDENT ADMISSION
                       </Link>
                       <Link
                         to="/admin/result"
-                        className="text-white text-md flex items-center justify-center w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+                        className="text-white text-md flex items-center justify-center w-44 xl:w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out    "
                       >
                         TEST RESULT
                       </Link>
                       <button
-                        className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                         onClick={() => handleLogout()}
                       >
                         LOGOUT
@@ -177,18 +177,18 @@ export const NavbarAdmin: FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="hidden sm:block sm:ml-6">
+                  <div className="hidden lg:block sm:ml-6">
                     <div className="flex space-x-4">
                       <Link
                         to="/login"
-                        className="text-white text-md flex gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiLogIn />
                         LOGIN
                       </Link>
                       <Link
                         to="/register"
-                        className="text-white text-md flex  gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex  gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiUserPlus className="text-xl" />
                         REGISTER
@@ -209,7 +209,7 @@ export const NavbarAdmin: FC = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Disclosure.Panel className="sm:hidden">
+            <Disclosure.Panel className="lg:hidden">
               <nav className="items-center bg-@orange py-5 px-10 w-auto">
                 <div className="flex flex-col justify-end gap-5">
                   {checkToken ? (
@@ -222,35 +222,35 @@ export const NavbarAdmin: FC = () => {
                       </Link>
                       <Link
                         to="/admin/admission"
-                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         STUDENT ADMISSION
                       </Link>
                       <Link
                         to="/admin/result"
-                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         TEST RESULT
                       </Link>
                       <button
-                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                         onClick={() => handleLogout()}
                       >
-                        REGISTER
+                        LOGOUT
                       </button>
                     </>
                   ) : (
                     <>
                       <Link
                         to="/login"
-                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiLogIn />
                         LOGIN
                       </Link>
                       <Link
                         to="/register"
-                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiUserPlus className="text-xl" />
                         REGISTER
@@ -527,7 +527,7 @@ export const NavbarIndex: FC = () => {
           >
             <Disclosure.Panel className="sm:hidden">
               {checkToken ? (
-                <nav className=" items-center bg-@orange pt-32 pb-5 px-10 w-auto">
+                <nav className=" items-center bg-@blue pt-32 pb-5 px-10 w-auto">
                   <div className="flex flex-col justify-end gap-5">
                     <Link
                       to="/admin/profile"

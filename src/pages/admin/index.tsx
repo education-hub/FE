@@ -889,11 +889,13 @@ const Admin: FC = () => {
         <LayoutAdmin>
           <div>
             {/* Section 1 */}
-            <div className="grid lg:grid-cols-2 p-20 gap-20 text-@dark">
+            <div className="grid lg:grid-cols-2 p-7 sm:p-20 gap-10 md:gap-20 text-@dark">
               <div className="flex flex-col gap-10">
-                <h1 className="text-5xl">{schoolData.name?.toUpperCase()}</h1>
+                <h1 className="text-4xl sm:text-5xl">
+                  {schoolData.name?.toUpperCase()}
+                </h1>
                 <p className="text-lg">{schoolData.description}</p>
-                <div className="grid grid-cols-4 gap-10">
+                <div className="grid grid-cols-2 xl:grid-cols-4 gap-10">
                   <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
                     <h1 className="text-3xl font-bold">
                       {schoolData.students}
@@ -946,7 +948,7 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 2 */}
-            <div className="bg-gray-200 grid grid-cols-2 p-20 gap-20 text-@dark text-lg">
+            <div className="bg-gray-200 grid lg:grid-cols-2 p-7 sm:p-20 gap-20 text-@dark text-lg">
               <div className="flex flex-col gap-10">
                 <h1 className="text-2xl font-bold">Review</h1>
                 {Array.isArray(schoolData.reviews) ? (
@@ -980,7 +982,7 @@ const Admin: FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex space-x-10">
+              <div className="grid sm:grid-cols-2 gap-8 sm:gap-20">
                 <ButtonCancelDelete
                   label="Delete School"
                   onClick={() => deleteDataSchool()}
@@ -994,8 +996,8 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 3 */}
-            <div className="grid grid-cols-2 p-20 gap-20">
-              <div className="grid grid-cols-2 gap-10">
+            <div className="grid lg:grid-cols-2 p-7 sm:p-20 gap-7 sm:gap-20">
+              <div className="grid sm:grid-cols-2 gap-7 sm:gap-10">
                 <div className="flex flex-col gap-1">
                   <p>Start Time</p>
                   <InputLightBlue
@@ -1023,17 +1025,17 @@ const Admin: FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex items-end justify-end">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-end">
                 <ButtonSubmit
                   label="CREATE G-MEET"
                   onClick={() => handleAddGmeet()}
                 />
               </div>
-              <div className="text-lg font-semibold flex flex-col gap-3">
-                <div className="flex gap-3">
+              <div className="text-lg  font-semibold flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <p> link G-meet : </p>
                   <button
-                    className="text-@orange"
+                    className="text-@orange flex "
                     onClick={() => window.open(schoolData?.gmeet, "_blank")}
                   >
                     <p>{schoolData?.gmeet}</p>
@@ -1045,7 +1047,7 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 4  extracurriculer*/}
-            <div className="bg-gray-200 p-20 grid grid-cols-2 gap-20">
+            <div className="bg-gray-200 p-7 sm:p-20 grid lg:grid-cols-2 gap-7 md:gap-12 lg:gap-20">
               <div className="flex flex-col gap-10">
                 <ButtonSubmit
                   label="ADD EXTRACULLICULER"
@@ -1054,7 +1056,7 @@ const Admin: FC = () => {
                 {Array.isArray(schoolData.extracurriculars) ? (
                   schoolData.extracurriculars.map((e) => (
                     <div
-                      className="bg-@light-blue p-10 flex flex-col gap-10"
+                      className="bg-@light-blue p-7 sm:p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
                       key={e.id}
                     >
                       <div className="flex space-x-10">
@@ -1068,7 +1070,7 @@ const Admin: FC = () => {
                           <p className="text-lg">{e.description}</p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-44">
+                      <div className="grid sm:grid-cols-2 gap-7 sm:gap-12 md:gap-28 lg:gap-32 xl:gap-40">
                         <ButtonCancelDelete
                           label="Delete"
                           onClick={() => handleDeleteExtracurricular(e.id)}
@@ -1095,7 +1097,7 @@ const Admin: FC = () => {
                 {Array.isArray(schoolData.achievements) ? (
                   schoolData.achievements.map((e) => (
                     <div
-                      className="bg-@light-blue p-10 flex flex-col gap-10"
+                      className="bg-@light-blue   p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
                       key={e.id}
                     >
                       <div className="flex space-x-10">
@@ -1109,7 +1111,7 @@ const Admin: FC = () => {
                           <p className="text-lg">{e.description}</p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-44">
+                      <div className="grid sm:grid-cols-2 gap-7 sm:gap-12 md:gap-28 lg:gap-32 xl:gap-40">
                         <ButtonCancelDelete
                           label="Delete"
                           onClick={() => handleDeleteAchievement(e.id)}
@@ -1130,8 +1132,8 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Secton 5 */}
-            <div className="p-20 flex flex-col gap-10">
-              <div className="grid grid-cols-3 gap-20">
+            <div className="p-7 sm:p-20 flex flex-col gap-10">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-20">
                 <div className="bg-@light-blue">
                   <div className=" p-10">
                     <img
@@ -1256,19 +1258,19 @@ const Admin: FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-col sm:flex-row sm:justify-end">
                 <ButtonSubmit
                   label="Add Cost"
                   onClick={() => handleAddCost()}
                 />
               </div>
             </div>
-            <div className="bg-gray-200 p-20">
+            <div className="bg-gray-200 p-7 md:p-20">
               <div>
                 <div className="pb-10 text-center">
                   <h1 className="text-lg font-bold">ONETIME PAYMENT</h1>
                 </div>
-                <div className="grid grid-cols-5 gap-20">
+                <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5 xl:gap-7 2xl:gap-10">
                   {Array.isArray(schoolData.payments?.onetime) ? (
                     schoolData.payments?.onetime.map((e: CostDataType) => (
                       <div className="flex flex-col gap-5">
@@ -1301,7 +1303,7 @@ const Admin: FC = () => {
                 <div className="pb-10 pt-16 text-center">
                   <h1 className="text-lg font-bold">INTERVAL PAYMENT</h1>
                 </div>
-                <div className="grid grid-cols-5 gap-20">
+                <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5 xl:gap-7 2xl:gap-10">
                   {Array.isArray(schoolData.payments?.interval) ? (
                     schoolData.payments?.interval.map((e: CostDataType) => (
                       <div className="flex flex-col gap-5">
@@ -1332,11 +1334,11 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 6 FAQ*/}
-            <div className="pt-20 px-20">
+            <div className="pt-7 sm:pt-20 px-7 sm:px-20">
               <div className="flex flex-col gap-10">
                 <h1 className="text-lg font-semibold text-center">FAQ</h1>
-                <div className="grid grid-cols-5 gap-20">
-                  <div className="flex flex-col col-span-2 gap-1">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10 lg:gap-10 xl:gap-20">
+                  <div className="flex flex-col xl:col-span-2 gap-1">
                     <p>Question</p>
                     <InputLightBlue
                       type="text"
@@ -1345,7 +1347,7 @@ const Admin: FC = () => {
                       }
                     />
                   </div>
-                  <div className="flex flex-col col-span-2 gap-1">
+                  <div className="flex flex-col xl:col-span-2 gap-1">
                     <p>Answer</p>
                     <InputLightBlue
                       type="text"
@@ -1363,7 +1365,7 @@ const Admin: FC = () => {
                 </div>
               </div>
             </div>
-            <div className="pb-20 px-20">
+            <div className="grid pb-7 sm:pb-20 px-7 sm:px-20">
               {schoolData.faqs?.map((e) => (
                 <AccordionFAQ
                   question={e.question}
@@ -1377,7 +1379,7 @@ const Admin: FC = () => {
               ))}
             </div>
             {/* Section 7 */}
-            <div className="bg-gray-200 py-20 px-20 ">
+            <div className="bg-gray-200 py-7 sm:py-20  px-7 sm:px-20 ">
               <h1 className="text-lg font-semibold text-center">ADD QUIZ</h1>
               <div className="flex flex-col gap-1">
                 <p>Question</p>
@@ -1388,7 +1390,7 @@ const Admin: FC = () => {
                   }
                 />
               </div>
-              <div className="grid grid-cols-2 mt-10 gap-x-20 gap-y-5">
+              <div className="grid md:grid-cols-2 mt-10 gap-7 s:gap-x-20 gap-y-5">
                 <div className="flex flex-col gap-1">
                   <p>Option 1</p>
                   <InputWhite
@@ -1426,8 +1428,8 @@ const Admin: FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between">
-                <div className="flex flex-col w-[10%] gap-1 mt-5">
+              <div className="grid sm:grid-cols-2 sm:gap-[20%] md:gap-[40%] lg:gap-[60%] xl:gap-[80%] place-content-beetween">
+                <div className="flex flex-col gap-1 mt-5">
                   <p>Answer</p>
                   <InputWhite
                     type="number"
@@ -1439,14 +1441,14 @@ const Admin: FC = () => {
                     }
                   />
                 </div>
-                <div className="flex flex-col w-[10%] gap-1 mt-5 justify-end">
+                <div className="flex flex-col gap-1 mt-5 justify-end">
                   <ButtonSubmit
                     label="Add"
                     onClick={(event) => handleAddQuiz(event)}
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-96 mt-10">
+              <div className="grid sm:grid-cols-3 gap-4 sm:gap-12 md:gap-24 lg:gap-56 xl:gap-80 mt-10">
                 <ButtonCancelDelete
                   label="Reset Data"
                   onClick={() => window.location.reload()}
@@ -1463,7 +1465,7 @@ const Admin: FC = () => {
                 />
               </div>
             </div>
-            <div className="py-20 px-20">
+            <div className="py-7 ms:py-20 px-7 sm:px-20">
               {quiz.map((e, index) => (
                 <div>
                   <CardAddQuiz
