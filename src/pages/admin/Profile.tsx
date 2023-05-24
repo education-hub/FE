@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   FC,
   Fragment,
@@ -23,7 +24,7 @@ const AdminProfile: FC = () => {
   const [user, setUser] = useState<Partial<user>>({});
   const [isOpen, setIsOpen] = useState(false);
 
-  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
+  const [cookie, setCookie, removeCookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
 
   document.title = "Profile | Admin Management";
@@ -133,6 +134,8 @@ const AdminProfile: FC = () => {
       })
       .then((response) => {
         const { message } = response.data && response.data;
+        const { token } = response.data.data;
+        console.log(token);
         Swal.fire({
           icon: "success",
           title: "Update Success",
@@ -143,6 +146,7 @@ const AdminProfile: FC = () => {
           if (result.isConfirmed) {
             setObjSubmit({});
             setIsOpen(false);
+            setCookie("tkn", token, { path: "/" });
           }
         });
       })

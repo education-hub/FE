@@ -77,7 +77,7 @@ const TestResult: FC = () => {
               </div>
             ) : (
               <div className="text-7xl font-medium flex items-center justify-center h-full text-gray-300">
-                <p>No data found</p>
+                <p>Data Not Found</p>
               </div>
             )}
           </div>

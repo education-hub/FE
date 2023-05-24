@@ -15,13 +15,13 @@ const Home: FC = () => {
     <>
       <NavbarIndex />
       <VideoBackground videoSrc="/video.mp4">
-        <div className="relative z-30 p-20 text-white  flex flex-col gap-5">
-          <h1 className="text-5xl font-bold">EducationHub</h1>
+        <div className="relative z-30 md:p-20 text-white  flex flex-col gap-5">
+          <h1 className="text-3xl md:text-5xl font-bold">EducationHub</h1>
           <p className="text-xl font-medium">
             Web platform for school review and education community
           </p>
           <div className="h-1 bg-@dark animate-pulse"></div>
-          <div className="mt-16 gap-10 flex">
+          <div className="mt-16 gap-10 flex flex-col md:flex-row">
             <ButtonSubmit
               label="Let's find your dreams school"
               onClick={() => navigate("/student")}

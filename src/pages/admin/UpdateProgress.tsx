@@ -166,11 +166,11 @@ const UpdateProgress: FC = () => {
                     type="radio"
                     name="selectedStep"
                     onClick={() => {
-                      setSelectedStep("Failed File Approaved");
+                      setSelectedStep("Failed File Approved");
                     }}
                     checked={
-                      student === "Failed File Approaved" ||
-                      selectedStep === "Failed File Approaved"
+                      student === "Failed File Approved" ||
+                      selectedStep === "Failed File Approved"
                     }
                   />
                 </td>

@@ -46,7 +46,7 @@ export const AccordionFAQ: FC<AddFAQType> = (props) => {
           )}
         </Disclosure>
       </div>
-      <div className="flex space-x-10 justify-end">
+      <div className="grid grid-cols-1 gap-5 sm:flex sm:space-x-10 sm:justify-end">
         <ButtonCancelDelete label="Delete" onClick={onClick1} />
         <ButtonSubmit label="Edit" onClick={onClick2} />
       </div>

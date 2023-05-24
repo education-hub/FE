@@ -11,6 +11,7 @@ import { StudentType } from "../../utils/user";
 const Admission: FC = () => {
   const [student, setStudent] = useState<StudentType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [noData, setNoData] = useState<boolean>(true);
 
   const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
@@ -35,15 +36,10 @@ const Admission: FC = () => {
       .then((response) => {
         const { data } = response;
         setStudent(data.data);
+        setNoData(false);
       })
-      .catch((error) => {
-        const { message } = error.response.data;
-        Swal.fire({
-          icon: "error",
-          title: "Failed to Fetch Data!!",
-          text: message,
-          showCancelButton: false,
-        });
+      .catch(() => {
+        setNoData(true);
       })
       .finally(() => {
         setLoading(false);
@@ -61,48 +57,56 @@ const Admission: FC = () => {
         {loading ? (
           <div>Loading..</div>
         ) : (
-          <div className="grid grid-cols-6 gap-20">
-            {student.map((e) => {
-              return (
-                <>
-                  <div className="flex justify-end">
-                    <img
-                      src={`https://storage.googleapis.com/prj1ropel/${e.user_image}`}
-                      alt=""
-                      className="h-16 w-auto mt-6"
-                    />
-                  </div>
-                  <div className="">
-                    <p>Student_id</p>
-                    <div className="bg-@light-blue px-3 flex items-center justify-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                      <p>{e.user_id}</p>
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <p>Fullname</p>
-                    <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                      <p>{e.user_name}</p>
-                    </div>
-                  </div>
-                  <div className="pt-6">
-                    <ButtonSubmit
-                      label="Detail Admission"
-                      onClick={() =>
-                        navigate(`/admin/admission/${e.submission_id}`)
-                      }
-                    />
-                  </div>
-                  <div className="pt-6">
-                    <ButtonSubmit
-                      label="Update Progress"
-                      onClick={() =>
-                        navigate(`/admin/progress/${e.progress_id}`)
-                      }
-                    />
-                  </div>
-                </>
-              );
-            })}
+          <div>
+            {!noData ? (
+              <div className="grid grid-cols-6 gap-20">
+                {student.map((e) => {
+                  return (
+                    <>
+                      <div className="flex justify-end">
+                        <img
+                          src={`https://storage.googleapis.com/prj1ropel/${e.user_image}`}
+                          alt=""
+                          className="h-16 w-auto mt-6"
+                        />
+                      </div>
+                      <div className="">
+                        <p>Student_id</p>
+                        <div className="bg-@light-blue px-3 flex items-center justify-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                          <p>{e.user_id}</p>
+                        </div>
+                      </div>
+                      <div className="col-span-2">
+                        <p>Fullname</p>
+                        <div className="bg-@light-blue px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                          <p>{e.user_name}</p>
+                        </div>
+                      </div>
+                      <div className="pt-6">
+                        <ButtonSubmit
+                          label="Detail Admission"
+                          onClick={() =>
+                            navigate(`/admin/admission/${e.submission_id}`)
+                          }
+                        />
+                      </div>
+                      <div className="pt-6">
+                        <ButtonSubmit
+                          label="Update Progress"
+                          onClick={() =>
+                            navigate(`/admin/progress/${e.progress_id}`)
+                          }
+                        />
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-7xl font-medium flex items-center justify-center py-18 h-full text-gray-500">
+                <p>Data Not Found</p>
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -8,7 +8,7 @@ export const ButtonSubmit: FC<Props> = (props) => {
   const { label } = props;
   return (
     <button
-      className="bg-@blue hover:bg-@orange hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
+      className="bg-@blue hover:bg-@orange hover:drop-shadow-lg hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
       {...props}
     >
       {label}
@@ -20,7 +20,7 @@ export const ButtonCancelDelete: FC<Props> = (props) => {
   const { label } = props;
   return (
     <button
-      className="bg-@orange hover:bg-@blue hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
+      className="bg-@orange hover:bg-@blue hover:drop-shadow-lg hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
       {...props}
     >
       {label}
@@ -32,7 +32,7 @@ export const ButtonCheckout: FC<Props> = (props) => {
   const { label } = props;
   return (
     <button
-      className="bg-fuchsia-500 hover:bg-indigo-600 hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
+      className="bg-fuchsia-500 hover:bg-indigo-600 hover:drop-shadow-lg hover:-translate-y-2 duration-500 px-7 py-5 text-white font-medium"
       {...props}
     >
       {label}
