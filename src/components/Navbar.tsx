@@ -297,7 +297,7 @@ export const NavbarIndexAdmin: FC = () => {
         <>
           <div className=" absolute z-40 opacity-50 hover:opacity-90 duration-500 w-full">
             <div className="relative flex items-center justify-between">
-              <div className="absolute inset-y-0 right-3 flex items-center sm:hidden">
+              <div className="absolute inset-y-0 right-3 flex items-center lg:hidden">
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 hover:rounded-3xl duration-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -316,7 +316,7 @@ export const NavbarIndexAdmin: FC = () => {
                   />
                 </Link>
                 {checkToken ? (
-                  <div className="hidden sm:block sm:ml-6">
+                  <div className="hidden lg:block sm:ml-6">
                     <div className="flex space-x-4">
                       <Link
                         to="/admin/profile"
@@ -326,13 +326,13 @@ export const NavbarIndexAdmin: FC = () => {
                       </Link>
                       <Link
                         to="/admin/admission"
-                        className="text-white text-md flex justify-center items-center w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+                        className="text-white text-md flex justify-center items-center w-52 xl:w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
                         STUDENT ADMISSION
                       </Link>
                       <Link
                         to="/admin/result"
-                        className="text-white text-md flex items-center justify-center w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+                        className="text-white text-md flex items-center justify-center w-44 xl:w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
                         TEST RESULT
                       </Link>
@@ -377,7 +377,7 @@ export const NavbarIndexAdmin: FC = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Disclosure.Panel className="sm:hidden">
+            <Disclosure.Panel className="lg:hidden">
               {checkToken ? (
                 <nav className=" items-center bg-@orange pt-32 pb-5 px-10 w-auto">
                   <div className="flex flex-col justify-end gap-5">
