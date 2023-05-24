@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import Swal from "sweetalert2";
 import axios from "axios";
 
 import { LayoutAdmin } from "../../components/Layout";
