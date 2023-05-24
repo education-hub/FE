@@ -165,7 +165,7 @@ const AdminProfile: FC = () => {
   return (
     <LayoutAdmin>
       <div
-        className="p-20 grid grid-cols-2 gap-20 bg-cover bg-center"
+        className="p-7 sm:p-20 grid md:grid-cols-2 md:gap-10 lg:gap-20 bg-cover bg-center"
         style={{
           backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)),url(/bg-3.jpg)`,
         }}
@@ -192,8 +192,8 @@ const AdminProfile: FC = () => {
             </div>
           </div>
         </div>
-        <div className="text-lg fonr-semibold">
-          <div className="grid grid-cols-2 gap-10">
+        <div className="text-lg font-semibold">
+          <div className="grid md:grid-cols-2 mt-10 md:mt-0 sm:gap-5 lg:gap-10">
             <div className="flex flex-col gap-1 mb-10">
               <p>First Name</p>
               <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
@@ -226,7 +226,7 @@ const AdminProfile: FC = () => {
             </div>
           </div>
         </div>
-        <div className="grid  grid-cols-2 gap-44">
+        <div className="grid  grid-cols-2 gap-16 md:gap-24 lg:gap-44">
           <ButtonCancelDelete label="Delete" onClick={() => handleDelete()} />
           <ButtonSubmit label="Edit" onClick={openModal} />
         </div>
