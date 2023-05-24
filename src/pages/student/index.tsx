@@ -6,6 +6,8 @@ import axios from "axios";
 import { Layout } from "../../components/Layout";
 import BgLandingPage from "/carousel-1.jpg";
 import Logo from "../../assets/eduhub-logo-black.png";
+import GambarA from "../../assets/Akreditasi A.png";
+import GambarB from "../../assets/logo-akreditasi-b-11.png";
 
 interface schoolDesc {
   accreditation: string;
@@ -35,11 +37,21 @@ const Student: FC = () => {
       .then((res) => {
         const { data } = res.data.data;
         setDatas(data);
+        console.log(data);
       })
       .catch((error) => {
         alert(error.toString());
       });
   }
+
+  const getAccreditationImage = (accreditation: string): string => {
+    if (accreditation === "A") {
+      return GambarA;
+    } else if (accreditation === "B") {
+      return GambarB;
+    }
+    return "";
+  };
 
   return (
     <Layout>
@@ -79,6 +91,9 @@ const Student: FC = () => {
         <div className="max-w-6xl mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {/* Card */}
           {datas.map((data) => {
+            const accreditationImage = getAccreditationImage(
+              data.accreditation
+            );
             return (
               <Link to={`/student/detail-school/${data.id}`} className="block">
                 <div className="bg-white rounded-lg overflow-hidden shadow-md mb-10 hover:shadow-xl hover:scale-110 duration-200">
@@ -89,19 +104,22 @@ const Student: FC = () => {
                   />
                   <div className="px-6 py-4">
                     <div className="font-bold text-xl mb-1">{data.name}</div>
-                    <div className="flex items-center">
-                      <div className="text-gray-700 text-base mb-4">
-                        {data.admin_name}
+                    <div className="flex items-center"></div>
+                    <div className="grid grid-cols-2 pt-20">
+                      <div>
+                        {accreditationImage && (
+                          <img
+                            src={accreditationImage}
+                            alt="Accreditation"
+                            className="w-24 h-auto"
+                          />
+                        )}
                       </div>
-                    </div>
-                    <div className="flex justify-between items-center mt-11">
-                      <div className="text-gray-500 font-bold">
-                        <p>Akreditasi</p>
-                        <p>{data.accreditation}</p>
-                      </div>
-                      <div className="text-gray-700 text-base font-semibold justify-items-end">
+                      <div className="text-gray-700 text-base font-semibold grid justify-items-end">
                         <p>Location</p>
-                        <p>{data.location}</p>
+                        <p className="text-end text-clip overflow-hidden">
+                          {data.location}
+                        </p>
                       </div>
                     </div>
                   </div>
