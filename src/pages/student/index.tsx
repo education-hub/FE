@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { Layout } from "../../components/Layout";
-import BgLandingPage from "/carousel-1.jpg";
 import Logo from "../../assets/eduhub-logo-black.png";
 import GambarA from "../../assets/Akreditasi A.png";
 import GambarB from "../../assets/logo-akreditasi-b-11.png";
@@ -55,16 +54,19 @@ const Student: FC = () => {
 
   return (
     <Layout>
-      <div className="bg-gray-100">
+      <div>
         <div
-          className="h-screen bg-cover bg-center flex justify-center"
+          className="max-h-[600px] flex justify-center"
           style={{
-            backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.6)),url(${BgLandingPage})`,
+            backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.6)),url(/education-bg-homepage.jpg)`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
           }}
         >
-          <div className="w-5/6 px-5 py-64">
-            <img src={Logo} alt="logo" className="mb-8" />
-            <h1 className="text-black text-4xl font-extrabold">
+          <div className="w-[90%] px-5 py-52">
+            <img src={Logo} alt="logo" className="mb-6" />
+            <h1 className="text-black text-4xl font-bold max-w-xl">
               Web platform for school review and education community
             </h1>
           </div>
@@ -104,7 +106,6 @@ const Student: FC = () => {
                   />
                   <div className="px-6 py-4">
                     <div className="font-bold text-xl mb-1">{data.name}</div>
-                    <div className="flex items-center"></div>
                     <div className="grid grid-cols-2 pt-20">
                       <div>
                         {accreditationImage && (
