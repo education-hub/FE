@@ -966,7 +966,7 @@ const Admin: FC = () => {
                       <img
                         src={`https://storage.googleapis.com/prj1ropel/${e.image}`}
                         alt=""
-                        className="h-16 w-16"
+                        className="h-16 w-24"
                       />
                       <div className=" flex items-center bg-@light-blue w-full px-10 h-full">
                         <p>{e.review}</p>

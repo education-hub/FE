@@ -261,7 +261,7 @@ const EditSchool: FC = () => {
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit(handleUpdateSchool)}>
-        <div className="grid grid-cols-2 px-20 py-20 gap-20 text-lg">
+        <div className="grid lg:grid-cols-2 px-7 sm:px-20 pt-20 gap-20 text-lg">
           <div>
             <div className="flex flex-col gap-1">
               <InputLightBlue
@@ -446,8 +446,8 @@ const EditSchool: FC = () => {
                 />
               </div>
             </div>
-            <div className="mt-10 p-5 flex flex-col gap-10">
-              <div className="h-[600px]">
+            <div className="flex flex-col gap-10">
+              <div className="h-[600px] w-full block lg:hidden xl:block">
                 <h3>PDF Preview:</h3>
                 <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                   <Viewer
@@ -485,15 +485,15 @@ const EditSchool: FC = () => {
               />
             </div>
           </div>
-          <div className="flex col-span-2 justify-end gap-10">
-            <ButtonCancelDelete
-              label="Cancel"
-              onClick={() => navigate("/admin")}
-            />
-            <ButtonSubmit label="Update School" type="submit" />
-            {loading ? <div>Loading...</div> : <></>}
-          </div>
         </div>
+        <div className="grid grid-cols-2 md:flex py-10 px-7 sm:px-20 sm:justify-end gap-10">
+          <ButtonCancelDelete
+            label="Cancel"
+            onClick={() => navigate("/admin")}
+          />
+          <ButtonSubmit label="Update School" type="submit" />
+        </div>
+        {loading ? <div>Loading...</div> : <></>}
       </form>
     </LayoutAdmin>
   );

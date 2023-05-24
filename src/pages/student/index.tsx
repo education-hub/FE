@@ -20,7 +20,6 @@ interface schoolDesc {
 
 const Student: FC = () => {
   const [datas, setDatas] = useState<schoolDesc[]>([]);
-  const [src, setSrc] = useState<string | undefined>("");
   const [cookie] = useCookies(["tkn"]);
 
   useEffect(() => {
