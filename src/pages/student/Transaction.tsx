@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import Swal from "sweetalert2";
 
 interface TransactionType {
   school_name: string;
@@ -33,7 +34,13 @@ const Transaction: FC = () => {
         setDatas(data);
       })
       .catch((error) => {
-        alert(error.toString());
+        const { message } = error.response.data;
+        Swal.fire({
+          icon: "info",
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
       });
   }
 

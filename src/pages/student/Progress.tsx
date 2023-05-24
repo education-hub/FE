@@ -28,6 +28,7 @@ const Progress: FC = () => {
       .then((res) => {
         const { progress_status } = res.data.data;
         setProgress(progress_status);
+        console.log(progress_status);
       })
       .catch((error) => {
         alert(error.toString());
@@ -60,9 +61,9 @@ const Progress: FC = () => {
               <div
                 className={`rounded-full w-10 h-10 ${
                   isProgressActive("Failed File Approved")
-                    ? isProgressActive("File Approved")
-                      ? "bg-green-500"
-                      : "bg-red-600"
+                    ? "bg-red-600"
+                    : isProgressActive("File Approved")
+                    ? "bg-green-500"
                     : "bg-slate-200"
                 }`}
               />
@@ -180,7 +181,7 @@ const Progress: FC = () => {
               <p className="font-bold text-black">Check the Result</p>
             </div>
             <div className="w-full">
-              {isProgressActive("Failed File Approved") ? (
+              {isProgressActive("Failed Test Result") ? (
                 <p className="font-bold text-red-600">Test Result Rejected</p>
               ) : (
                 <p className="font-bold text-green-600">Test Result Approved</p>
