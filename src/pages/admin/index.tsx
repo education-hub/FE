@@ -2616,16 +2616,16 @@ const Admin: FC = () => {
         <>
           <NavbarIndexAdmin />
           <VideoBackground videoSrc="/video.mp4">
-            <div className="relative z-30 p-20 text-white  flex flex-col gap-5">
-              <h1 className="text-5xl font-bold">EducationHub</h1>
+            <div className="relative z-30 md:p-20 text-white  flex flex-col gap-5">
+              <h1 className="text-3xl md:text-5xl font-bold">EducationHub</h1>
               <p className="text-xl font-medium">
                 Web platform for school review and education community
               </p>
               <div className="h-1 bg-@dark animate-pulse"></div>
             </div>
           </VideoBackground>
-          <div className="h-96 p-32 text-@dark flex flex-col items-center">
-            <h1 className="text-5xl text-center">
+          <div className=" md:h-96 p-24  md:p-32 text-@dark flex flex-col items-center">
+            <h1 className="text-3xl md:text-5xl text-center">
               You don't have a registered school
             </h1>
             <div className="mt-16">

@@ -3,7 +3,7 @@ import { FC } from "react";
 export const Footer: FC = () => {
   return (
     <footer>
-      <div className="bg-@blue grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 px-20 py-14 text-white">
+      <div className="bg-@blue grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-20 py-14 text-white">
         <div className="flex flex-col gap-5">
           <h1 className="font-bold text-lg">Education Hub</h1>
           <p>
@@ -29,7 +29,7 @@ export const Footer: FC = () => {
             hand, you can already find your dream school.
           </p>
         </div>
-        <div className="flex flex-col gap-5 col-span-1 sm:col-span-2 md:col-span-1">
+        <div className="flex flex-col gap-5 col-span-1 sm:col-span-2 lg:col-span-1">
           <h1 className="font-bold text-lg">Stay Connected</h1>
           <p>Get exclusive promotions & updates straight to your inbox.</p>
           <div className="flex flex-col xl:flex-row mr-5">
@@ -40,11 +40,11 @@ export const Footer: FC = () => {
           </div>
         </div>
       </div>
-      <div className="bg-@dark grid grid-cols-2 py-5 px-20 text-white">
+      <div className="bg-@dark grid grid-cols-1 md:grid-cols-2 py-5 px-20 text-white">
         <div className="flex items-center">
           <p>© 2023 Education Hub. All right reserved.</p>
         </div>
-        <div className="flex justify-end">
+        <div className="flex md:justify-end">
           <div className="flex items-center justify-between">
             <p className="mr-10">Our Social Media :</p>
             <div>
