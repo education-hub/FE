@@ -158,8 +158,6 @@ const DetailSchool: FC = () => {
       });
   }
 
-  console.log(src);
-
   const AddReview = () => {
     axios
       .post(`https://go-event.online/reviews`, addReview, {
