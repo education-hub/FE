@@ -161,12 +161,6 @@ const PdfSubmission = () => {
       .finally(() => {});
   };
 
-  console.log(
-    imageName.parent_signature,
-    imageName.photo,
-    imageName.student_signature
-  );
-
   const fetchAllDataImage = async () => {
     try {
       const parentSignaturePromise = axios.get(
