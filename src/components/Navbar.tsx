@@ -199,9 +199,9 @@ export const NavbarAdmin: FC = () => {
       confirmButtonText: "Yes, Logout!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Log out!");
         removeCookie("tkn");
         removeCookie("role");
+        Swal.fire("Log out!");
         navigate("/");
       }
     });
@@ -366,9 +366,9 @@ export const NavbarIndexAdmin: FC = () => {
       confirmButtonText: "Yes, Logout!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Log out!");
         removeCookie("tkn");
         removeCookie("role");
+        Swal.fire("Log out!");
         navigate("/");
       }
     });
@@ -534,9 +534,9 @@ export const NavbarIndex: FC = () => {
       confirmButtonText: "Yes, Logout!",
     }).then((result) => {
       if (result.isConfirmed) {
-        Swal.fire("Log out!");
         removeCookie("tkn");
         removeCookie("role");
+        Swal.fire("Log out!");
         navigate("/");
       }
     });
