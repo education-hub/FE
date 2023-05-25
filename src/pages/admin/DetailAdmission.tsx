@@ -232,7 +232,9 @@ const DetailAdmission: FC = () => {
 
             <ButtonSubmit
               label="Download"
-              onClick={() => navigate(`/admin/admission/pdf/${id}`)}
+              onClick={() =>
+                window.open(`/admin/admission/pdf/${id}`, "_blank")
+              }
             />
           </div>
         </div>

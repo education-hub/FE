@@ -110,7 +110,10 @@ const PdfSubmission = () => {
     parent_signature: "",
     student_signature: "",
   });
-
+  const [imageFormatParentSig, setImageFormatParentSig] = useState<string>("");
+  const [imageFormatStudentSig, setImageFormatStudentSig] =
+    useState<string>("");
+  const [imageFormatPhoto, setImageFormatPhoto] = useState<string>("");
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
 
@@ -204,6 +207,16 @@ const PdfSubmission = () => {
         student_signature: studentSignatureFile,
         photo: photoFile,
       });
+
+      const handleImageFormatParentSig =
+        imageName.parent_signature?.split(".").pop()?.trim() ?? "";
+      setImageFormatParentSig(handleImageFormatParentSig);
+      const handleImageFormatStudentSig =
+        imageName.student_signature?.split(".").pop()?.trim() ?? "";
+      setImageFormatStudentSig(handleImageFormatStudentSig);
+      const handleImageFormatPhoto =
+        imageName.photo?.split(".").pop()?.trim() ?? "";
+      setImageFormatPhoto(handleImageFormatPhoto);
     } catch (error) {}
   };
 
@@ -234,7 +247,7 @@ const PdfSubmission = () => {
               </View>
               <View>
                 <Image
-                  src={`data:image/png;base64,${imageNameBase64.photo}`}
+                  src={`data:image/${imageFormatPhoto};base64,${imageNameBase64.photo}`}
                   style={{ width: 50, height: 50 }}
                 />
               </View>
@@ -359,7 +372,7 @@ const PdfSubmission = () => {
                 </Text>
                 <View>
                   <Image
-                    source={`data:image/png;base64,${imageNameBase64.parent_signature}`}
+                    source={`data:image/${imageFormatParentSig};base64,${imageNameBase64.parent_signature}`}
                     style={{ width: 100, height: 50 }}
                   />
                 </View>
@@ -391,7 +404,7 @@ const PdfSubmission = () => {
                 </Text>
                 <View>
                   <Image
-                    src={`data:image/png;base64,${imageNameBase64.student_signature}`}
+                    src={`data:image/${imageFormatStudentSig};base64,${imageNameBase64.student_signature}`}
                     style={{ width: 100, height: 50 }}
                   />
                 </View>
