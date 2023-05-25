@@ -146,7 +146,9 @@ const AdminProfile: FC = () => {
           if (result.isConfirmed) {
             setObjSubmit({});
             setIsOpen(false);
-            setCookie("tkn", token, { path: "/" });
+            if (token !== "") {
+              setCookie("tkn", token, { path: "/" });
+            }
           }
         });
       })
@@ -171,7 +173,7 @@ const AdminProfile: FC = () => {
         }}
       >
         <div>
-          <div className="flex flex-col drop-shadow-lg hover:-translate-y-2 duration-700">
+          <div className="flex flex-col hover:drop-shadow-lg hover:-translate-y-2 duration-700">
             <div className="w-full bg-cover bg-center">
               <img
                 src={
