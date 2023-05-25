@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
@@ -8,6 +8,12 @@ import axios from "axios";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { LayoutAdmin } from "../../components/Layout";
 import { StudentDataType } from "../../utils/user";
+import {
+  CardDetailAdmission,
+  CardDetailAdmission2,
+  CardDetailAdmissionAddress,
+  CardDetailAdmissionAddress2,
+} from "../../components/Card";
 
 const DetailAdmission: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -95,260 +101,102 @@ const DetailAdmission: FC = () => {
       {loading ? (
         <div className="h-screen">Loading...</div>
       ) : (
-        <div className="p-20">
+        <div className="p-7 sm:p-20">
           <div className="text-center text-xl font-bold">
             <div className="relative">
               <h1>Summary</h1>
               <h1>New Student Admission Form</h1>
               <h1>{student.school_name}</h1>
-              <img
-                src={`https://storage.googleapis.com/prj1ropel/${student.student_data.photo}`}
-                alt="image"
-                className="w-32 h-32 absolute right-0 top-0 border-2 p-2 border-@blue"
-              />
+              <div className="flex justify-center mt-5">
+                <img
+                  src={`https://storage.googleapis.com/prj1ropel/${student.student_data.photo}`}
+                  alt="image"
+                  className="w-28 h-36 sm:absolute sm:right-0 top-0 border-2 p-2 border-@blue"
+                />
+              </div>
             </div>
             <div></div>
           </div>
-          <div className="bg-@blue w-full text-white font-semibold text-lg mt-20 flex h-16 items-center px-3 ">
+          <div className="bg-@blue w-full text-@dark font-semibold text-lg mt-10 sm:mt-20 flex h-16 items-center px-3 ">
             <p>A. Student Datas</p>
           </div>
-          <div className="bg-@light-blue flex flex-col gap-3  p-10 text-lg">
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>1.</p>
-                <p>Fullname</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.student_data.name}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>2.</p>
-                <p>Date Of Birth</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.student_data.place_date}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>3.</p>
-                <p>Gender</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.student_data.gender}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>4.</p>
-                <p>Religion</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.student_data.religion}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>5.</p>
-                <p>Graduation From</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.student_data.graduation_from}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>6.</p>
-                <p>NISN</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.student_data.nisn}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>7.</p>
-                <p>Address</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <div>
-                  <div className=" flex flex-col gap-5">
-                    {/* provence */}
-                    <div className="">
-                      <p className="text-gray-400">Province</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.student_data.address.province}</p>
-                      </div>
-                    </div>
-                    {/* district */}
-                    <div className="">
-                      <p className="text-gray-400">District</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.student_data.address.district}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <p className="text-gray-400">Detail</p>
-                      <div className="bg-white px-3 flex py-3 h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.student_data.address.detail}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1 ">
-                      <p className="text-gray-400">Zip Code</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.student_data.address.zip_code}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p></p>
-                <div className="w-full">
-                  <div className="gap-10 flex flex-col">
-                    {/* city */}
-                    <div className="">
-                      <p className="text-gray-400">City/Regency</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.student_data.address.city}</p>
-                      </div>
-                    </div>
-                    {/* sub-district */}
-                    <div className="">
-                      <p className="text-gray-400">Sub-District/Village</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.student_data.address.village}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="bg-@light-blue flex flex-col text-lg ">
+            <CardDetailAdmission
+              number={1}
+              title="Full Name"
+              data={student.student_data.name}
+            />
+            <CardDetailAdmission2
+              number={2}
+              title="Date Of Birth"
+              data={student.student_data.place_date}
+            />
+            <CardDetailAdmission
+              number={3}
+              title="Gender"
+              data={student.student_data.gender}
+            />
+            <CardDetailAdmission2
+              number={4}
+              title="Religion"
+              data={student.student_data.religion}
+            />
+            <CardDetailAdmission
+              number={5}
+              title="Graduation From"
+              data={student.student_data.graduation_from}
+            />
+            <CardDetailAdmission2
+              number={6}
+              title="NISN"
+              data={student.student_data.nisn}
+            />
+            <CardDetailAdmissionAddress
+              number={7}
+              province={student.student_data.address.province}
+              city={student.student_data.address.city}
+              district={student.student_data.address.district}
+              village={student.student_data.address.village}
+              zip_code={student.student_data.address.zip_code}
+            />
           </div>
-          <div className="bg-@blue w-full text-white font-semibold text-lg mt-20 flex h-16 items-center px-3 ">
+          <div className="bg-@blue w-full text-@dark font-semibold text-lg mt-10 sm:mt-20 flex h-16 items-center px-3 ">
             <p>B. Parent Datas</p>
           </div>
-          <div className="bg-@light-blue flex flex-col gap-3  p-10 text-lg">
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>1.</p>
-                <p>Fullname</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.parent_data.name}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>2.</p>
-                <p>Profession</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.parent_data.job}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>3.</p>
-                <p>Gender</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.parent_data.gender}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>4.</p>
-                <p>Religion</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.parent_data.religion}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>5.</p>
-                <p>Address</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <div>
-                  <div className=" flex flex-col gap-5">
-                    {/* provence */}
-                    <div className="">
-                      <p className="text-gray-400">Province</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.parent_data.address.province}</p>
-                      </div>
-                    </div>
-                    {/* district */}
-                    <div className="">
-                      <p className="text-gray-400">District</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.parent_data.address.city}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <p className="text-gray-400">Detail</p>
-                      <div className="bg-white px-3 flex py-3 h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.parent_data.address.detail}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1 ">
-                      <p className="text-gray-400">Zip Code</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.parent_data.address.zip_code}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p></p>
-                <div className="w-full">
-                  <div className="gap-10 flex flex-col">
-                    {/* city */}
-                    <div className="">
-                      <p className="text-gray-400">City/Regency</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.parent_data.address.city}</p>
-                      </div>
-                    </div>
-                    {/* sub-district */}
-                    <div className="">
-                      <p className="text-gray-400">Sub-District/Village</p>
-                      <div className="bg-white px-3 flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                        <p>{student.parent_data.address.village}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-3">
-              <div className="flex gap-5">
-                <p>6.</p>
-                <p>No. Hp/Telp</p>
-              </div>
-              <div className="flex gap-5">
-                <p>:</p>
-                <p>{student.parent_data.phone}</p>
-              </div>
-            </div>
+          <div className="bg-@light-blue flex flex-col text-lg ">
+            <CardDetailAdmission
+              number={1}
+              title="Full Name"
+              data={student.parent_data.name}
+            />
+            <CardDetailAdmission2
+              number={2}
+              title="Profession"
+              data={student.parent_data.job}
+            />
+            <CardDetailAdmission
+              number={3}
+              title="Gender"
+              data={student.parent_data.gender}
+            />
+            <CardDetailAdmission2
+              number={4}
+              title="Religion"
+              data={student.parent_data.religion}
+            />
+            <CardDetailAdmission
+              number={5}
+              title="Phone Number"
+              data={student.parent_data.phone}
+            />
+            <CardDetailAdmissionAddress2
+              number={7}
+              province={student.parent_data.address.province}
+              city={student.parent_data.address.city}
+              district={student.parent_data.address.district}
+              village={student.parent_data.address.village}
+              zip_code={student.parent_data.address.zip_code}
+            />
           </div>
           <div className="flex justify-end my-5 text-lg">
             <p>{student.date_place}</p>
@@ -376,14 +224,16 @@ const DetailAdmission: FC = () => {
               <p>{student.student_data.name}</p>
             </div>
           </div>
-          <div className="flex justify-end mt-10 gap-10">
+          <div className="flex flex-col sm:flex-row justify-end mt-10 gap-3 sm:gap-10">
             <ButtonCancelDelete
               label="back"
               onClick={() => navigate("/admin/admission")}
             />
-            <Link to={`/admin/admission/pdf/${id}`} target="_blank">
-              <ButtonSubmit label="Download" />
-            </Link>
+
+            <ButtonSubmit
+              label="Download"
+              onClick={() => navigate(`/admin/admission/pdf/${id}`)}
+            />
           </div>
         </div>
       )}

@@ -608,7 +608,7 @@ export const NavbarIndex: FC = () => {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Disclosure.Panel className="sm:hidden">
+            <Disclosure.Panel className="lg:hidden">
               {checkToken ? (
                 <nav className=" items-center bg-@blue pt-32 pb-5 px-10 w-auto">
                   <div className="flex flex-col justify-end gap-5">
@@ -639,7 +639,7 @@ export const NavbarIndex: FC = () => {
                   </div>
                 </nav>
               ) : (
-                <nav className="items-center bg-@orange py-5 px-10 w-auto">
+                <nav className="items-center bg-@blue pt-32 pb-5 px-10 w-auto">
                   <div className="flex flex-col justify-end gap-5">
                     <Link
                       to="/login"

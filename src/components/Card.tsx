@@ -93,3 +93,186 @@ export const CardAddQuiz: FC<AddQuizType> = (props) => {
     </>
   );
 };
+
+interface DetailAdmissionType {
+  number: number;
+  title: string;
+  data: string | number;
+}
+
+export const CardDetailAdmission: FC<DetailAdmissionType> = (props) => {
+  const { number, title, data } = props;
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 bg-sky-100 border-2 border-sky-700">
+      <div className="flex gap-3 p-3 ">
+        <p>{number}.</p>
+        <p>{title}</p>
+      </div>
+      <div className="flex gap-3 border-l-2 border-white p-3">
+        <p>{data}</p>
+      </div>
+    </div>
+  );
+};
+
+export const CardDetailAdmission2: FC<DetailAdmissionType> = (props) => {
+  const { number, title, data } = props;
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 bg-sky-200 border-2 border-sky-700">
+      <div className="flex gap-3  p-3 ">
+        <p>{number}.</p>
+        <p>{title}</p>
+      </div>
+      <div className="flex gap-3 border-l-2 border-white p-3">
+        <p>{data}</p>
+      </div>
+    </div>
+  );
+};
+
+interface DetailAdmissionAddressType {
+  number: number;
+  province: string;
+  city: string;
+  district: string;
+  village: string;
+  zip_code: string;
+}
+
+export const CardDetailAdmissionAddress: FC<DetailAdmissionAddressType> = (
+  props
+) => {
+  const { number, province, city, district, village, zip_code } = props;
+  return (
+    <>
+      <div className=" grid sm:grid-cols-2 lg:grid-cols-3 bg-sky-100 border-t-2 border-l-2 border-r-2 border-sky-700">
+        <div className="flex gap-3 px-3 pt-3 lg:p-3">
+          <p>{number}.</p>
+          <p>Address</p>
+        </div>
+        <div className="sm:pl-7 lg:pl-0 col-span-2">
+          <div className="flex pt-3 gap-5 lg:border-l-2 border-l-white">
+            {/* provence */}
+            <div className="pl-5 flex flex-col w-full lg:pb-5 ">
+              <p className="text-gray-700">Province</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{province}</p>
+              </div>
+            </div>
+            {/* city */}
+            <div className="pr-5 flex flex-col w-full lg:pb-5">
+              <p className="text-gray-700">City</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{city}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className=" grid grid-cols-2 lg:grid-cols-3 bg-sky-100 border-l-2 border-r-2 border-sky-700">
+        <div className="hidden lg:block gap-5 p-3"></div>
+        <div className="sm:pl-7 lg:pl-0 col-span-2 space-x-3">
+          <div className="flex pt-3 gap-5 lg:border-l-2 border-white">
+            {/* district */}
+            <div className="pl-5 flex flex-col w-full ">
+              <p className="text-gray-700">District</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{district}</p>
+              </div>
+            </div>
+            {/* village */}
+            <div className="pr-5 flex flex-col w-full pb-5">
+              <p className="text-gray-700">Village</p>
+              <div className="bg-white  px-2  md:px-3 flex items-center  h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{village}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className=" grid grid-cols-2 lg:grid-cols-3 bg-sky-100 border-b-2 border-l-2 border-r-2 border-sky-700">
+        <div className="hidden lg:block lg:gap-5 p-3"></div>
+        <div className="sm:pl-7 lg:pl-0 col-span-1 space-x-3">
+          <div className="flex lg:pt-3 gap-5 lg:border-l-2 border-white">
+            {/* zip_code */}
+            <div className="pl-5 flex flex-col w-full pb-5">
+              <p className="text-gray-700">Zip Code</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{zip_code}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export const CardDetailAdmissionAddress2: FC<DetailAdmissionAddressType> = (
+  props
+) => {
+  const { number, province, city, district, village, zip_code } = props;
+  return (
+    <>
+      <div className=" grid sm:grid-cols-2 lg:grid-cols-3 bg-sky-200 border-t-2 border-l-2 border-r-2 border-sky-700">
+        <div className="flex gap-5 px-3 pt-3 lg:p-3">
+          <p>{number}.</p>
+          <p>Address</p>
+        </div>
+        <div className=" sm:pl-7 lg:pl-0 col-span-2 space-x-3">
+          <div className="flex pt-3 gap-5 lg:border-l-2 border-white">
+            {/* provence */}
+            <div className="pl-5 flex flex-col w-full lg:pb-5">
+              <p className="text-gray-700">Province</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{province}</p>
+              </div>
+            </div>
+            {/* city */}
+            <div className="pr-5 flex flex-col w-full lg:pb-5">
+              <p className="text-gray-700">City</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{city}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className=" grid grid-cols-2 lg:grid-cols-3 bg-sky-200 border-l-2 border-r-2 border-sky-700">
+        <div className="hidden lg:block gap-5 p-3"></div>
+        <div className="sm:pl-7 lg:pl-0 col-span-2 space-x-3">
+          <div className="flex pt-3 gap-5 lg:border-l-2 border-white">
+            {/* district */}
+            <div className="pl-5 flex flex-col w-full ">
+              <p className="text-gray-700">District</p>
+              <div className="bg-white px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{district}</p>
+              </div>
+            </div>
+            {/* village */}
+            <div className="pr-5 flex flex-col w-full pb-5">
+              <p className="text-gray-700">Village</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{village}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className=" grid grid-cols-2 lg:grid-cols-3 bg-sky-200 border-b-2 border-l-2 border-r-2 border-sky-700">
+        <div className="hidden lg:block lg:gap-5 p-3"></div>
+        <div className="sm:pl-7 lg:pl-0 col-span-1 space-x-3">
+          <div className="flex lg:pt-3 gap-5 lg:border-l-2 border-white">
+            {/* zip_code */}
+            <div className="pl-5 flex flex-col w-full pb-5">
+              <p className="text-gray-700">Zip Code</p>
+              <div className="bg-white  px-2 md:px-3 flex items-center h-20 sm:h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                <p>{zip_code}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
