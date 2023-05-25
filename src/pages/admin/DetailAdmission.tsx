@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FC, useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
