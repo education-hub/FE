@@ -195,11 +195,11 @@ const DetailSchool: FC = () => {
   return (
     <Layout>
       {/* Section 1 */}
-      <div className="grid lg:grid-cols-2 p-20 gap-20 text-@dark">
+      <div className="grid lg:grid-cols-2 p-7 sm:p-20 gap-10 md:gap-20 text-@dark">
         <div className="flex flex-col gap-10">
           <h1 className="text-5xl">{data.name}</h1>
           <p className="text-lg">{data.description}</p>
-          <div className="grid grid-cols-4 gap-10">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-10">
             <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
               <h1 className="text-3xl font-bold">{data.students}</h1>
               <p>Students</p>
@@ -217,7 +217,7 @@ const DetailSchool: FC = () => {
               <p>Accreditation</p>
             </div>
           </div>
-          <div className=" flex space-x-3">
+          <div className="flex space-x-3">
             <TbWorldWww className="text-2xl" />
             <p className="text-lg">
               Find more about school, go to school Website:{" "}
@@ -242,7 +242,7 @@ const DetailSchool: FC = () => {
         </div>
       </div>
       {/* Section 2 */}
-      <div className="bg-gray-200 grid grid-cols-2 p-20 gap-20 text-@dark text-lg">
+      <div className="bg-gray-200 grid lg:grid-cols-2 p-7 sm:p-20 gap-20 text-@dark text-lg">
         <div className="flex flex-col gap-10">
           <h1 className="text-2xl font-bold">Review</h1>
           <div className="grid grid-cols-3 gap-4 pb-20">
@@ -278,7 +278,7 @@ const DetailSchool: FC = () => {
             title="Introduction Video"
             allowFullScreen
           />
-          <div className="grid grid-cols-3 gap-10">
+          <div className="grid sm:grid-cols-2 gap-8 sm:gap-20">
             <Link to={`/student/registration-form/${id}`}>
               <ButtonSubmit label="Register" style={{ width: "100%" }} />
             </Link>
@@ -298,45 +298,55 @@ const DetailSchool: FC = () => {
         </div>
       </div>
       {/* Section 3 */}
-      <div className="bg-white p-20 grid grid-cols-2 gap-20">
+      <div className="bg-gray-200 p-7 sm:p-20 grid lg:grid-cols-2 gap-7 md:gap-12 lg:gap-20">
         <div className="flex flex-col gap-10">
           <div className="bg-@blue w-full px-10 h-20 uppercase justify-center items-center flex text-white">
             <p>extracurricular</p>
           </div>
           {data.extracurriculars &&
             data.extracurriculars.map((extracurricular) => (
-              <div className="flex space-x-10" key={extracurricular.id}>
-                <img
-                  src={`https://storage.googleapis.com/prj1ropel/${extracurricular.image}`}
-                  alt=""
-                  className="h-32 w-auto"
-                />
-                <div className="w-full flex flex-col gap-4">
-                  <h1 className="text-2xl font-semibold">
-                    {extracurricular.name}
-                  </h1>
-                  <p className="text-lg">{extracurricular.description}</p>
+              <div
+                className="bg-@light-blue p-7 sm:p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
+                key={extracurricular.id}
+              >
+                <div className="flex space-x-10">
+                  <img
+                    src={`https://storage.googleapis.com/prj1ropel/${extracurricular.image}`}
+                    alt=""
+                    className="h-32 w-auto"
+                  />
+                  <div className="w-full flex flex-col gap-4">
+                    <h1 className="text-2xl font-semibold">
+                      {extracurricular.name}
+                    </h1>
+                    <p className="text-lg">{extracurricular.description}</p>
+                  </div>
                 </div>
               </div>
             ))}
         </div>
         <div className="flex flex-col gap-10">
-          <div className="bg-@blue w-full px-10 h-20 justify-center items-center flex text-white">
+          <div className="bg-@blue w-full px-10 h-20 uppercase justify-center items-center flex text-white">
             <p>ACHIEVEMENT</p>
           </div>
           {data.achievements &&
             data.achievements.map((achievements) => (
-              <div className="flex space-x-10" key={achievements.id}>
-                <img
-                  src={`https://storage.googleapis.com/prj1ropel/${achievements.image}`}
-                  alt=""
-                  className="h-32 w-auto"
-                />
-                <div className="w-full flex flex-col gap-4">
-                  <h1 className="text-2xl font-semibold">
-                    {achievements.name}
-                  </h1>
-                  <p className="text-lg">{achievements.description}</p>
+              <div
+                className="bg-@light-blue   p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
+                key={achievements.id}
+              >
+                <div className="flex space-x-10">
+                  <img
+                    src={`https://storage.googleapis.com/prj1ropel/${achievements.image}`}
+                    alt=""
+                    className="h-32 w-auto"
+                  />
+                  <div className="w-full flex flex-col gap-4">
+                    <h1 className="text-2xl font-semibold">
+                      {achievements.name}
+                    </h1>
+                    <p className="text-lg">{achievements.description}</p>
+                  </div>
                 </div>
               </div>
             ))}
@@ -349,7 +359,7 @@ const DetailSchool: FC = () => {
             <div className="pb-10 text-center">
               <h1 className="text-lg font-bold">ONETIME PAYMENT</h1>
             </div>
-            <div className="grid grid-cols-5 gap-20">
+            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5 xl:gap-7 2xl:gap-10">
               {data.payments.onetime &&
                 data.payments.onetime.map((payment) => (
                   <div className="flex flex-col gap-5" key={payment.id}>
@@ -367,7 +377,7 @@ const DetailSchool: FC = () => {
             <div className="pb-10 pt-16 text-center">
               <h1 className="text-lg font-bold">INTERVAL PAYMENT</h1>
             </div>
-            <div className="grid grid-cols-5 gap-20">
+            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5 xl:gap-7 2xl:gap-10">
               {data.payments.interval &&
                 data.payments.interval.map((payment) => (
                   <div className="flex flex-col gap-5" key={payment.id}>
