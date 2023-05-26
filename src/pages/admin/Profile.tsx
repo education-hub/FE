@@ -174,7 +174,7 @@ const AdminProfile: FC = () => {
       >
         <div>
           <div className="flex flex-col hover:drop-shadow-lg hover:-translate-y-2 duration-700">
-            <div className="w-full bg-cover bg-center">
+            <div className="">
               <img
                 src={
                   user && user.image === "org1.jpg"

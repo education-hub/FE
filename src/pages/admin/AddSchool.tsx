@@ -218,7 +218,7 @@ const AddSchool: FC = () => {
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit(hadlePostSchool)}>
-        <div className="text-lg grid py-20 px-20 gap-20 grid-cols-2">
+        <div className="sm:text-md md:text-lg grid py-7 sm:py-20 px-7 sm:px-20 sm:p-20 gap-10 md:gap-20 lg:grid-cols-2">
           <div className=" flex flex-col gap-3">
             <InputLightBlue
               label="National School Identification Number (NPSN)"
@@ -407,7 +407,7 @@ const AddSchool: FC = () => {
             </div>
             <div className="flex flex-col mt-10 p-2 gap-10">
               {pdfFile && (
-                <div className="h-[600px]">
+                <div className="h-[600px] w-full block lg:hidden xl:block">
                   <h3>PDF Preview:</h3>
                   <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
                     <Viewer
@@ -433,16 +433,30 @@ const AddSchool: FC = () => {
               />
             </div>
             <div className="flex mt-3 justify-end">
-              <ButtonSubmit
-                type="button"
-                label="view pdf"
-                onClick={() => {
-                  generatePreview();
-                }}
-              />
+              <div className="lg:hidden xl:block">
+                <ButtonSubmit
+                  type="button"
+                  label="view pdf"
+                  onClick={() => {
+                    generatePreview();
+                  }}
+                />
+              </div>
+              <div className="hidden lg:block xl:hidden">
+                <ButtonSubmit
+                  type="button"
+                  label="view pdf"
+                  onClick={() => {
+                    setIsOpen(true);
+                  }}
+                />
+              </div>
             </div>
           </div>
-          <div className="flex gap-10 col-span-2 justify-end">
+        </div>
+        <div className="grid sm:grid-cols-2 gap-8 md:gap-20 p-10">
+          <div className="hidden sm:block"></div>
+          <div className="grid grid-cols-2 gap-8 lg:gap-20 xl:gap-32">
             <ButtonCancelDelete label="Cancel" />
             <ButtonSubmit label="Post School" type="submit" />
           </div>
@@ -482,26 +496,31 @@ const AddSchool: FC = () => {
                       View Brochure
                     </Dialog.Title>
                     <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                      {pdfFile ? (
-                        <div
-                          style={{
-                            border: "1px solid rgba(0, 0, 0, 0.3)",
-                            height: "750px",
-                          }}
-                        >
-                          <Viewer
-                            fileUrl={pdfFile}
-                            plugins={[defaultLayoutPluginInstance]}
-                          />
+                      {pdfFile && (
+                        <div className="h-[600px] w-full ">
+                          <h3>PDF Preview:</h3>
+                          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                            <Viewer
+                              fileUrl={pdfFile}
+                              plugins={[defaultLayoutPluginInstance]}
+                              renderLoader={(percentages: number) => (
+                                <div>
+                                  <ProgressBar
+                                    progress={Math.round(percentages)}
+                                  />
+                                </div>
+                              )}
+                            />
+                          </Worker>
                         </div>
-                      ) : (
-                        <></>
                       )}
                     </Worker>
-                    <ButtonCancelDelete
-                      label="close"
-                      onClick={() => setIsOpen(false)}
-                    />
+                    <div className="mt-10">
+                      <ButtonCancelDelete
+                        label="close"
+                        onClick={() => setIsOpen(false)}
+                      />
+                    </div>
                   </Dialog.Panel>
                 </Transition.Child>
               </div>
