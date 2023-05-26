@@ -128,6 +128,7 @@ export interface QuizDataType {
 }
 
 export interface DetailSchoolDataType {
+  WaLink: string;
   accreditation: string;
   achievements: string | null; // belum ketahuan data aslinya jika ditambahkan
   city: string;

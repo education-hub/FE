@@ -12,11 +12,11 @@ import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
-
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
   InputLightBlue,
   InputWhite,
+  SelectLightBlue,
   TextAreaLightBlue,
   TextAreaWhite,
 } from "../../components/Input";
@@ -29,6 +29,8 @@ import {
   DistrictDataType,
   SubDistrictDataType,
 } from "../../utils/user";
+
+const accreditationOptions = z.enum(["A", "B"]);
 
 const schema = z.object({
   npsn: z.string().min(8, { message: "npsn mush 8 number" }),
@@ -47,11 +49,15 @@ const schema = z.object({
   students: z.string().min(1, { message: "how many students is required" }),
   teachers: z.string().min(1, { message: "how many teachers is required" }),
   staff: z.string().min(1, { message: "how many staff is required" }),
-  accreditation: z.string().min(1, { message: "Accreditaon is required" }),
+  accreditation: accreditationOptions,
   web: z
     .string()
     .min(1, { message: "school website is required" })
     .url({ message: "Must be a valid video URL" }),
+  phone: z
+    .string()
+    .min(12, { message: "minimum 12 number " })
+    .max(13, { message: "maximum 13 number" }),
   image: z.any().refine((files) => {
     if (files?.length === 1) {
       const acceptedFormats = ["jpg", "jpeg", "png", "gif"];
@@ -251,6 +257,14 @@ const AddSchool: FC = () => {
               register={register}
               error={errors.web?.message}
             />
+            <InputLightBlue
+              label="Admin Whatsapp"
+              type="number"
+              name="phone"
+              id="input-phone"
+              register={register}
+              error={errors.phone?.message}
+            />
             <div className="flex flex-col my-5 gap-1">
               <p className="font-bold text-gray-700 block">Location</p>
               <div className="bg-@light-blue font-medium border-2 text-md text-@dark p-10 sm:text-lg focus:outline-none">
@@ -340,11 +354,14 @@ const AddSchool: FC = () => {
               register={register}
               error={errors.staff?.message}
             />
-            <InputLightBlue
-              label="Accreditation"
-              type="text"
+            <SelectLightBlue
+              label="Select Role"
               name="accreditation"
-              id="input-accreditation"
+              id="input-role"
+              option1="A"
+              valueoption1="A"
+              option2="B"
+              valueoption2="B"
               register={register}
               error={errors.accreditation?.message}
             />

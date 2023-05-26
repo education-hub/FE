@@ -135,7 +135,6 @@ const AdminProfile: FC = () => {
       .then((response) => {
         const { message } = response.data && response.data;
         const { token } = response.data.data;
-        console.log(token);
         Swal.fire({
           icon: "success",
           title: "Update Success",

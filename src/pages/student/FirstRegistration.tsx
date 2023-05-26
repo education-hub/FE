@@ -69,7 +69,6 @@ const FirstRegistration: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setData(data);
-        console.log(data);
         setMyType(data.type);
       })
       .catch((error) => {

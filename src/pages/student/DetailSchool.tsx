@@ -191,7 +191,6 @@ const DetailSchool: FC = () => {
         fetchData();
       });
   };
-  console.log(src);
   return (
     <Layout>
       {/* Section 1 */}

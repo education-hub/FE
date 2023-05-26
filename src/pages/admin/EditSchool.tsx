@@ -32,6 +32,8 @@ import {
 } from "../../utils/user";
 import { Dialog, Transition } from "@headlessui/react";
 
+const accreditationOptions = z.enum(["A", "B"]);
+
 const schema = z.object({
   name: z.string().min(3, { message: "School name is required" }),
   description: z
@@ -48,7 +50,7 @@ const schema = z.object({
   students: z.string().min(1, { message: "how many students is required" }),
   teachers: z.string().min(1, { message: "how many teachers is required" }),
   staff: z.string().min(1, { message: "how many staff is required" }),
-  accreditation: z.string().min(1, { message: "Accreditaon is required" }),
+  accreditation: accreditationOptions,
   web: z
     .string()
     .min(1, { message: "school website is required" })
@@ -187,6 +189,7 @@ const EditSchool: FC = () => {
           detail,
         } = res.data.data;
         const { data } = res.data;
+        console.log(res.data.data);
         setSchoolData(data);
         setValue("accreditation", accreditation);
         setValue("name", name);
