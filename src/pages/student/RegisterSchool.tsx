@@ -46,7 +46,7 @@ const RegisterSchool: FC = () => {
       <div className="grid grid-flow-row auto-rows-max gap-10">
         <div>
           {!noData ? (
-            <div className="p-20 grid grid-flow-row auto-rows-max gap-10">
+            <div className="p-10 md:p-20 grid grid-flow-row auto-rows-max gap-10">
               {datas.map((data) => {
                 return (
                   <div
@@ -57,20 +57,20 @@ const RegisterSchool: FC = () => {
                       <img
                         src={`https://storage.googleapis.com/prj1ropel/${data.school_image}`}
                         alt="school_pict"
-                        className="max-w-[150px] max-h-[100px]"
+                        className="max-w-[60px] max-h-[100px] md:max-w-[150px] md:max-h-[100px]"
                       />
                     </div>
-                    <div className="col-span-3 grid grid-rows-3">
+                    <div className="col-span-3 grid md:grid-rows-3">
                       <p className="font-semibold text-gray-500">School Name</p>
-                      <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-full">
+                      <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-14 md:h-full">
                         {data.school_name}
                       </div>
                     </div>
-                    <div className="col-span-3 grid grid-rows-3">
+                    <div className="col-span-3 grid md:grid-rows-3">
                       <p className="font-semibold text-gray-500">
                         School Website
                       </p>
-                      <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-full">
+                      <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-14 md:h-full">
                         {data.school_web}
                       </div>
                     </div>

@@ -47,6 +47,7 @@ interface detailSchool {
     description: string;
   }[];
   faqs: { id: number; question: string; answer: string }[];
+  WaLink: string;
   image: string;
   name: string;
   reviews: { image: string; review: string }[];
@@ -95,6 +96,7 @@ const DetailSchool: FC = () => {
     achievements: [],
     extracurriculars: [],
     faqs: [],
+    WaLink: "",
     image: "",
     name: "",
     reviews: [],
@@ -146,6 +148,7 @@ const DetailSchool: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setData(data);
+        console.log(data);
         const new_string =
           data.video
             ?.split(/,|\/|=/)
@@ -191,7 +194,7 @@ const DetailSchool: FC = () => {
         fetchData();
       });
   };
-  console.log(src);
+
   return (
     <Layout>
       {/* Section 1 */}
@@ -436,6 +439,19 @@ const DetailSchool: FC = () => {
                             answer={faq.answer}
                           />
                         ))}
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 pb-20">
+                      <div className="col-span-2">
+                        <div className="flex items-center bg-@light-blue w-full px-3 h-full">
+                          <p>
+                            Didn’t find answer? Let’s talk to our Costumer
+                            Service
+                          </p>
+                        </div>
+                      </div>
+                      <Link to={data.WaLink}>
+                        <ButtonSubmit label="Click Here" />
+                      </Link>
                     </div>
                     <div className="mt-4 flex space-x-5 justify-end">
                       <ButtonCancelDelete
