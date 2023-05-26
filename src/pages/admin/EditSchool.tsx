@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { ComboBoxEditSchool } from "../../components/ComboBox";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import { FC, Fragment, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ComboBoxEditSchool } from "../../components/ComboBox";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import { ProgressBar } from "@react-pdf-viewer/core";
 import { Worker } from "@react-pdf-viewer/core";
 import { Viewer } from "@react-pdf-viewer/core";
-import { FC, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -30,6 +30,7 @@ import {
   SubDistrictDataType,
   SchoolDataType,
 } from "../../utils/user";
+import { Dialog, Transition } from "@headlessui/react";
 
 const schema = z.object({
   name: z.string().min(3, { message: "School name is required" }),
@@ -60,17 +61,19 @@ const schema = z.object({
 export type SchemaEditchSchool = z.infer<typeof schema>;
 
 const EditSchool: FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
   const [schoolData, setSchoolData] = useState<Partial<SchoolDataType>>({});
-  const [src, setSrc] = useState("");
-  const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
-  const [cities, setCities] = useState<CitiesDataType[]>([]);
-  const [districts, setDistricts] = useState<DistrictDataType[]>([]);
   const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
+  const [provinces, setProvinces] = useState<ProvinceDataType[]>([]);
+  const [districts, setDistricts] = useState<DistrictDataType[]>([]);
+  const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [pdfFile, setPdfFile] = useState<string | null>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [src, setSrc] = useState("");
+
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   const params = useParams();
   const { id } = params;
@@ -476,13 +479,24 @@ const EditSchool: FC = () => {
               />
             </div>
             <div className="flex mt-3 justify-end">
-              <ButtonSubmit
-                type="button"
-                label="Preview pdf"
-                onClick={() => {
-                  generatePreview();
-                }}
-              />
+              <div className="lg:hidden xl:block">
+                <ButtonSubmit
+                  type="button"
+                  label="view pdf"
+                  onClick={() => {
+                    generatePreview();
+                  }}
+                />
+              </div>
+              <div className="hidden lg:block xl:hidden">
+                <ButtonSubmit
+                  type="button"
+                  label="view pdf"
+                  onClick={() => {
+                    setIsOpen(true);
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -495,6 +509,67 @@ const EditSchool: FC = () => {
         </div>
         {loading ? <div>Loading...</div> : <></>}
       </form>
+      <>
+        {/* modal view pdf */}
+        <Transition appear show={isOpen} as={Fragment}>
+          <Dialog as="div" className="z-10 relative" onClose={() => !isOpen}>
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="bg-black bg-opacity-25 inset-0 fixed" />
+            </Transition.Child>
+            <div className="inset-0 fixed overflow-y-auto">
+              <div className="flex min-h-full text-center p-4 items-center justify-center">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="bg-white shadow-xl text-left w-full max-w-2xl p-16 transform transition-all overflow-hidden align-middle">
+                    <Dialog.Title
+                      as="h3"
+                      className="font-semibold text-xl  text-@dark text-center py-5 leading-6"
+                    >
+                      View Brochure
+                    </Dialog.Title>
+                    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                      <Viewer
+                        fileUrl={
+                          pdfFile
+                            ? pdfFile
+                            : `data:application/pdf;base64,${schoolData.pdf}`
+                        }
+                        plugins={[defaultLayoutPluginInstance]}
+                        renderLoader={(percentages: number) => (
+                          <div>
+                            <ProgressBar progress={Math.round(percentages)} />
+                          </div>
+                        )}
+                      />
+                    </Worker>
+                    <div className="mt-10">
+                      <ButtonCancelDelete
+                        label="close"
+                        onClick={() => setIsOpen(false)}
+                      />
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+      </>
     </LayoutAdmin>
   );
 };
