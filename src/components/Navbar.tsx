@@ -2,7 +2,7 @@ import { FC, Fragment } from "react";
 import Logo from "../assets/eduhub-logo-black.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
-import { BiMenu, BiX, BiLogIn, BiUserPlus } from "react-icons/bi";
+import { BiMenu, BiX, BiLogIn, BiUserPlus, BiLogOut } from "react-icons/bi";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 
@@ -12,7 +12,6 @@ export const Navbar: FC = () => {
   const checkRole = cookie.role;
 
   const navigate = useNavigate();
-
   const handleLogout = () => {
     Swal.fire({
       icon: "warning",
@@ -82,21 +81,23 @@ export const Navbar: FC = () => {
                           REGISTER SCHOOL
                         </Link>
                         <button
-                          className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
+                          className="text-white text-md flex gap-2 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                           onClick={() => handleLogout()}
                         >
+                          <BiLogOut />
                           LOGOUT
                         </button>
                       </div>
                     </div>
                   ) : (
-                    <div>
-                      <Link
-                        to="/login"
-                        className="text-white text-xs sm:text-base hover:text-@dark transition-all font-semibold duration-500 ease-in-out whitespace-nowrap"
+                    <div className="justify-end hidden lg:block">
+                      <button
+                        className="text-white text-md flex gap-3 items-center justify-end hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
+                        onClick={() => handleLogout()}
                       >
-                        LOGIN WITH STUDENT ROLE
-                      </Link>
+                        <BiLogOut />
+                        LOGOUT
+                      </button>
                     </div>
                   )
                 ) : (
@@ -134,46 +135,56 @@ export const Navbar: FC = () => {
           >
             <Disclosure.Panel className="lg:hidden">
               <nav className="items-center bg-@blue py-5 px-10 w-auto">
-                <div className="flex flex-col justify-start gap-5">
+                <div className="block lg:hidden flex-col justify-start gap-5">
                   {checkToken ? (
-                    <>
+                    checkRole === "student" ? (
+                      <div className="flex flex-col gap-3">
+                        <Link
+                          to="/student/profile"
+                          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold w-full duration-500 ease-in-out"
+                        >
+                          PROFILE
+                        </Link>
+                        <Link
+                          to="/student/transactions"
+                          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out"
+                        >
+                          TRANSACTIONS
+                        </Link>
+                        <Link
+                          to="/student/register-school"
+                          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out"
+                        >
+                          REGISTER SCHOOL
+                        </Link>
+                        <button
+                          className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out"
+                          onClick={() => handleLogout()}
+                        >
+                          LOGOUT
+                        </button>
+                      </div>
+                    ) : (
                       <Link
-                        to="/student/profile"
-                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold w-full duration-500 ease-in-out"
+                        to="/login"
+                        className="text-white text-md flex py-2 gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
-                        PROFILE
-                      </Link>
-                      <Link
-                        to="/student/transactions"
-                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out"
-                      >
-                        TRANSACTIONS
-                      </Link>
-                      <Link
-                        to="/student/register-school"
-                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out"
-                      >
-                        REGISTER SCHOOL
-                      </Link>
-                      <button
-                        className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out"
-                        onClick={() => handleLogout()}
-                      >
+                        <BiLogOut />
                         LOGOUT
-                      </button>
-                    </>
+                      </Link>
+                    )
                   ) : (
                     <>
                       <Link
                         to="/login"
-                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex py-2 gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiLogIn />
                         LOGIN
                       </Link>
                       <Link
                         to="/register"
-                        className="text-white text-md flex gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex py-2 gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                       >
                         <BiUserPlus className="text-xl" />
                         REGISTER
@@ -308,7 +319,7 @@ export const NavbarAdmin: FC = () => {
             <Disclosure.Panel className="lg:hidden">
               <nav className="items-center bg-@orange py-5 px-10 w-auto">
                 <div className="flex flex-col justify-end gap-5">
-                  {checkToken ? (
+                  {checkToken && cookie.role === "administrator" ? (
                     <>
                       <Link
                         to="/admin/profile"
@@ -442,6 +453,7 @@ export const NavbarIndexAdmin: FC = () => {
                         className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                         onClick={() => handleLogout()}
                       >
+                        <BiLogOut />
                         LOGOUT
                       </button>
                     </div>
@@ -502,9 +514,10 @@ export const NavbarIndexAdmin: FC = () => {
                       TEST RESULT
                     </Link>
                     <button
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      className="text-white text-md flex gap-2 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                       onClick={() => handleLogout()}
                     >
+                      <BiLogOut />
                       LOGOUT
                     </button>
                   </div>
@@ -584,7 +597,7 @@ export const NavbarIndex: FC = () => {
                 </Disclosure.Button>
               </div>
               <nav className="flex-1 flex items-center py-3  justify-between bg-@blue px-10 ">
-                <Link to="/admin">
+                <Link to="/">
                   <img
                     src={Logo}
                     alt="Logo"
@@ -595,9 +608,10 @@ export const NavbarIndex: FC = () => {
                   <div className="hidden sm:block sm:ml-6">
                     <div className="flex space-x-4">
                       <button
-                        className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                        className="text-white text-md flex gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                         onClick={() => handleLogout()}
                       >
+                        <BiLogOut />
                         LOGOUT
                       </button>
                     </div>
@@ -607,14 +621,16 @@ export const NavbarIndex: FC = () => {
                     <div className="flex space-x-4">
                       <Link
                         to="/login"
-                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700  duration-700 py-2 rounded-md text-md font-medium"
+                        className="text-white text-md flex gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                       >
+                        <BiLogIn />
                         LOGIN
                       </Link>
                       <Link
                         to="/register"
-                        className="flex gap-2 items-center px-4 text-white hover:bg-gray-700  duration-700 py-2 rounded-md text-md font-medium"
+                        className="text-white text-md flex gap-3 items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                       >
+                        <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
                     </div>
@@ -637,28 +653,11 @@ export const NavbarIndex: FC = () => {
               {checkToken ? (
                 <nav className=" items-center bg-@blue pt-32 pb-5 px-10 w-auto">
                   <div className="flex flex-col justify-end gap-5">
-                    <Link
-                      to="/admin/profile"
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold w-full duration-500 ease-in-out    "
-                    >
-                      PROFILE
-                    </Link>
-                    <Link
-                      to="/admin/admission"
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-                    >
-                      STUDENT ADMISSION
-                    </Link>
-                    <Link
-                      to="/admin/result"
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
-                    >
-                      TEST RESULT
-                    </Link>
                     <button
-                      className="text-white text-md flex items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
+                      className="text-white text-md flex gap-3 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  mr-[6%] duration-500 ease-in-out   "
                       onClick={() => handleLogout()}
                     >
+                      <BiLogOut />
                       LOGOUT
                     </button>
                   </div>
