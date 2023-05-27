@@ -4,6 +4,7 @@ import {
   TbMapPin,
   TbArrowsMoveVertical,
   TbCheck,
+  TbBrandWhatsapp,
 } from "react-icons/tb";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { Fragment, FC, useEffect, useState, MouseEvent } from "react";
@@ -144,7 +145,7 @@ const Admin: FC = () => {
         setSchoolData(data);
         setSchoolId(data.id);
         setNoData(false);
-        console.log(data.video);
+        console.log(data);
         const new_string =
           data.video
             ?.split(/,|\/|=/)
@@ -939,6 +940,21 @@ const Admin: FC = () => {
                         rel="noopener noreferrer"
                       >
                         {schoolData.web}
+                      </Link>
+                    </span>
+                  </p>
+                </div>
+                <div className=" flex space-x-3">
+                  <TbBrandWhatsapp className="text-2xl" />
+                  <p className="text-lg">
+                    Whatsapp Admin:{" "}
+                    <span className="hover:text-@orange">
+                      <Link
+                        to={`${schoolData.WaLink}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {`Click Here !!`}
                       </Link>
                     </span>
                   </p>
