@@ -25,6 +25,13 @@ export const Navbar: FC = () => {
         removeCookie("tkn");
         removeCookie("role");
         navigate("/");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "You are logout !!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     });
   };
@@ -201,8 +208,14 @@ export const NavbarAdmin: FC = () => {
       if (result.isConfirmed) {
         removeCookie("tkn");
         removeCookie("role");
-        Swal.fire("Log out!");
         navigate("/");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "You are logout !!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     });
   };
@@ -368,8 +381,14 @@ export const NavbarIndexAdmin: FC = () => {
       if (result.isConfirmed) {
         removeCookie("tkn");
         removeCookie("role");
-        Swal.fire("Log out!");
         navigate("/");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "You are logout !!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     });
   };
@@ -536,8 +555,14 @@ export const NavbarIndex: FC = () => {
       if (result.isConfirmed) {
         removeCookie("tkn");
         removeCookie("role");
-        Swal.fire("Log out!");
         navigate("/");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "You are logout !!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     });
   };

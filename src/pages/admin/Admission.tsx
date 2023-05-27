@@ -45,10 +45,12 @@ const Admission: FC = () => {
       });
   };
 
+  console.log(student);
+
   return (
     <LayoutAdmin>
       <div
-        className="p-7 sm:p-20 flex flex-col gap-10 h-full md:h-screen  bg-[url(/bg-2.jpg)] bg-center bg-cover"
+        className="p-7 sm:p-20 flex flex-col gap-10 h-full bg-[url(/bg-2.jpg)] bg-center bg-cover"
         style={{
           backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)),url(/bg-2.jpg)`,
         }}
@@ -66,7 +68,7 @@ const Admission: FC = () => {
                         <img
                           src={`https://storage.googleapis.com/prj1ropel/${e.user_image}`}
                           alt=""
-                          className="h-16 w-16 mt-6 hidden md:block"
+                          className="h-auto w-full mt-6 hidden md:block"
                         />
                       </div>
                       {/* <div className="hidden sm:blok md:hidden"></div> */}
@@ -85,7 +87,7 @@ const Admission: FC = () => {
                       </div>
                       <div className="hidden md:block lg:block xl:hidden"></div>
                       <div className="hidden md:hidden lg:block xl:hidden"></div>
-                      <div className="pt-6 flex flex-col sm:flex-row ">
+                      <div className="pt-6 flex flex-col">
                         <ButtonSubmit
                           label="Detail Admission"
                           onClick={() =>
@@ -93,7 +95,7 @@ const Admission: FC = () => {
                           }
                         />
                       </div>
-                      <div className="pt-6 flex justify-end flex-col sm:flex-row">
+                      <div className="pt-6 flex justify-end lg:justify-start flex-col ">
                         <ButtonSubmit
                           label="Update Progress"
                           onClick={() =>
