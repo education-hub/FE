@@ -1,30 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import axios from "axios";
+
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Home from "../pages";
+import FirstRegistration from "../pages/student/FirstRegistration";
+import RegistrationForm from "../pages/student/RegistrationForm";
+import PdfSubmission from "../pages/admin/PdfDetailSubmission";
+import RegisterSchool from "../pages/student/RegisterSchool";
+import DetailAdmission from "../pages/admin/DetailAdmission";
+import UpdateProgress from "../pages/admin/UpdateProgress";
+import ForgetPassword from "../pages/auth/ForgetPassword";
+import DetailSchool from "../pages/student/DetailSchool";
+import Transaction from "../pages/student/Transaction";
+import NewPassword from "../pages/auth/NewPassword";
+import TestResult from "../pages/admin/TestResult";
+import EditSchool from "../pages/admin/EditSchool";
+import AdminProfile from "../pages/admin/Profile";
+import AddSchool from "../pages/admin/AddSchool";
+import Admission from "../pages/admin/Admission";
+import Progress from "../pages/student/Progress";
+import Profile from "../pages/student/Profile";
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
 import Student from "../pages/student";
-import DetailSchool from "../pages/student/DetailSchool";
 import Admin from "../pages/admin";
-import AddSchool from "../pages/admin/AddSchool";
-import EditSchool from "../pages/admin/EditSchool";
-import AdminProfile from "../pages/admin/Profile";
-import Admission from "../pages/admin/Admission";
-import DetailAdmission from "../pages/admin/DetailAdmission";
-import UpdateProgress from "../pages/admin/UpdateProgress";
-import TestResult from "../pages/admin/TestResult";
-import RegistrationForm from "../pages/student/RegistrationForm";
-import RegisterSchool from "../pages/student/RegisterSchool";
-import Progress from "../pages/student/Progress";
-import FirstRegistration from "../pages/student/FirstRegistration";
-import Transaction from "../pages/student/Transaction";
-import Profile from "../pages/student/Profile";
-import ForgetPassword from "../pages/auth/ForgetPassword";
-import NewPassword from "../pages/auth/NewPassword";
-import axios from "axios";
-import { useCookies } from "react-cookie";
-import { useEffect, useState } from "react";
-import PdfSubmission from "../pages/admin/PdfDetailSubmission";
+import About from "../pages/about";
+import Team from "../pages/Team";
+import Home from "../pages";
+import Disclaimer from "../pages/Disclaimer";
 
 axios.defaults.baseURL =
   "https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0";
@@ -66,6 +70,18 @@ const Router = () => {
     {
       path: "/register",
       element: checkToken ? <Home /> : <Register />,
+    },
+    {
+      path: "/about",
+      element: <About />,
+    },
+    {
+      path: "/disclaimer",
+      element: <Disclaimer />,
+    },
+    {
+      path: "/team",
+      element: <Team />,
     },
     {
       path: "/pwd-reset",
