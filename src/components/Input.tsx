@@ -109,7 +109,7 @@ export const RadioLightBlue: FC<InputHTMLAttributes<HTMLInputElement>> = (
 ) => {
   return (
     <input
-      className="h-10 w-full flex items-center text-md sm:text-lg md:text-xl"
+      className="h-7 sm:h-8 w-full flex items-center text-md sm:text-lg md:text-xl"
       {...props}
     />
   );

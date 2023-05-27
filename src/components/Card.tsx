@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { ButtonSubmit, ButtonCancelDelete } from "./Button";
 
 interface AddCostType {
@@ -274,5 +274,32 @@ export const CardDetailAdmissionAddress2: FC<DetailAdmissionAddressType> = (
         </div>
       </div>
     </>
+  );
+};
+
+interface ProgressType {
+  number: number;
+  steps: string;
+  student_steps: ReactNode;
+  update_progress?: ReactNode;
+}
+
+export const CardProgress: FC<ProgressType> = (props) => {
+  const { number, steps, student_steps, update_progress } = props;
+  return (
+    <div className="grid grid-cols-8">
+      <div className="p-2 border-2 flex text-center justify-center">
+        {number}
+      </div>
+      <div className="p-2 border-2 flex col-span-3 ">{steps}</div>
+      <div className="p-2 border-2 flex items-center justify-center col-span-2">
+        <div className="p-2 flex justify-center text-center items-center">
+          {student_steps}
+        </div>
+      </div>
+      <div className="p-2 border-2 flex items-center text-center justify-center col-span-2">
+        {update_progress}
+      </div>
+    </div>
   );
 };
