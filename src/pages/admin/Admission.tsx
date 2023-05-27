@@ -50,7 +50,7 @@ const Admission: FC = () => {
   return (
     <LayoutAdmin>
       <div
-        className="p-7 sm:p-20 flex flex-col gap-10 h-full bg-[url(/bg-2.jpg)] bg-center bg-cover"
+        className=" p-7 sm:p-20 flex flex-col gap-10 h-full bg-[url(/bg-2.jpg)] bg-center bg-cover"
         style={{
           backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)),url(/bg-2.jpg)`,
         }}
@@ -108,7 +108,7 @@ const Admission: FC = () => {
                 })}
               </div>
             ) : (
-              <div className="text-7xl font-medium flex items-center justify-center py-18 h-full text-gray-500">
+              <div className="h-screen text-7xl font-medium flex justify-center py-24 text-gray-500">
                 <p>Data Not Found</p>
               </div>
             )}
