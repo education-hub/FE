@@ -954,7 +954,7 @@ const Admin: FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {`View Here`}
+                        {`Click Here !!`}
                       </Link>
                     </span>
                   </p>

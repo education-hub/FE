@@ -12,6 +12,8 @@ import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
+import Select from "react-select";
+
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
   InputLightBlue,
@@ -116,6 +118,9 @@ const AddSchool: FC = () => {
   const viewPdf = watch("pdf");
   const [pdfFile, setPdfFile] = useState<string | null>("");
   const video = watch("video");
+
+  const viewAcc = watch("accreditation");
+  console.log(viewAcc);
 
   const fetchProvince = () => {
     axios
@@ -354,14 +359,11 @@ const AddSchool: FC = () => {
               register={register}
               error={errors.staff?.message}
             />
-            <SelectLightBlue
-              label="Select Role"
+            <InputLightBlue
+              label="Accreditation"
+              type="text"
               name="accreditation"
-              id="input-role"
-              option1="A"
-              valueoption1="A"
-              option2="B"
-              valueoption2="B"
+              id="input-accreditation"
               register={register}
               error={errors.accreditation?.message}
             />

@@ -133,9 +133,10 @@ export const SelectLightBlue: FC<Props> = (props) => {
           {...(register ? register(name) : {})}
           {...props}
         >
-          <option value={option1} className="h-16">
-            {valueoption1}
+          <option value="" disabled hidden>
+            Select your role
           </option>
+          <option value={option1}>{valueoption1}</option>
           <option value={option2}>{valueoption2}</option>
         </select>
         {error && (
