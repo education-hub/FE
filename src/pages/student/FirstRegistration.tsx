@@ -102,7 +102,7 @@ const FirstRegistration: FC = () => {
       .then((response) => {
         const { message } = response.data;
         Swal.fire({
-          position: "top-end",
+          position: "center",
           icon: "success",
           title: message,
           showConfirmButton: false,

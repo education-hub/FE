@@ -72,6 +72,10 @@ const schema = z.object({
 
 export type SchemaStudent = z.infer<typeof schema>;
 
+interface GetSchoolName {
+  name: string;
+}
+
 interface ProvinceDataType {
   id: number;
   nama: string;
@@ -102,6 +106,9 @@ const RegistrationForm: FC = () => {
   const [cities, setCities] = useState<CitiesDataType[]>([]);
   const [districts, setDistricts] = useState<DistrictDataType[]>([]);
   const [subDistricts, setSubDistricts] = useState<SubDistrictDataType[]>([]);
+  const [data, setData] = useState<GetSchoolName>({
+    name: "",
+  });
 
   const param = useParams();
   const { id } = param;
@@ -214,6 +221,26 @@ const RegistrationForm: FC = () => {
       });
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`https://go-event.online/schools/${id}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.tkn}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        setData(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      });
+  }
+
   return (
     <Layout>
       <div className="p-20">
@@ -221,9 +248,9 @@ const RegistrationForm: FC = () => {
           onSubmit={handleSubmit(handleRegistrationForm)}
           className="space-y-4 w-full"
         >
-          <div className="text-center text-2xl font-bold">
+          <div className="py-5 text-center text-4xl font-bold">
             <h1>New Student Registration Form</h1>
-            <h2>STM Pelita Antaris</h2>
+            <h2 className="py-4">{data.name}</h2>
           </div>
           <div className="p-6 my-5 text-white font-bold text-xl grid-flow-col bg-@blue w-full px-10 h-full">
             <p>A. New Student</p>
