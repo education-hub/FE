@@ -12,13 +12,11 @@ import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
-import Select from "react-select";
 
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import {
   InputLightBlue,
   InputWhite,
-  SelectLightBlue,
   TextAreaLightBlue,
   TextAreaWhite,
 } from "../../components/Input";
