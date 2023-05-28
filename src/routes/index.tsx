@@ -25,7 +25,7 @@ import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
 import Student from "../pages/student";
 import Admin from "../pages/admin";
-import About from "../pages/about";
+import About from "../pages/About";
 import Team from "../pages/Team";
 import Home from "../pages";
 import Disclaimer from "../pages/Disclaimer";
