@@ -2,26 +2,38 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { FC, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { ImCheckmark } from "react-icons/im";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { ImCheckmark } from "react-icons/im";
+import Pusher from "pusher-js";
 
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { LayoutAdmin } from "../../components/Layout";
 import { RadioLightBlue } from "../../components/Input";
 import { CardProgress } from "../../components/Card";
 
+const APP_KEY = "198b35e916a3f0811a9c";
+const CLUSTER_NAME = "ap1";
+
+const pusher = new Pusher(APP_KEY, {
+  cluster: CLUSTER_NAME,
+});
+
 interface objAddType {
   progress_status: string;
 }
 
 const UpdateProgress: FC = () => {
+  const [pusherStatus, setPusherStatus] = useState<string>("");
   const [selectedStep, setSelectedStep] = useState<string>("");
   const [objAdd] = useState<objAddType>({ progress_status: selectedStep });
   const [loading, setLoading] = useState<boolean>(false);
+  const [uname, setUname] = useState<string>("");
   const [student, setStudent] = useState({});
-  const [cookie] = useCookies(["tkn"]);
+
+  const [cookie] = useCookies(["tkn", "uname"]);
+  const chekUname = cookie.uname;
   const checkToken = cookie.tkn;
 
   const params = useParams();
@@ -30,6 +42,36 @@ const UpdateProgress: FC = () => {
   const navigate = useNavigate();
 
   document.title = "Update Progress | Admin Management";
+
+  useEffect(() => {
+    const channel = pusher.subscribe("my-channel");
+    channel.bind("ADMINADMISSION", (data: any) => {
+      setPusherStatus(data.status);
+      setUname(data.username);
+    });
+    return () => {
+      channel.unbind("ADMINADMISSION");
+      pusher.unsubscribe("my-channel");
+    };
+  }, []);
+
+  useEffect(() => {
+    handleShowPusher();
+  }, [pusherStatus]);
+
+  const handleShowPusher = () => {
+    if (uname === chekUname) {
+      Swal.fire({
+        icon: "info",
+        title: `${pusherStatus}`,
+        showCancelButton: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetchData();
+        }
+      });
+    }
+  };
 
   useEffect(() => {
     fetchData();

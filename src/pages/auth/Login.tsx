@@ -21,7 +21,7 @@ type Schema = z.infer<typeof schema>;
 
 const Login: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [, setCookie] = useCookies(["tkn", "role"]);
+  const [, setCookie] = useCookies(["tkn", "role", "uname"]);
   const navigate = useNavigate();
 
   const {
@@ -42,6 +42,7 @@ const Login: FC = () => {
       })
       .then((response) => {
         const { data } = response.data;
+        console.log(data);
         Swal.fire({
           icon: "success",
           title: "Login Success!!",
@@ -50,6 +51,7 @@ const Login: FC = () => {
           if (result.isConfirmed) {
             setCookie("tkn", data.token, { path: "/" });
             setCookie("role", data.role, { path: "/" });
+            setCookie("uname", data.username, { path: "/" });
             navigate("/");
           }
         });
