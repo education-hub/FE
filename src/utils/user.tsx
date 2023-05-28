@@ -180,6 +180,7 @@ export interface user {
 export interface StudentType {
   submission_id: number;
   progress_id: number;
+  progress_status: string;
   user_image: any;
   user_id: number;
   user_name: string;

@@ -4,8 +4,9 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 
 import { LayoutAdmin } from "../../components/Layout";
-import { ButtonSubmit } from "../../components/Button";
+import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { StudentType } from "../../utils/user";
+import Swal from "sweetalert2";
 
 const Admission: FC = () => {
   const [student, setStudent] = useState<StudentType[]>([]);
@@ -34,6 +35,7 @@ const Admission: FC = () => {
       })
       .then((response) => {
         const { data } = response;
+        console.log(data);
         setStudent(data.data);
         setNoData(false);
       })
@@ -45,7 +47,48 @@ const Admission: FC = () => {
       });
   };
 
-  console.log(student);
+  const handleDelete = (id: number) => {
+    Swal.fire({
+      title: "Are you sure want to delete ?",
+      text: "This process cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0BBBCC",
+      cancelButtonColor: "#E4572E",
+      confirmButtonText: "Delete",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`https://go-event.online/progresses/${id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.tkn}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "info",
+              title: "Success",
+              text: message,
+              showCancelButton: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                fetcData();
+              }
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            Swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: message,
+              showCancelButton: false,
+            });
+          });
+      }
+    });
+  };
 
   return (
     <LayoutAdmin>
@@ -60,48 +103,70 @@ const Admission: FC = () => {
         ) : (
           <div>
             {!noData ? (
-              <div className="">
+              <div className="p-7 sm:p-10">
                 {student.map((e) => {
                   return (
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 lg:space-x-10 text-lg font-semibold hover:drop-shadow-lg hover:-translate-y-2 mb-10 md:space-x-10 px-10 pt-5 pb-10 bg-[url('/bg-1.jpg')] bg-cover hover:bg-center duration-500">
-                      <div className=" justify-around hidden md:block ">
-                        <img
-                          src={`https://storage.googleapis.com/prj1ropel/${e.user_image}`}
-                          alt=""
-                          className="h-auto w-full mt-6 hidden md:block"
-                        />
-                      </div>
-                      {/* <div className="hidden sm:blok md:hidden"></div> */}
-                      <div className="sol-span-1 sm:col-span-2 lg:col-span-1">
-                        <p>Student_id</p>
-                        <div className="bg-@light-blue px-3 flex items-center justify-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                          <p>{e.user_id}</p>
+                    <div className="hover:-translate-y-2 duration-500 mb-10">
+                      <div className="relative grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5 md:gap-0 lg:space-x-10 text-lg font-semibold hover:drop-shadow-lg  mb-5 md:space-x-10 px-10 pt-5 pb-10 bg-[url('/bg-1.jpg')] bg-cover hover:bg-center duration-500">
+                        <div className=" justify-around hidden md:block ">
+                          <img
+                            src={`https://storage.googleapis.com/prj1ropel/${e.user_image}`}
+                            alt=""
+                            className="h-28 mt-6 hidden absolute md:block"
+                          />
                         </div>
-                      </div>
-                      <div className="hidden md:block lg:hidden"></div>
-                      <div className="sm:col-span-2">
-                        <p>Fullname</p>
-                        <div className="bg-@light-blue px-3 flex items-center h-16 w-full text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
-                          <p>{e.user_name}</p>
+                        <div className="sol-span-1 sm:col-span-2 lg:col-span-1">
+                          <p>Student_id</p>
+                          <div className="bg-@light-blue px-3 flex items-center justify-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                            <p>{e.user_id}</p>
+                          </div>
                         </div>
+                        <div className="hidden md:block lg:hidden"></div>
+                        <div className="sm:col-span-2">
+                          <p>Fullname</p>
+                          <div className="bg-@light-blue px-3 flex items-center h-16 w-full text-md sm:text-lg md:text-xl border-2 text-@dark font-medium  focus:outline-none  ">
+                            <p>{e.user_name}</p>
+                          </div>
+                        </div>
+                        <div className="hidden md:block lg:block xl:hidden"></div>
+                        <div className="hidden md:hidden lg:block xl:hidden"></div>
+                        <div className="pt-6 flex flex-col">
+                          <ButtonSubmit
+                            label="Detail Admission"
+                            onClick={() =>
+                              navigate(`/admin/admission/${e.submission_id}`)
+                            }
+                          />
+                        </div>
+                        <div className="pt-6 flex justify-end lg:justify-start flex-col ">
+                          <ButtonSubmit
+                            label="Update Progress"
+                            onClick={() =>
+                              navigate(`/admin/progress/${e.progress_id}`)
+                            }
+                          />
+                        </div>
+                        <div className="hidden md:block lg:block xl:hidden"></div>
+                        <div className="hidden md:hidden lg:block xl:hidden"></div>
                       </div>
-                      <div className="hidden md:block lg:block xl:hidden"></div>
-                      <div className="hidden md:hidden lg:block xl:hidden"></div>
-                      <div className="pt-6 flex flex-col">
-                        <ButtonSubmit
-                          label="Detail Admission"
-                          onClick={() =>
-                            navigate(`/admin/admission/${e.submission_id}`)
-                          }
-                        />
-                      </div>
-                      <div className="pt-6 flex justify-end lg:justify-start flex-col ">
-                        <ButtonSubmit
-                          label="Update Progress"
-                          onClick={() =>
-                            navigate(`/admin/progress/${e.progress_id}`)
-                          }
-                        />
+                      <div className="flex flex-col sm:flex-row  w-full justify-end sm:space-x-5 sm:items-center gap-5 sm:gap-0">
+                        <div className="p-5 flex justify-end items-center hover:drop-shadow-lg bg-[url('/bg-3.jpg')] bg-cover hover:bg-center duration-500">
+                          <p className="text-lg font-semibold text-center">
+                            Status : {e.progress_status}
+                          </p>
+                        </div>
+                        <div className="flex flex-col ">
+                          {e.progress_status === "Failed File Approved" ||
+                          e.progress_status === "Failed Test Result" ||
+                          e.progress_status === "Finish" ? (
+                            <ButtonCancelDelete
+                              label="Delete"
+                              onClick={() => handleDelete(e.progress_id)}
+                            />
+                          ) : (
+                            <></>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );

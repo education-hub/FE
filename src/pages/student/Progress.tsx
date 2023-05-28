@@ -1,18 +1,60 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC } from "react";
-import { Layout } from "../../components/Layout";
-
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
-import { useParams } from "react-router-dom";
+import Pusher from "pusher-js";
+import { FC } from "react";
 import axios from "axios";
 
+import { Layout } from "../../components/Layout";
+import Swal from "sweetalert2";
+
+const APP_KEY = "198b35e916a3f0811a9c";
+const CLUSTER_NAME = "ap1";
+
+const pusher = new Pusher(APP_KEY, {
+  cluster: CLUSTER_NAME,
+});
+
 const Progress: FC = () => {
+  const [pusherStatus, setPusherStatus] = useState<string>("");
   const [progress, setProgress] = useState(null);
-  const [cookie] = useCookies(["tkn"]);
+  const [uname, setUname] = useState<string>("");
+  const [cookie] = useCookies(["tkn", "uname"]);
+  const chekUname = cookie.uname;
 
   const param = useParams();
   const { id } = param;
+
+  useEffect(() => {
+    const channel = pusher.subscribe("my-channel");
+    channel.bind("STUDENTADMISSION", (data: any) => {
+      setPusherStatus(data.status);
+      setUname(data.username);
+    });
+    return () => {
+      channel.unbind("STUDENTADMISSION");
+      pusher.unsubscribe("my-channel");
+    };
+  }, []);
+
+  useEffect(() => {
+    handleShowPusher();
+  }, [pusherStatus]);
+
+  const handleShowPusher = () => {
+    if (uname === chekUname) {
+      Swal.fire({
+        icon: "info",
+        title: `${pusherStatus}`,
+        showCancelButton: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetchData();
+        }
+      });
+    }
+  };
 
   useEffect(() => {
     fetchData();
