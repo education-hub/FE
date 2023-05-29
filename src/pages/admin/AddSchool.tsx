@@ -227,7 +227,7 @@ const AddSchool: FC = () => {
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit(hadlePostSchool)}>
-        <div className="sm:text-md md:text-lg grid py-7 sm:py-20 px-7 sm:px-20 sm:p-20 gap-10 md:gap-20 lg:grid-cols-2">
+        <div className="dark:bg-@dark sm:text-md md:text-lg grid py-7 sm:py-20 px-7 sm:px-20 sm:p-20 gap-10 md:gap-20 lg:grid-cols-2">
           <div className=" flex flex-col gap-3">
             <InputLightBlue
               label="National School Identification Number (NPSN)"
@@ -269,7 +269,9 @@ const AddSchool: FC = () => {
               error={errors.phone?.message}
             />
             <div className="flex flex-col my-5 gap-1">
-              <p className="font-bold text-gray-700 block">Location</p>
+              <p className="font-bold text-gray-700 dark:text-white block">
+                Location
+              </p>
               <div className="bg-@light-blue font-medium border-2 text-md text-@dark p-10 sm:text-lg focus:outline-none">
                 <div className="grid gap-10 grid-cols-2">
                   {/* provence */}
@@ -401,8 +403,8 @@ const AddSchool: FC = () => {
                   allowFullScreen
                 />
               </div>
-              <p className="mt-5">
-                Look at youtube video above how to add youtube URL embedded
+              <p className="mt-5 dark:text-white">
+                Look at youtube video above how to copy youtube URL
               </p>
               <InputLightBlue
                 type="text"
@@ -471,7 +473,7 @@ const AddSchool: FC = () => {
             </div>
           </div>
         </div>
-        <div className="grid sm:grid-cols-2 gap-8 md:gap-20 p-10">
+        <div className="dark:bg-@dark grid sm:grid-cols-2 gap-8 md:gap-20 p-10">
           <div className="hidden sm:block"></div>
           <div className="grid grid-cols-2 gap-8 lg:gap-20 xl:gap-32">
             <ButtonCancelDelete label="Cancel" />
@@ -505,10 +507,10 @@ const AddSchool: FC = () => {
                   leaveFrom="opacity-100 scale-100"
                   leaveTo="opacity-0 scale-95"
                 >
-                  <Dialog.Panel className="bg-white shadow-xl text-left w-full max-w-2xl p-16 transform transition-all overflow-hidden align-middle">
+                  <Dialog.Panel className="bg-white dark:bg-@dark dark:text-white shadow-xl text-left w-full max-w-2xl p-16 transform transition-all overflow-hidden align-middle">
                     <Dialog.Title
                       as="h3"
-                      className="font-semibold text-xl  text-@dark text-center py-5 leading-6"
+                      className="font-semibold text-xl  text-@dark dark:text-white text-center py-5 leading-6"
                     >
                       View Brochure
                     </Dialog.Title>

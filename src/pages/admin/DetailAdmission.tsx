@@ -101,7 +101,7 @@ const DetailAdmission: FC = () => {
       {loading ? (
         <div className="h-screen">Loading...</div>
       ) : (
-        <div className="p-7 sm:p-20">
+        <div className="dark:bg-@dark dark:text-white p-7 sm:p-20">
           <div className="text-center text-xl font-bold">
             <div className="relative">
               <h1>Summary</h1>
@@ -117,7 +117,7 @@ const DetailAdmission: FC = () => {
             </div>
             <div></div>
           </div>
-          <div className="bg-@blue w-full text-@dark font-semibold text-lg mt-10 sm:mt-20 flex h-16 items-center px-3 ">
+          <div className="bg-@blue dark:bg-cyan-800 dark:text-white w-full text-@dark font-semibold text-lg mt-10 sm:mt-20 flex h-16 items-center px-3 ">
             <p>A. Student Datas</p>
           </div>
           <div className="bg-@light-blue flex flex-col text-lg ">
@@ -160,7 +160,7 @@ const DetailAdmission: FC = () => {
               zip_code={student.student_data.address.zip_code}
             />
           </div>
-          <div className="bg-@blue w-full text-@dark font-semibold text-lg mt-10 sm:mt-20 flex h-16 items-center px-3 ">
+          <div className="bg-@blue dark:bg-cyan-800 dark:text-white w-full text-@dark font-semibold text-lg mt-10 sm:mt-20 flex h-16 items-center px-3 ">
             <p>B. Parent Datas</p>
           </div>
           <div className="bg-@light-blue flex flex-col text-lg ">

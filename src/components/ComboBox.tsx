@@ -1,11 +1,11 @@
-import { FC, Fragment, useState } from "react";
-import { Transition, Combobox } from "@headlessui/react";
 import { TbArrowsMoveVertical, TbCheck } from "react-icons/tb";
+import { Transition, Combobox } from "@headlessui/react";
 import { UseFormSetValue } from "react-hook-form";
+import { FC, Fragment, useState } from "react";
 
-import { Schema } from "../pages/admin/AddSchool";
-import { SchemaEditchSchool } from "../pages/admin/EditSchool";
 import { SchemaStudent } from "../pages/student/RegistrationForm";
+import { SchemaEditchSchool } from "../pages/admin/EditSchool";
+import { Schema } from "../pages/admin/AddSchool";
 
 interface ComboBoxType {
   defaultFill?: string | number;

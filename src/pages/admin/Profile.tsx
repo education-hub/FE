@@ -6,6 +6,7 @@ import {
   useEffect,
   FormEvent,
   MouseEvent,
+  useContext,
 } from "react";
 import { Transition, Dialog } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import { InputLightBlue, TextAreaLightBlue } from "../../components/Input";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { BsFacebook, BsTwitter, BsInstagram } from "react-icons/bs";
 import { LayoutAdmin } from "../../components/Layout";
+import { ThemeContext } from "../../utils/context";
 import { user } from "../../utils/user";
 
 const AdminProfile: FC = () => {
@@ -25,7 +27,11 @@ const AdminProfile: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [cookie, setCookie, removeCookie] = useCookies(["tkn", "role"]);
+  const contextData = useContext(ThemeContext);
+  const themeMode = contextData.theme;
   const checkToken = cookie.tkn;
+
+  console.log(themeMode);
 
   document.title = "Profile | Admin Role";
 
@@ -165,73 +171,139 @@ const AdminProfile: FC = () => {
 
   return (
     <LayoutAdmin>
-      <div
-        className="p-7 sm:p-20 grid md:grid-cols-2 md:gap-10 lg:gap-20 bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)),url(/bg-3.jpg)`,
-        }}
-      >
-        <div>
-          <div className="flex flex-col hover:drop-shadow-lg hover:-translate-y-2 duration-700">
-            <div className="">
-              <img
-                src={
-                  user && user.image === "org1.jpg"
-                    ? "/org1.jpg"
-                    : `https://storage.googleapis.com/prj1ropel/${
-                        user && user.image
-                      }`
-                }
-                alt=""
-                className="w-full h-auto"
-              />
-            </div>
-            <div className="flex py-7 bg-@light-blue items-center justify-center space-x-5">
-              <BsFacebook className="text-3xl text-@dark" />
-              <BsTwitter className="text-3xl text-@dark" />
-              <BsInstagram className="text-3xl text-@dark" />
-            </div>
-          </div>
-        </div>
-        <div className="text-lg font-semibold">
-          <div className="grid md:grid-cols-2 mt-10 md:mt-0 sm:gap-5 lg:gap-10">
-            <div className="flex flex-col gap-1 mb-10">
-              <p>First Name</p>
-              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-                <p>{user.fname}</p>
+      {themeMode === "dark" ? (
+        <div className="bg-@dark text-white p-7 sm:p-20 grid md:grid-cols-2 md:gap-10 lg:gap-20 bg-scroll bg-cover bg-center dark:bg-@dark">
+          <div>
+            <div className="flex flex-col hover:drop-shadow-lg hover:-translate-y-2 duration-700">
+              <div className="">
+                <img
+                  src={
+                    user && user.image === "org1.jpg"
+                      ? "/org1.jpg"
+                      : `https://storage.googleapis.com/prj1ropel/${
+                          user && user.image
+                        }`
+                  }
+                  alt=""
+                  className="w-full h-auto"
+                />
               </div>
-            </div>
-            <div className="flex flex-col gap-1 mb-10">
-              <p>Last Name</p>
-              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-                <p>{user.sname}</p>
+              <div className="flex py-7 bg-@light-blue items-center justify-center space-x-5">
+                <BsFacebook className="text-3xl text-@dark" />
+                <BsTwitter className="text-3xl text-@dark" />
+                <BsInstagram className="text-3xl text-@dark" />
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-1 mb-10">
-            <p>Username</p>
-            <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-              <p>{user.username}</p>
+          <div className="text-lg font-semibold">
+            <div className="grid md:grid-cols-2 mt-10 md:mt-0 sm:gap-5 lg:gap-10">
+              <div className="flex flex-col gap-1 mb-10">
+                <p>First Name</p>
+                <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                  <p>{user.fname}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 mb-10">
+                <p>Last Name</p>
+                <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                  <p>{user.sname}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 mb-10">
+              <p>Username</p>
+              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                <p>{user.username}</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 mb-10">
+              <p>Email</p>
+              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                <p>{user.email}</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 mb-10">
+              <p>Address</p>
+              <div className="bg-white flex h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 py-4 focus:outline-none  w-full">
+                <p>{user.address}</p>
+              </div>
             </div>
           </div>
-          <div className="flex flex-col gap-1 mb-10">
-            <p>Email</p>
-            <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
-              <p>{user.email}</p>
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 mb-10">
-            <p>Address</p>
-            <div className="bg-white flex h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 py-4 focus:outline-none  w-full">
-              <p>{user.address}</p>
-            </div>
+          <div className="grid  grid-cols-2 gap-16 md:gap-24 lg:gap-44">
+            <ButtonCancelDelete label="Delete" onClick={() => handleDelete()} />
+            <ButtonSubmit label="Edit" onClick={openModal} />
           </div>
         </div>
-        <div className="grid  grid-cols-2 gap-16 md:gap-24 lg:gap-44">
-          <ButtonCancelDelete label="Delete" onClick={() => handleDelete()} />
-          <ButtonSubmit label="Edit" onClick={openModal} />
+      ) : (
+        <div
+          className="p-7 sm:p-20 grid md:grid-cols-2 md:gap-10 lg:gap-20 bg-scroll bg-cover bg-center dark:bg-@dark"
+          style={{
+            backgroundImage: `linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(255, 255, 255, 0.5)),url(/bg-3.jpg)`,
+          }}
+        >
+          <div>
+            <div className="flex flex-col hover:drop-shadow-lg hover:-translate-y-2 duration-700">
+              <div className="">
+                <img
+                  src={
+                    user && user.image === "org1.jpg"
+                      ? "/org1.jpg"
+                      : `https://storage.googleapis.com/prj1ropel/${
+                          user && user.image
+                        }`
+                  }
+                  alt=""
+                  className="w-full h-auto"
+                />
+              </div>
+              <div className="flex py-7 bg-@light-blue items-center justify-center space-x-5">
+                <BsFacebook className="text-3xl text-@dark" />
+                <BsTwitter className="text-3xl text-@dark" />
+                <BsInstagram className="text-3xl text-@dark" />
+              </div>
+            </div>
+          </div>
+          <div className="text-lg font-semibold">
+            <div className="grid md:grid-cols-2 mt-10 md:mt-0 sm:gap-5 lg:gap-10">
+              <div className="flex flex-col gap-1 mb-10">
+                <p>First Name</p>
+                <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                  <p>{user.fname}</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-1 mb-10">
+                <p>Last Name</p>
+                <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                  <p>{user.sname}</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 mb-10">
+              <p>Username</p>
+              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                <p>{user.username}</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 mb-10">
+              <p>Email</p>
+              <div className="bg-white flex items-center h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none  w-full">
+                <p>{user.email}</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 mb-10">
+              <p>Address</p>
+              <div className="bg-white flex h-32 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 py-4 focus:outline-none  w-full">
+                <p>{user.address}</p>
+              </div>
+            </div>
+          </div>
+          <div className="grid  grid-cols-2 gap-16 md:gap-24 lg:gap-44">
+            <ButtonCancelDelete label="Delete" onClick={() => handleDelete()} />
+            <ButtonSubmit label="Edit" onClick={openModal} />
+          </div>
         </div>
-      </div>
+      )}
+
       <>
         {/* modal Edit Profile */}
         <Transition appear show={isOpen} as={Fragment}>

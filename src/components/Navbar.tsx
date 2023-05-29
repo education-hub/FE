@@ -1,36 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, Fragment, useState, useContext, useEffect } from "react";
-import Logo from "../assets/eduhub-logo-black.png";
-import { Link, useNavigate } from "react-router-dom";
-import { Disclosure, Transition } from "@headlessui/react";
 import { BiMenu, BiX, BiLogIn, BiUserPlus, BiLogOut } from "react-icons/bi";
+import { Disclosure, Transition } from "@headlessui/react";
+import { MdModeNight, MdSunny } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../assets/eduhub-logo-black.png";
+import { FC, Fragment, useContext } from "react";
 import { useCookies } from "react-cookie";
-import { Switch } from "@headlessui/react";
 import Swal from "sweetalert2";
+
 import { ThemeContext } from "../utils/context";
 
 export const Navbar: FC = () => {
   const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
   const { theme, setTheme } = useContext(ThemeContext);
-  const [enabled, setEnabled] = useState(false);
-
   const checkToken = cookie.tkn;
   const checkRole = cookie.role;
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    handleTheme();
-  }, [enabled]);
-
-  const handleTheme = () => {
-    if (enabled === true) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-
-    localStorage.setItem("theme", theme);
+  const handleTheme = (mode: string) => {
+    setTheme(mode);
+    localStorage.setItem("theme", mode);
   };
 
   const handleLogout = () => {
@@ -58,11 +48,11 @@ export const Navbar: FC = () => {
   };
 
   return (
-    <Disclosure as="nav" className="bg-@blue z-50">
+    <Disclosure as="nav" className="bg-@blue  z-50">
       {({ open }) => (
         <>
           <div className="px-2 sm:px-6 lg:px-8">
-            <div className="relative flex items-center justify-between py-3">
+            <div className="relative flex items-center justify-between py-3 ">
               <div className="absolute inset-y-0 right-3 flex items-center lg:hidden">
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-gray-700 hover:rounded-3xl duration-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
@@ -93,7 +83,7 @@ export const Navbar: FC = () => {
                         </Link>
                         <Link
                           to="/student/transactions"
-                          className="text-white text-md flex justify-center items-center w-52 xl:w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out    "
+                          className="text-white text-md flex justify-center items-center w-52 xl:w-65  hover:scale-110 hover:text-@dark  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out    "
                         >
                           TRANSACTIONS
                         </Link>
@@ -110,28 +100,19 @@ export const Navbar: FC = () => {
                           <BiLogOut />
                           LOGOUT
                         </button>
-                        <Switch
-                          checked={enabled}
-                          onChange={setEnabled}
-                          as={Fragment}
+                        <button
+                          onClick={() => {
+                            handleTheme(theme === "light" ? "dark" : "light");
+                          }}
+                          id="btn-dark"
+                          className="flex items-center gap-x-3.5 p-2 rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                         >
-                          {({ checked }) => (
-                            <button
-                              className={`${
-                                checked ? "bg-blue-600" : "bg-gray-200"
-                              } relative inline-flex h-6 w-11 items-center rounded-full`}
-                            >
-                              <span className="sr-only">
-                                Enable notifications
-                              </span>
-                              <span
-                                className={`${
-                                  checked ? "translate-x-5" : "translate-x-1"
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                              />
-                            </button>
+                          {theme === "dark" ? (
+                            <MdModeNight className="text-md" />
+                          ) : (
+                            <MdSunny className="text-md" />
                           )}
-                        </Switch>
+                        </button>
                       </div>
                     </div>
                   ) : (
@@ -143,29 +124,19 @@ export const Navbar: FC = () => {
                         <BiLogOut />
                         LOGOUT
                       </button>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="flex items-center gap-x-3.5 p-2 rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   )
                 ) : (
@@ -185,29 +156,19 @@ export const Navbar: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -254,29 +215,19 @@ export const Navbar: FC = () => {
                         >
                           LOGOUT
                         </button>
-                        <Switch
-                          checked={enabled}
-                          onChange={setEnabled}
-                          as={Fragment}
+                        <button
+                          onClick={() => {
+                            handleTheme(theme === "light" ? "dark" : "light");
+                          }}
+                          id="btn-dark"
+                          className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                         >
-                          {({ checked }) => (
-                            /* Use the `checked` state to conditionally style the button. */
-                            <button
-                              className={`${
-                                checked ? "bg-blue-600" : "bg-gray-200"
-                              } relative inline-flex h-6 w-11 items-center rounded-full`}
-                            >
-                              <span className="sr-only">
-                                Enable notifications
-                              </span>
-                              <span
-                                className={`${
-                                  checked ? "translate-x-5" : "translate-x-1"
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                              />
-                            </button>
+                          {theme === "dark" ? (
+                            <MdModeNight className="text-md" />
+                          ) : (
+                            <MdSunny className="text-md" />
                           )}
-                        </Switch>
+                        </button>
                       </div>
                     ) : (
                       <div className="flex flex-col gap-3">
@@ -287,29 +238,19 @@ export const Navbar: FC = () => {
                           <BiLogOut />
                           LOGOUT
                         </Link>
-                        <Switch
-                          checked={enabled}
-                          onChange={setEnabled}
-                          as={Fragment}
+                        <button
+                          onClick={() => {
+                            handleTheme(theme === "light" ? "dark" : "light");
+                          }}
+                          id="btn-dark"
+                          className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                         >
-                          {({ checked }) => (
-                            /* Use the `checked` state to conditionally style the button. */
-                            <button
-                              className={`${
-                                checked ? "bg-blue-600" : "bg-gray-200"
-                              } relative inline-flex h-6 w-11 items-center rounded-full`}
-                            >
-                              <span className="sr-only">
-                                Enable notifications
-                              </span>
-                              <span
-                                className={`${
-                                  checked ? "translate-x-5" : "translate-x-1"
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                              />
-                            </button>
+                          {theme === "dark" ? (
+                            <MdModeNight className="text-md" />
+                          ) : (
+                            <MdSunny className="text-md" />
                           )}
-                        </Switch>
+                        </button>
                       </div>
                     )
                   ) : (
@@ -328,29 +269,19 @@ export const Navbar: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </>
                   )}
                 </div>
@@ -366,24 +297,14 @@ export const Navbar: FC = () => {
 export const NavbarAdmin: FC = () => {
   const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
   const { theme, setTheme } = useContext(ThemeContext);
-  const [enabled, setEnabled] = useState(false);
 
   const checkToken = cookie.tkn;
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    handleTheme();
-  }, [enabled]);
-
-  const handleTheme = () => {
-    if (enabled === true) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-
-    localStorage.setItem("theme", theme);
+  const handleTheme = (mode: string) => {
+    setTheme(mode);
+    localStorage.setItem("theme", mode);
   };
 
   const handleLogout = () => {
@@ -462,29 +383,19 @@ export const NavbarAdmin: FC = () => {
                         <BiLogOut className="mr-3" />
                         LOGOUT
                       </button>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -504,29 +415,19 @@ export const NavbarAdmin: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -544,7 +445,7 @@ export const NavbarAdmin: FC = () => {
             leaveTo="transform opacity-0 scale-95"
           >
             <Disclosure.Panel className="lg:hidden">
-              <nav className="items-center bg-@orange dark:bg-orange-800 py-5 px-10 w-auto">
+              <nav className="items-center bg-@orange py-5 px-10 w-auto">
                 <div className="flex flex-col justify-end gap-5">
                   {checkToken && cookie.role === "administrator" ? (
                     <>
@@ -573,29 +474,19 @@ export const NavbarAdmin: FC = () => {
                         <BiLogOut className="mr-3" />
                         LOGOUT
                       </button>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </>
                   ) : (
                     <>
@@ -613,29 +504,19 @@ export const NavbarAdmin: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </>
                   )}
                 </div>
@@ -651,24 +532,14 @@ export const NavbarAdmin: FC = () => {
 export const NavbarIndexAdmin: FC = () => {
   const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
   const { theme, setTheme } = useContext(ThemeContext);
-  const [enabled, setEnabled] = useState(false);
 
   const checkToken = cookie.tkn;
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    handleTheme();
-  }, [enabled]);
-
-  const handleTheme = () => {
-    if (enabled === true) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-
-    localStorage.setItem("theme", theme);
+  const handleTheme = (mode: string) => {
+    setTheme(mode);
+    localStorage.setItem("theme", mode);
   };
 
   const handleLogout = () => {
@@ -731,13 +602,13 @@ export const NavbarIndexAdmin: FC = () => {
                       </Link>
                       <Link
                         to="/admin/admission"
-                        className="text-white text-md flex justify-center items-center w-52 xl:w-72  hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+                        className="text-white text-md flex justify-center items-center w-52 xl:w-65  hover:scale-110 hover:text-@dark  transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
                         STUDENT ADMISSION
                       </Link>
                       <Link
                         to="/admin/result"
-                        className="text-white text-md flex items-center justify-center w-44 xl:w-72 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
+                        className="text-white text-md flex items-center justify-center w-44 xl:w-65 hover:scale-110 hover:text-@dark transition-all font-semibold  mr-[6%] duration-500 ease-in-out    "
                       >
                         TEST RESULT
                       </Link>
@@ -748,29 +619,19 @@ export const NavbarIndexAdmin: FC = () => {
                         <BiLogOut />
                         LOGOUT
                       </button>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -790,29 +651,19 @@ export const NavbarIndexAdmin: FC = () => {
                         <BiUserPlus className="text-xl" />
                         Register
                       </Link>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -858,27 +709,19 @@ export const NavbarIndexAdmin: FC = () => {
                       <BiLogOut />
                       LOGOUT
                     </button>
-                    <Switch
-                      checked={enabled}
-                      onChange={setEnabled}
-                      as={Fragment}
+                    <button
+                      onClick={() => {
+                        handleTheme(theme === "light" ? "dark" : "light");
+                      }}
+                      id="btn-dark"
+                      className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                     >
-                      {({ checked }) => (
-                        /* Use the `checked` state to conditionally style the button. */
-                        <button
-                          className={`${
-                            checked ? "bg-blue-600" : "bg-gray-200"
-                          } relative inline-flex h-6 w-11 items-center rounded-full`}
-                        >
-                          <span className="sr-only">Enable notifications</span>
-                          <span
-                            className={`${
-                              checked ? "translate-x-5" : "translate-x-1"
-                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                          />
-                        </button>
+                      {theme === "dark" ? (
+                        <MdModeNight className="text-md" />
+                      ) : (
+                        <MdSunny className="text-md" />
                       )}
-                    </Switch>
+                    </button>
                   </div>
                 </nav>
               ) : (
@@ -898,27 +741,19 @@ export const NavbarIndexAdmin: FC = () => {
                       <BiUserPlus className="text-xl" />
                       REGISTER
                     </Link>
-                    <Switch
-                      checked={enabled}
-                      onChange={setEnabled}
-                      as={Fragment}
+                    <button
+                      onClick={() => {
+                        handleTheme(theme === "light" ? "dark" : "light");
+                      }}
+                      id="btn-dark"
+                      className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                     >
-                      {({ checked }) => (
-                        /* Use the `checked` state to conditionally style the button. */
-                        <button
-                          className={`${
-                            checked ? "bg-blue-600" : "bg-gray-200"
-                          } relative inline-flex h-6 w-11 items-center rounded-full`}
-                        >
-                          <span className="sr-only">Enable notifications</span>
-                          <span
-                            className={`${
-                              checked ? "translate-x-5" : "translate-x-1"
-                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                          />
-                        </button>
+                      {theme === "dark" ? (
+                        <MdModeNight className="text-md" />
+                      ) : (
+                        <MdSunny className="text-md" />
                       )}
-                    </Switch>
+                    </button>
                   </div>
                 </nav>
               )}
@@ -933,24 +768,14 @@ export const NavbarIndexAdmin: FC = () => {
 export const NavbarIndex: FC = () => {
   const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
   const { theme, setTheme } = useContext(ThemeContext);
-  const [enabled, setEnabled] = useState(false);
 
   const checkToken = cookie.tkn;
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    handleTheme();
-  }, [enabled]);
-
-  const handleTheme = () => {
-    if (enabled === true) {
-      setTheme("dark");
-    } else {
-      setTheme("light");
-    }
-
-    localStorage.setItem("theme", theme);
+  const handleTheme = (mode: string) => {
+    setTheme(mode);
+    localStorage.setItem("theme", mode);
   };
 
   const handleLogout = () => {
@@ -1012,29 +837,19 @@ export const NavbarIndex: FC = () => {
                         <BiLogOut />
                         LOGOUT
                       </button>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-12 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   </div>
                 ) : (
@@ -1054,29 +869,19 @@ export const NavbarIndex: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        as={Fragment}
+                      <button
+                        onClick={() => {
+                          handleTheme(theme === "light" ? "dark" : "light");
+                        }}
+                        id="btn-dark"
+                        className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                       >
-                        {({ checked }) => (
-                          /* Use the `checked` state to conditionally style the button. */
-                          <button
-                            className={`${
-                              checked ? "bg-blue-600" : "bg-gray-200"
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                          >
-                            <span className="sr-only">
-                              Enable notifications
-                            </span>
-                            <span
-                              className={`${
-                                checked ? "translate-x-5" : "translate-x-1"
-                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                            />
-                          </button>
+                        {theme === "dark" ? (
+                          <MdModeNight className="text-md" />
+                        ) : (
+                          <MdSunny className="text-md" />
                         )}
-                      </Switch>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -1104,27 +909,19 @@ export const NavbarIndex: FC = () => {
                       <BiLogOut />
                       LOGOUT
                     </button>
-                    <Switch
-                      checked={enabled}
-                      onChange={setEnabled}
-                      as={Fragment}
+                    <button
+                      onClick={() => {
+                        handleTheme(theme === "light" ? "dark" : "light");
+                      }}
+                      id="btn-dark"
+                      className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                     >
-                      {({ checked }) => (
-                        /* Use the `checked` state to conditionally style the button. */
-                        <button
-                          className={`${
-                            checked ? "bg-blue-600" : "bg-gray-200"
-                          } relative inline-flex h-6 w-11 items-center rounded-full`}
-                        >
-                          <span className="sr-only">Enable notifications</span>
-                          <span
-                            className={`${
-                              checked ? "translate-x-5" : "translate-x-1"
-                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                          />
-                        </button>
+                      {theme === "dark" ? (
+                        <MdModeNight className="text-md" />
+                      ) : (
+                        <MdSunny className="text-md" />
                       )}
-                    </Switch>
+                    </button>
                   </div>
                 </nav>
               ) : (
@@ -1144,27 +941,19 @@ export const NavbarIndex: FC = () => {
                       <BiUserPlus className="text-xl" />
                       REGISTER
                     </Link>
-                    <Switch
-                      checked={enabled}
-                      onChange={setEnabled}
-                      as={Fragment}
+                    <button
+                      onClick={() => {
+                        handleTheme(theme === "light" ? "dark" : "light");
+                      }}
+                      id="btn-dark"
+                      className="gap-x-3.5 p-2 mr-auto rounded-full text-sm text-gray-800 bg-gray-100 hover:scale-110 focus:none dark:bg-@dark dark:text-white dark:hover:bg-gray-700 duration-500"
                     >
-                      {({ checked }) => (
-                        /* Use the `checked` state to conditionally style the button. */
-                        <button
-                          className={`${
-                            checked ? "bg-blue-600" : "bg-gray-200"
-                          } relative inline-flex h-6 w-11 items-center rounded-full`}
-                        >
-                          <span className="sr-only">Enable notifications</span>
-                          <span
-                            className={`${
-                              checked ? "translate-x-5" : "translate-x-1"
-                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                          />
-                        </button>
+                      {theme === "dark" ? (
+                        <MdModeNight className="text-md" />
+                      ) : (
+                        <MdSunny className="text-md" />
                       )}
-                    </Switch>
+                    </button>
                   </div>
                 </nav>
               )}

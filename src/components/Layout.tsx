@@ -1,5 +1,5 @@
-import { FC, ReactNode } from "react";
 import { Navbar, NavbarAdmin } from "./Navbar";
+import { FC, ReactNode } from "react";
 import { Footer } from "./Footer";
 
 interface Props {

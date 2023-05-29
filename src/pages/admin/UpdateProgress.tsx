@@ -136,23 +136,23 @@ const UpdateProgress: FC = () => {
   };
   return (
     <LayoutAdmin>
-      <div className="overflow-x-auto p-2 sm:p-7 md:p-12 lg:p-20">
+      <div className="dark:bg-@dark dark:text-white overflow-x-auto p-2 sm:p-7 md:p-12 lg:p-20">
         {loading ? (
           <div>Loading...</div>
         ) : (
           <>
             <div>
-              <div className="grid grid-cols-8">
-                <div className="p-2 border-2 flex items-center text-center justify-center bg-@blue font-semibold text-white">
+              <div className=" grid grid-cols-8">
+                <div className="p-2 border-2 flex items-center text-center justify-center bg-@blue dark:bg-cyan-800 font-semibold text-white">
                   NO
                 </div>
-                <div className="p-2 border-2 flex items-center  text-center col-span-3  justify-center bg-@blue font-semibold text-white">
+                <div className="p-2 border-2 flex items-center  text-center col-span-3  justify-center bg-@blue dark:bg-cyan-800 font-semibold text-white">
                   STEP
                 </div>
-                <div className="p-2 border-2 flex items-center text-center col-span-2 justify-center bg-@blue font-semibold text-white">
+                <div className="p-2 border-2 flex items-center text-center col-span-2 justify-center bg-@blue dark:bg-cyan-800 font-semibold text-white">
                   STUDENT STEPS
                 </div>
-                <div className="p-2 border-2 flex items-center text-center col-span-2 justify-center bg-@blue font-semibold text-white">
+                <div className="p-2 border-2 flex items-center text-center col-span-2 justify-center bg-@blue dark:bg-cyan-800 font-semibold text-white">
                   UPDATE PROGRESS
                 </div>
               </div>
