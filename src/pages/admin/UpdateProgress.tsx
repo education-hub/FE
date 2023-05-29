@@ -219,10 +219,11 @@ const UpdateProgress: FC = () => {
               />
               <CardProgress
                 number={3}
-                steps="Sending Detail costs registration"
+                steps="Send Detail costs registration"
                 student_steps={
                   <div className="flex justify-center items-center">
-                    {student === "Send Detail Costs Registration" ? (
+                    {student === "Send Detail Costs Registration" ||
+                    student === "Sending Detail Cost Registration" ? (
                       <ImCheckmark />
                     ) : (
                       <></>
