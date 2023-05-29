@@ -117,8 +117,6 @@ const AddSchool: FC = () => {
   const [pdfFile, setPdfFile] = useState<string | null>("");
   const video = watch("video");
 
-  const viewAcc = watch("accreditation");
-
   const fetchProvince = () => {
     axios
       .get("https://dev.farizdotid.com/api/daerahindonesia/provinsi")
