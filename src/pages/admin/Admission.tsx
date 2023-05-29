@@ -99,7 +99,7 @@ const Admission: FC = () => {
         }}
       >
         {loading ? (
-          <div>Loading..</div>
+          <div className="h-screen">Loading..</div>
         ) : (
           <div>
             {!noData ? (

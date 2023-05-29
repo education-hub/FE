@@ -147,6 +147,7 @@ export interface DetailSchoolDataType {
     onetime: string | number | null; // belum ketahuan data aslinya jika ditambahkan
   };
   pdf: any;
+  phone: string;
   province: string;
   quizLinkPreview: string;
   quizLinkPub: string;

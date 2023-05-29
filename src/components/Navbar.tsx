@@ -1,17 +1,38 @@
-import { FC, Fragment } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { FC, Fragment, useState, useContext, useEffect } from "react";
 import Logo from "../assets/eduhub-logo-black.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Disclosure, Transition } from "@headlessui/react";
 import { BiMenu, BiX, BiLogIn, BiUserPlus, BiLogOut } from "react-icons/bi";
 import { useCookies } from "react-cookie";
+import { Switch } from "@headlessui/react";
 import Swal from "sweetalert2";
+import { ThemeContext } from "../utils/context";
 
 export const Navbar: FC = () => {
-  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
+  const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
+  const { theme, setTheme } = useContext(ThemeContext);
+  const [enabled, setEnabled] = useState(false);
+
   const checkToken = cookie.tkn;
   const checkRole = cookie.role;
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    handleTheme();
+  }, [enabled]);
+
+  const handleTheme = () => {
+    if (enabled === true) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+
+    localStorage.setItem("theme", theme);
+  };
+
   const handleLogout = () => {
     Swal.fire({
       icon: "warning",
@@ -23,6 +44,7 @@ export const Navbar: FC = () => {
       if (result.isConfirmed) {
         removeCookie("tkn");
         removeCookie("role");
+        removeCookie("uname");
         navigate("/");
         Swal.fire({
           position: "center",
@@ -34,6 +56,7 @@ export const Navbar: FC = () => {
       }
     });
   };
+
   return (
     <Disclosure as="nav" className="bg-@blue z-50">
       {({ open }) => (
@@ -87,10 +110,32 @@ export const Navbar: FC = () => {
                           <BiLogOut />
                           LOGOUT
                         </button>
+                        <Switch
+                          checked={enabled}
+                          onChange={setEnabled}
+                          as={Fragment}
+                        >
+                          {({ checked }) => (
+                            <button
+                              className={`${
+                                checked ? "bg-blue-600" : "bg-gray-200"
+                              } relative inline-flex h-6 w-11 items-center rounded-full`}
+                            >
+                              <span className="sr-only">
+                                Enable notifications
+                              </span>
+                              <span
+                                className={`${
+                                  checked ? "translate-x-5" : "translate-x-1"
+                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                              />
+                            </button>
+                          )}
+                        </Switch>
                       </div>
                     </div>
                   ) : (
-                    <div className="justify-end hidden lg:block">
+                    <div className="justify-end hidden lg:flex space-x-4">
                       <button
                         className="text-white text-md flex gap-3 items-center justify-end hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                         onClick={() => handleLogout()}
@@ -98,6 +143,29 @@ export const Navbar: FC = () => {
                         <BiLogOut />
                         LOGOUT
                       </button>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   )
                 ) : (
@@ -117,6 +185,29 @@ export const Navbar: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   </div>
                 )}
@@ -163,15 +254,63 @@ export const Navbar: FC = () => {
                         >
                           LOGOUT
                         </button>
+                        <Switch
+                          checked={enabled}
+                          onChange={setEnabled}
+                          as={Fragment}
+                        >
+                          {({ checked }) => (
+                            /* Use the `checked` state to conditionally style the button. */
+                            <button
+                              className={`${
+                                checked ? "bg-blue-600" : "bg-gray-200"
+                              } relative inline-flex h-6 w-11 items-center rounded-full`}
+                            >
+                              <span className="sr-only">
+                                Enable notifications
+                              </span>
+                              <span
+                                className={`${
+                                  checked ? "translate-x-5" : "translate-x-1"
+                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                              />
+                            </button>
+                          )}
+                        </Switch>
                       </div>
                     ) : (
-                      <Link
-                        to="/login"
-                        className="text-white text-md flex py-2 gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
-                      >
-                        <BiLogOut />
-                        LOGOUT
-                      </Link>
+                      <div className="flex flex-col gap-3">
+                        <Link
+                          to="/login"
+                          className="text-white text-md flex py-2 gap-4 items-center  hover:scale-110 hover:bg-@blue hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
+                        >
+                          <BiLogOut />
+                          LOGOUT
+                        </Link>
+                        <Switch
+                          checked={enabled}
+                          onChange={setEnabled}
+                          as={Fragment}
+                        >
+                          {({ checked }) => (
+                            /* Use the `checked` state to conditionally style the button. */
+                            <button
+                              className={`${
+                                checked ? "bg-blue-600" : "bg-gray-200"
+                              } relative inline-flex h-6 w-11 items-center rounded-full`}
+                            >
+                              <span className="sr-only">
+                                Enable notifications
+                              </span>
+                              <span
+                                className={`${
+                                  checked ? "translate-x-5" : "translate-x-1"
+                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                              />
+                            </button>
+                          )}
+                        </Switch>
+                      </div>
                     )
                   ) : (
                     <>
@@ -189,6 +328,29 @@ export const Navbar: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </>
                   )}
                 </div>
@@ -202,10 +364,27 @@ export const Navbar: FC = () => {
 };
 
 export const NavbarAdmin: FC = () => {
-  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
+  const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
+  const { theme, setTheme } = useContext(ThemeContext);
+  const [enabled, setEnabled] = useState(false);
+
   const checkToken = cookie.tkn;
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    handleTheme();
+  }, [enabled]);
+
+  const handleTheme = () => {
+    if (enabled === true) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+
+    localStorage.setItem("theme", theme);
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -219,6 +398,7 @@ export const NavbarAdmin: FC = () => {
       if (result.isConfirmed) {
         removeCookie("tkn");
         removeCookie("role");
+        removeCookie("uname");
         navigate("/");
         Swal.fire({
           position: "center",
@@ -279,8 +459,32 @@ export const NavbarAdmin: FC = () => {
                         className="text-white text-md flex items-center justify-center hover:scale-110 hover:text-@dark   transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out   "
                         onClick={() => handleLogout()}
                       >
+                        <BiLogOut className="mr-3" />
                         LOGOUT
                       </button>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   </div>
                 ) : (
@@ -300,6 +504,29 @@ export const NavbarAdmin: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   </div>
                 )}
@@ -317,7 +544,7 @@ export const NavbarAdmin: FC = () => {
             leaveTo="transform opacity-0 scale-95"
           >
             <Disclosure.Panel className="lg:hidden">
-              <nav className="items-center bg-@orange py-5 px-10 w-auto">
+              <nav className="items-center bg-@orange dark:bg-orange-800 py-5 px-10 w-auto">
                 <div className="flex flex-col justify-end gap-5">
                   {checkToken && cookie.role === "administrator" ? (
                     <>
@@ -343,8 +570,32 @@ export const NavbarAdmin: FC = () => {
                         className="text-white text-md flex items-center  hover:scale-110 hover:bg-@orange hover:px-4 hover:py-3  transition-all font-semibold  md:mr-[6%] duration-500 ease-in-out"
                         onClick={() => handleLogout()}
                       >
+                        <BiLogOut className="mr-3" />
                         LOGOUT
                       </button>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </>
                   ) : (
                     <>
@@ -362,6 +613,29 @@ export const NavbarAdmin: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </>
                   )}
                 </div>
@@ -375,10 +649,27 @@ export const NavbarAdmin: FC = () => {
 };
 
 export const NavbarIndexAdmin: FC = () => {
-  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
+  const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
+  const { theme, setTheme } = useContext(ThemeContext);
+  const [enabled, setEnabled] = useState(false);
+
   const checkToken = cookie.tkn;
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    handleTheme();
+  }, [enabled]);
+
+  const handleTheme = () => {
+    if (enabled === true) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+
+    localStorage.setItem("theme", theme);
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -392,6 +683,7 @@ export const NavbarIndexAdmin: FC = () => {
       if (result.isConfirmed) {
         removeCookie("tkn");
         removeCookie("role");
+        removeCookie("uname");
         navigate("/");
         Swal.fire({
           position: "center",
@@ -456,6 +748,29 @@ export const NavbarIndexAdmin: FC = () => {
                         <BiLogOut />
                         LOGOUT
                       </button>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   </div>
                 ) : (
@@ -475,6 +790,29 @@ export const NavbarIndexAdmin: FC = () => {
                         <BiUserPlus className="text-xl" />
                         Register
                       </Link>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   </div>
                 )}
@@ -520,6 +858,27 @@ export const NavbarIndexAdmin: FC = () => {
                       <BiLogOut />
                       LOGOUT
                     </button>
+                    <Switch
+                      checked={enabled}
+                      onChange={setEnabled}
+                      as={Fragment}
+                    >
+                      {({ checked }) => (
+                        /* Use the `checked` state to conditionally style the button. */
+                        <button
+                          className={`${
+                            checked ? "bg-blue-600" : "bg-gray-200"
+                          } relative inline-flex h-6 w-11 items-center rounded-full`}
+                        >
+                          <span className="sr-only">Enable notifications</span>
+                          <span
+                            className={`${
+                              checked ? "translate-x-5" : "translate-x-1"
+                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                          />
+                        </button>
+                      )}
+                    </Switch>
                   </div>
                 </nav>
               ) : (
@@ -539,6 +898,27 @@ export const NavbarIndexAdmin: FC = () => {
                       <BiUserPlus className="text-xl" />
                       REGISTER
                     </Link>
+                    <Switch
+                      checked={enabled}
+                      onChange={setEnabled}
+                      as={Fragment}
+                    >
+                      {({ checked }) => (
+                        /* Use the `checked` state to conditionally style the button. */
+                        <button
+                          className={`${
+                            checked ? "bg-blue-600" : "bg-gray-200"
+                          } relative inline-flex h-6 w-11 items-center rounded-full`}
+                        >
+                          <span className="sr-only">Enable notifications</span>
+                          <span
+                            className={`${
+                              checked ? "translate-x-5" : "translate-x-1"
+                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                          />
+                        </button>
+                      )}
+                    </Switch>
                   </div>
                 </nav>
               )}
@@ -551,10 +931,27 @@ export const NavbarIndexAdmin: FC = () => {
 };
 
 export const NavbarIndex: FC = () => {
-  const [cookie, , removeCookie] = useCookies(["tkn", "role"]);
+  const [cookie, , removeCookie] = useCookies(["tkn", "role", "uname"]);
+  const { theme, setTheme } = useContext(ThemeContext);
+  const [enabled, setEnabled] = useState(false);
+
   const checkToken = cookie.tkn;
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    handleTheme();
+  }, [enabled]);
+
+  const handleTheme = () => {
+    if (enabled === true) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+
+    localStorage.setItem("theme", theme);
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -568,6 +965,7 @@ export const NavbarIndex: FC = () => {
       if (result.isConfirmed) {
         removeCookie("tkn");
         removeCookie("role");
+        removeCookie("uname");
         navigate("/");
         Swal.fire({
           position: "center",
@@ -581,7 +979,7 @@ export const NavbarIndex: FC = () => {
   };
 
   return (
-    <Disclosure as="nav" className="bg-@blue z-50">
+    <Disclosure as="nav" className="bg-@blue dark:bg-cyan-700 z-50">
       {({ open }) => (
         <>
           <div className=" absolute z-40 opacity-50 hover:opacity-90 duration-500 w-full">
@@ -614,6 +1012,29 @@ export const NavbarIndex: FC = () => {
                         <BiLogOut />
                         LOGOUT
                       </button>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-12 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   </div>
                 ) : (
@@ -633,6 +1054,29 @@ export const NavbarIndex: FC = () => {
                         <BiUserPlus className="text-xl" />
                         REGISTER
                       </Link>
+                      <Switch
+                        checked={enabled}
+                        onChange={setEnabled}
+                        as={Fragment}
+                      >
+                        {({ checked }) => (
+                          /* Use the `checked` state to conditionally style the button. */
+                          <button
+                            className={`${
+                              checked ? "bg-blue-600" : "bg-gray-200"
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                          >
+                            <span className="sr-only">
+                              Enable notifications
+                            </span>
+                            <span
+                              className={`${
+                                checked ? "translate-x-5" : "translate-x-1"
+                              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                            />
+                          </button>
+                        )}
+                      </Switch>
                     </div>
                   </div>
                 )}
@@ -660,6 +1104,27 @@ export const NavbarIndex: FC = () => {
                       <BiLogOut />
                       LOGOUT
                     </button>
+                    <Switch
+                      checked={enabled}
+                      onChange={setEnabled}
+                      as={Fragment}
+                    >
+                      {({ checked }) => (
+                        /* Use the `checked` state to conditionally style the button. */
+                        <button
+                          className={`${
+                            checked ? "bg-blue-600" : "bg-gray-200"
+                          } relative inline-flex h-6 w-11 items-center rounded-full`}
+                        >
+                          <span className="sr-only">Enable notifications</span>
+                          <span
+                            className={`${
+                              checked ? "translate-x-5" : "translate-x-1"
+                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                          />
+                        </button>
+                      )}
+                    </Switch>
                   </div>
                 </nav>
               ) : (
@@ -679,6 +1144,27 @@ export const NavbarIndex: FC = () => {
                       <BiUserPlus className="text-xl" />
                       REGISTER
                     </Link>
+                    <Switch
+                      checked={enabled}
+                      onChange={setEnabled}
+                      as={Fragment}
+                    >
+                      {({ checked }) => (
+                        /* Use the `checked` state to conditionally style the button. */
+                        <button
+                          className={`${
+                            checked ? "bg-blue-600" : "bg-gray-200"
+                          } relative inline-flex h-6 w-11 items-center rounded-full`}
+                        >
+                          <span className="sr-only">Enable notifications</span>
+                          <span
+                            className={`${
+                              checked ? "translate-x-5" : "translate-x-1"
+                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                          />
+                        </button>
+                      )}
+                    </Switch>
                   </div>
                 </nav>
               )}

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 
@@ -29,10 +29,13 @@ import About from "../pages/About";
 import Team from "../pages/Team";
 import Home from "../pages";
 import Disclaimer from "../pages/Disclaimer";
+import { ThemeContext } from "../utils/context";
 
 axios.defaults.baseURL =
   "https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0";
 const Router = () => {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const background = useMemo(() => ({ theme, setTheme }), [theme]);
   const [noData, setNoData] = useState<boolean>(true);
   const [cookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
@@ -41,6 +44,14 @@ const Router = () => {
   useEffect(() => {
     fetchDataSchool();
   }, []);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
 
   const fetchDataSchool = () => {
     axios
@@ -245,7 +256,11 @@ const Router = () => {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeContext.Provider value={background}>
+      <RouterProvider router={router} />
+    </ThemeContext.Provider>
+  );
 };
 
 export default Router;
