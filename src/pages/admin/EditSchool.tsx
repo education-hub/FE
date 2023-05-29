@@ -194,7 +194,6 @@ const EditSchool: FC = () => {
           detail,
         } = res.data.data;
         const { data } = res.data;
-        console.log(res.data.data);
         setSchoolData(data);
         setValue("accreditation", accreditation);
         setValue("name", name);

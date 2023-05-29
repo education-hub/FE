@@ -45,7 +45,6 @@ const UpdateProgress: FC = () => {
   useEffect(() => {
     const channel = pusher.subscribe("my-channel");
     channel.bind("ADMINADMISSION", (data: any) => {
-      console.log(data);
       setPusherStatus(data.status);
       setProgress_id(data.progress_id);
     });
@@ -58,8 +57,6 @@ const UpdateProgress: FC = () => {
   useEffect(() => {
     handleShowPusher();
   }, [pusherStatus]);
-
-  console.log(id, progress_id);
 
   const handleShowPusher = () => {
     if (id == progress_id) {
@@ -219,10 +216,11 @@ const UpdateProgress: FC = () => {
               />
               <CardProgress
                 number={3}
-                steps="Sending Detail costs registration"
+                steps="Send Detail costs registration"
                 student_steps={
                   <div className="flex justify-center items-center">
-                    {student === "Send Detail Costs Registration" ? (
+                    {student === "Send Detail Costs Registration" ||
+                    student === "Sending Detail Cost Registration" ? (
                       <ImCheckmark />
                     ) : (
                       <></>

@@ -118,7 +118,6 @@ const AddSchool: FC = () => {
   const video = watch("video");
 
   const viewAcc = watch("accreditation");
-  console.log(viewAcc);
 
   const fetchProvince = () => {
     axios

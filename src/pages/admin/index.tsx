@@ -145,7 +145,6 @@ const Admin: FC = () => {
         setSchoolData(data);
         setSchoolId(data.id);
         setNoData(false);
-        console.log(data);
         const new_string =
           data.video
             ?.split(/,|\/|=/)

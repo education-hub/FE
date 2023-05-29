@@ -41,7 +41,7 @@ const Router = () => {
 
   useEffect(() => {
     fetchDataSchool();
-  }, []);
+  }, [checkRole]);
 
   useEffect(() => {
     if (theme === "dark") {
