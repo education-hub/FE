@@ -30,7 +30,7 @@ const Student: FC = () => {
 
   function fetchData() {
     axios
-      .get(`https://go-event.online/schools?limit=5&page=1&search=`, {
+      .get(`https://go-event.online/schools?limit=1000&page=1&search=`, {
         headers: {
           Authorization: `Bearer ${cookie.tkn}`,
         },
@@ -38,6 +38,7 @@ const Student: FC = () => {
       .then((res) => {
         const { data } = res.data.data;
         setDatas(data);
+        console.log(data);
       })
       .catch((error) => {
         alert(error.toString());
