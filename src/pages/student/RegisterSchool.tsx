@@ -19,6 +19,8 @@ const RegisterSchool: FC = () => {
   const [noData, setNoData] = useState<boolean>(true);
   const [cookie] = useCookies(["tkn"]);
 
+  document.title = "School Admission | Student Role";
+
   useEffect(() => {
     fetchData();
   }, []);

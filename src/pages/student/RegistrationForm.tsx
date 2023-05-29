@@ -115,6 +115,8 @@ const RegistrationForm: FC = () => {
   const navigate = useNavigate();
   const [cookie] = useCookies(["tkn"]);
 
+  document.title = "Registration | Student Role";
+
   useEffect(() => {
     fetchProvince();
   }, []);

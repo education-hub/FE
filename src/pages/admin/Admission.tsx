@@ -18,7 +18,7 @@ const Admission: FC = () => {
 
   const navigate = useNavigate();
 
-  document.title = "Students Admission | Admin Management";
+  document.title = "Students Admission | Admin Role";
 
   useEffect(() => {
     fetcData();

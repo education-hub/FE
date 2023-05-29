@@ -124,6 +124,8 @@ const DetailSchool: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenFAQ, setIsOpenFAQ] = useState(false);
 
+  document.title = "Detail School | Student Role";
+
   const openModalFAQ = () => {
     setIsOpenFAQ(true);
   };

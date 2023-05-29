@@ -43,6 +43,8 @@ const StudentProfile: FC = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
+  document.title = "Profile | Student Role";
+
   const closeModal = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setIsOpen(false);

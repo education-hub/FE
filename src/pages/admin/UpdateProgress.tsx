@@ -40,7 +40,7 @@ const UpdateProgress: FC = () => {
 
   const navigate = useNavigate();
 
-  document.title = "Update Progress | Admin Management";
+  document.title = "Update Progress | Admin Role";
 
   useEffect(() => {
     const channel = pusher.subscribe("my-channel");

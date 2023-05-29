@@ -27,7 +27,7 @@ const AdminProfile: FC = () => {
   const [cookie, setCookie, removeCookie] = useCookies(["tkn", "role"]);
   const checkToken = cookie.tkn;
 
-  document.title = "Profile | Admin Management";
+  document.title = "Profile | Admin Role";
 
   const navigate = useNavigate();
 

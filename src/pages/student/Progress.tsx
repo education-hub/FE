@@ -26,6 +26,8 @@ const Progress: FC = () => {
   const param = useParams();
   const { id } = param;
 
+  document.title = "Progress | Student Role";
+
   useEffect(() => {
     const channel = pusher.subscribe("my-channel");
     channel.bind("STUDENTADMISSION", (data: any) => {
