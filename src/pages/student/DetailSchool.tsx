@@ -47,7 +47,7 @@ interface detailSchool {
     description: string;
   }[];
   faqs: { id: number; question: string; answer: string }[];
-  WaLink: string;
+  wa_link: string;
   image: string;
   name: string;
   reviews: { image: string; review: string }[];
@@ -96,7 +96,7 @@ const DetailSchool: FC = () => {
     achievements: [],
     extracurriculars: [],
     faqs: [],
-    WaLink: "",
+    wa_link: "",
     image: "",
     name: "",
     reviews: [],
@@ -232,9 +232,11 @@ const DetailSchool: FC = () => {
           </div>
         </div>
         <div className="flex flex-col">
-          <div className="relative z-10 bg-[url('/sman3.jpg')] h-96 w-full bg-cover bg-center">
-            <div className="relative z-20 bg-red-300 bg-gradient-to-b from-gray-400 to-black h-full opacity-60 "></div>
-          </div>
+          <img
+            src={`https://storage.googleapis.com/prj1ropel/${data.image}`}
+            alt=""
+            className="relative z-10 h-auto w-full"
+          />
           <div className="flex pl-10 py-7 bg-@light-blue items-center space-x-5">
             <TbMapPin className="text-3xl text-@blue" />
             <p className="text-lg font-semibold tracking-wider">
@@ -448,7 +450,7 @@ const DetailSchool: FC = () => {
                           </p>
                         </div>
                       </div>
-                      <Link to={data.WaLink}>
+                      <Link to={data.wa_link}>
                         <ButtonSubmit label="Click Here" />
                       </Link>
                     </div>
