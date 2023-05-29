@@ -86,7 +86,7 @@ const EditSchool: FC = () => {
 
   const navigate = useNavigate();
 
-  document.title = "Edit School | Admin Management";
+  document.title = "Edit School | Admin Role";
 
   useEffect(() => {
     fetchSchoolData();

@@ -64,7 +64,7 @@ const DetailAdmission: FC = () => {
   const params = useParams();
   const { id } = params;
 
-  document.title = "Detail Students Admission | Admin Management";
+  document.title = "Detail Students Admission | Admin Role";
 
   useEffect(() => {
     fetchData();

@@ -122,6 +122,8 @@ const PdfSubmission = () => {
 
   const pdfViewerHeight = window.innerHeight;
 
+  document.title = "PDF View Admission | Admin Role";
+
   useEffect(() => {
     fetchData();
   }, []);

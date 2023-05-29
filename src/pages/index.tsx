@@ -11,6 +11,9 @@ const Home: FC = () => {
   const checkToken = cookie.tkn;
   const checkRole = cookie.role;
   const navigate = useNavigate();
+
+  document.title = "Education Hub";
+
   return (
     <>
       <NavbarIndex />

@@ -17,6 +17,8 @@ const Transaction: FC = () => {
   const [noData, setNoData] = useState<boolean>(true);
   const [cookie] = useCookies(["tkn"]);
 
+  document.title = "Transactions | Student Role";
+
   useEffect(() => {
     fetchData();
   }, []);

@@ -1,7 +1,10 @@
 import { FC } from "react";
+
 import { Layout } from "../components/Layout";
 
 const Disclaimer: FC = () => {
+  document.title = "Term & Condition | Education Hub";
+
   return (
     <Layout>
       <div

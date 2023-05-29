@@ -55,6 +55,8 @@ const FirstRegistration: FC = () => {
   const param = useParams();
   const { id } = param;
 
+  document.title = "Transactions | Student Role";
+
   useEffect(() => {
     fetchData();
   }, []);

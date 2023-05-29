@@ -1,7 +1,10 @@
 import { FC } from "react";
+
 import { Layout } from "../components/Layout";
 
 const About: FC = () => {
+  document.title = "About | Education Hub";
+
   return (
     <Layout>
       <div

@@ -96,7 +96,7 @@ const AddSchool: FC = () => {
 
   const navigate = useNavigate();
 
-  document.title = "Add School | Admin Management";
+  document.title = "Add School | Admin Role";
 
   useEffect(() => {
     fetchProvince();
