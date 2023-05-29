@@ -257,9 +257,9 @@ const RegistrationForm: FC = () => {
           <div className="p-6 my-5 text-white font-bold text-xl grid-flow-col bg-@blue w-full px-10 h-full">
             <p>A. New Student</p>
           </div>
-          <div className="px-[40rem] w-full flex flex-col items-center justify-center">
+          <div className="w-[30%] flex flex-col mx-auto justify-center">
             <img
-              className="h-auto w-full"
+              className="w-52 h-48 mx-auto"
               src={
                 watch("student_photo") &&
                 typeof watch("student_photo")[0] === "object"
@@ -566,14 +566,14 @@ const RegistrationForm: FC = () => {
               </div>
             </div>
           </div>
-
-          <div className="text-center text-xl font-medium mt-16">
+          <div className="text-center text-lg my-10">
             <p>Signature,</p>
           </div>
-          <div className="grid grid-cols-2 gap-96">
-            <div className="w-full flex flex-col items-center justify-center">
+          <div className="flex justify-center gap-20">
+            <div className="w-[30%] text-lg text-center flex flex-col items-center gap-3">
+              <p>Parent</p>
               <img
-                className="h-auto w-full"
+                className="w-[50%]"
                 src={
                   watch("parent_signature") &&
                   typeof watch("parent_signature")[0] === "object"
@@ -590,13 +590,12 @@ const RegistrationForm: FC = () => {
                 register={register}
                 error={errors.parent_signature?.message?.toString()}
               />
-              <div className="text-center text-2xl font-medium">
-                <p>Parent</p>
-              </div>
             </div>
-            <div className="w-full flex flex-col items-center justify-center">
+
+            <div className="w-[30%] text-lg text-center flex flex-col items-center gap-3">
+              <p>Student</p>
               <img
-                className="h-auto w-full"
+                className="w-[50%]"
                 src={
                   watch("student_signature") &&
                   typeof watch("student_signature")[0] === "object"
@@ -613,12 +612,9 @@ const RegistrationForm: FC = () => {
                 register={register}
                 error={errors.student_signature?.message?.toString()}
               />
-              <div className="text-center text-2xl font-medium pb-11">
-                <p>Student</p>
-              </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-[90rem]">
+          <div className="flex flex-col sm:flex-row justify-end mt-10 gap-3 sm:gap-10">
             <ButtonCancelDelete label="Cancel" />
             <ButtonSubmit label="Submit" />
           </div>
