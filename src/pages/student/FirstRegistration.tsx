@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useContext } from "react";
+import { FC, useState, useEffect } from "react";
 
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
 import { Layout } from "../../components/Layout";
@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { string } from "zod";
-import { ThemeContext } from "../../utils/context";
 
 interface TransactionType {
   item_name: string;
