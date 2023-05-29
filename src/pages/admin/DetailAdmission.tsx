@@ -229,7 +229,6 @@ const DetailAdmission: FC = () => {
               label="back"
               onClick={() => navigate("/admin/admission")}
             />
-
             <ButtonSubmit
               label="Download"
               onClick={() =>

@@ -29,11 +29,10 @@ const UpdateProgress: FC = () => {
   const [selectedStep, setSelectedStep] = useState<string>("");
   const [objAdd] = useState<objAddType>({ progress_status: selectedStep });
   const [loading, setLoading] = useState<boolean>(false);
-  const [uname, setUname] = useState<string>("");
+  const [progress_id, setProgress_id] = useState<string>("");
   const [student, setStudent] = useState({});
 
   const [cookie] = useCookies(["tkn", "uname"]);
-  const chekUname = cookie.uname;
   const checkToken = cookie.tkn;
 
   const params = useParams();
@@ -46,8 +45,9 @@ const UpdateProgress: FC = () => {
   useEffect(() => {
     const channel = pusher.subscribe("my-channel");
     channel.bind("ADMINADMISSION", (data: any) => {
+      console.log(data);
       setPusherStatus(data.status);
-      setUname(data.username);
+      setProgress_id(data.progress_id);
     });
     return () => {
       channel.unbind("ADMINADMISSION");
@@ -59,8 +59,10 @@ const UpdateProgress: FC = () => {
     handleShowPusher();
   }, [pusherStatus]);
 
+  console.log(id, progress_id);
+
   const handleShowPusher = () => {
-    if (uname === chekUname) {
+    if (id == progress_id) {
       Swal.fire({
         icon: "info",
         title: `${pusherStatus}`,
@@ -132,7 +134,6 @@ const UpdateProgress: FC = () => {
       })
       .finally(() => fetchData());
   };
-  console.log(student);
   return (
     <LayoutAdmin>
       <div className="overflow-x-auto p-2 sm:p-7 md:p-12 lg:p-20">

@@ -51,6 +51,10 @@ const schema = z.object({
   teachers: z.string().min(1, { message: "how many teachers is required" }),
   staff: z.string().min(1, { message: "how many staff is required" }),
   accreditation: accreditationOptions,
+  phone: z
+    .string()
+    .min(12, { message: "minimum 12 number " })
+    .max(13, { message: "maximum 13 number" }),
   web: z
     .string()
     .min(1, { message: "school website is required" })
@@ -177,6 +181,7 @@ const EditSchool: FC = () => {
           name,
           description,
           web,
+          phone,
           province,
           city,
           district,
@@ -195,6 +200,7 @@ const EditSchool: FC = () => {
         setValue("name", name);
         setValue("description", description);
         setValue("web", web);
+        setValue("phone", phone);
         setValue("province", province);
         setValue("city", city);
         setValue("district", district);
@@ -300,6 +306,14 @@ const EditSchool: FC = () => {
               id="input-school_web"
               register={register}
               error={errors.web?.message}
+            />
+            <InputLightBlue
+              label="Admin Whatsapp"
+              type="number"
+              name="phone"
+              id="input-phone"
+              register={register}
+              error={errors.phone?.message}
             />
             <div className="flex flex-col gap-1 my-5">
               <p>Location</p>

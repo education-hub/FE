@@ -899,13 +899,13 @@ const Admin: FC = () => {
         <LayoutAdmin>
           <div>
             {/* Section 1 */}
-            <div className="grid lg:grid-cols-2 p-7 sm:p-20 gap-10 md:gap-20 text-@dark">
-              <div className="flex flex-col gap-10">
+            <div className="dark:bg-@dark grid lg:grid-cols-2 p-7 sm:p-20 gap-10 md:gap-20 text-@dark">
+              <div className="flex flex-col gap-10 dark:text-white">
                 <h1 className="text-4xl sm:text-5xl">
                   {schoolData.name?.toUpperCase()}
                 </h1>
                 <p className="text-lg">{schoolData.description}</p>
-                <div className="grid grid-cols-2 xl:grid-cols-4 gap-10">
+                <div className="grid grid-cols-2 xl:grid-cols-4 gap-10 dark:text-@dark">
                   <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
                     <h1 className="text-3xl font-bold">
                       {schoolData.students}
@@ -944,20 +944,10 @@ const Admin: FC = () => {
                     </span>
                   </p>
                 </div>
+
                 <div className=" flex space-x-3">
                   <TbBrandWhatsapp className="text-2xl" />
-                  <p className="text-lg">
-                    Whatsapp Admin:{" "}
-                    <span className="hover:text-@orange">
-                      <Link
-                        to={`${schoolData.WaLink}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {`Click Here !!`}
-                      </Link>
-                    </span>
-                  </p>
+                  <p className="text-lg">Whatsapp Admin : {schoolData.phone}</p>
                 </div>
               </div>
               <div className="flex flex-col bg-@light-blue">
@@ -973,9 +963,9 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 2 */}
-            <div className="bg-gray-200 grid lg:grid-cols-2 p-7 sm:p-20 gap-20 text-@dark text-lg">
+            <div className="bg-gray-200 dark:bg-gray-600 grid lg:grid-cols-2 p-7 sm:p-20 gap-20 text-@dark text-lg">
               <div className="flex flex-col gap-10">
-                <h1 className="text-2xl font-bold">Review</h1>
+                <h1 className="text-2xl dark:text-white font-bold">Review</h1>
                 {Array.isArray(schoolData.reviews) ? (
                   schoolData.reviews?.map((e) => (
                     <div className="flex space-x-10 h-16">
@@ -1021,7 +1011,7 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 3 */}
-            <div className="grid lg:grid-cols-2 p-7 sm:p-20 gap-7 sm:gap-20">
+            <div className="dark:bg-@dark dark:text-white grid lg:grid-cols-2 p-7 sm:p-20 gap-7 sm:gap-20">
               <div className="grid sm:grid-cols-2 gap-7 sm:gap-10">
                 <div className="flex flex-col gap-1">
                   <p>Start Time</p>
@@ -1072,7 +1062,7 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 4  extracurriculer*/}
-            <div className="bg-gray-200 p-7 sm:p-20 grid lg:grid-cols-2 gap-7 md:gap-12 lg:gap-20">
+            <div className="bg-gray-200 dark:bg-gray-600 p-7 sm:p-20 grid lg:grid-cols-2 gap-7 md:gap-12 lg:gap-20">
               <div className="flex flex-col gap-10">
                 <ButtonSubmit
                   label="ADD EXTRACULLICULER"
@@ -1157,7 +1147,7 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Secton 5 */}
-            <div className="p-7 sm:p-20 flex flex-col gap-10">
+            <div className="dark:bg-@dark dark:text-white p-7 sm:p-20 flex flex-col gap-10">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-20">
                 <div className="bg-@light-blue">
                   <div className=" p-10">
@@ -1290,7 +1280,7 @@ const Admin: FC = () => {
                 />
               </div>
             </div>
-            <div className="bg-gray-200 p-7 md:p-20">
+            <div className="bg-gray-200 dark:bg-gray-600 dark:text-white p-7 md:p-20">
               <div>
                 <div className="pb-10 text-center">
                   <h1 className="text-lg font-bold">ONETIME PAYMENT</h1>
@@ -1304,7 +1294,7 @@ const Admin: FC = () => {
                           title={e.description}
                           price={e.price}
                         />
-                        <div className="flex flex-col gap-5 bg-gray-200">
+                        <div className="flex flex-col gap-5 bg-gray-200 dark:bg-gray-600">
                           <ButtonSubmit
                             label="Edit"
                             onClick={() => {
@@ -1337,7 +1327,7 @@ const Admin: FC = () => {
                           title={e.interval}
                           price={e.price}
                         />
-                        <div className="flex flex-col gap-5 bg-gray-200">
+                        <div className="flex flex-col gap-5 bg-gray-200 dark:bg-gray-600">
                           <ButtonSubmit
                             label="Edit"
                             onClick={() => {
@@ -1359,7 +1349,7 @@ const Admin: FC = () => {
               </div>
             </div>
             {/* Section 6 FAQ*/}
-            <div className="pt-7 sm:pt-20 px-7 sm:px-20">
+            <div className="dark:bg-@dark dark:text-white pt-7 sm:pt-20 px-7 sm:px-20">
               <div className="flex flex-col gap-10">
                 <h1 className="text-lg font-semibold text-center">FAQ</h1>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-10 lg:gap-10 xl:gap-20">
@@ -1390,7 +1380,7 @@ const Admin: FC = () => {
                 </div>
               </div>
             </div>
-            <div className="grid pb-7 sm:pb-20 px-7 sm:px-20">
+            <div className="dark:bg-@dark grid pb-7 sm:pb-20 px-7 sm:px-20">
               {schoolData.faqs?.map((e) => (
                 <AccordionFAQ
                   question={e.question}
@@ -1404,7 +1394,7 @@ const Admin: FC = () => {
               ))}
             </div>
             {/* Section 7 */}
-            <div className="bg-gray-200 py-7 sm:py-20  px-7 sm:px-20 ">
+            <div className="bg-gray-200 dark:bg-gray-600 dark:text-white py-7 sm:py-20  px-7 sm:px-20 ">
               <h1 className="text-lg font-semibold text-center">ADD QUIZ</h1>
               <div className="flex flex-col gap-1">
                 <p>Question</p>
@@ -1453,7 +1443,7 @@ const Admin: FC = () => {
                   />
                 </div>
               </div>
-              <div className="grid sm:grid-cols-2 sm:gap-[20%] md:gap-[40%] lg:gap-[60%] xl:gap-[80%] place-content-beetween">
+              <div className=" grid sm:grid-cols-2 sm:gap-[20%] md:gap-[40%] lg:gap-[60%] xl:gap-[80%] place-content-beetween">
                 <div className="flex flex-col gap-1 mt-5">
                   <p>Answer</p>
                   <InputWhite
@@ -1490,7 +1480,7 @@ const Admin: FC = () => {
                 />
               </div>
             </div>
-            <div className="py-7 ms:py-20 px-7 sm:px-20">
+            <div className="dark:bg-gray-600 dark:text-white py-7 ms:py-20 px-7 sm:px-20">
               {quiz.map((e, index) => (
                 <div>
                   <CardAddQuiz
@@ -1537,7 +1527,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -1661,7 +1651,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dar:text-white w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -1794,7 +1784,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -1918,7 +1908,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -2051,7 +2041,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -2183,7 +2173,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -2317,7 +2307,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-2xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -2410,16 +2400,16 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-3xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
                         >
-                          Update FAQ
+                          Update QUIZ
                         </Dialog.Title>
-                        <div className="bg-gray-200 py-20 px-20 ">
+                        <div className="bg-gray-200 dark:bg-@dark py-20 px-20 ">
                           <h1 className="text-lg font-semibold text-center">
-                            ADD QUIZ
+                            EDIT QUIZ
                           </h1>
                           <div className="flex flex-col gap-1">
                             <p>Question</p>
@@ -2535,7 +2525,7 @@ const Admin: FC = () => {
                       leaveFrom="opacity-100 scale-100"
                       leaveTo="opacity-0 scale-95"
                     >
-                      <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
+                      <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-3xl transform overflow-hidden bg-white p-16 text-left align-middle shadow-xl transition-all">
                         <Dialog.Title
                           as="h3"
                           className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -2602,7 +2592,7 @@ const Admin: FC = () => {
                         leaveFrom="opacity-100 scale-100"
                         leaveTo="opacity-0 scale-95"
                       >
-                        <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden bg-white pb-5 px-16 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="dark:bg-@dark dark:text-white w-full max-w-5xl transform overflow-hidden bg-white pb-5 px-16 text-left align-middle shadow-xl transition-all">
                           <Dialog.Title
                             as="h3"
                             className="text-xl font-semibold  leading-6 text-@dark text-center py-5"
@@ -2651,7 +2641,7 @@ const Admin: FC = () => {
               <div className="h-1 bg-@dark animate-pulse"></div>
             </div>
           </VideoBackground>
-          <div className=" md:h-96 p-24  md:p-32 text-@dark flex flex-col items-center">
+          <div className="dark:bg-@dark dark:text-white md:h-96 p-24  md:p-32 text-@dark flex flex-col items-center">
             <h1 className="text-3xl md:text-5xl text-center">
               You don't have a registered school
             </h1>
