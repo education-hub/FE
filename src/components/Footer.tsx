@@ -1,10 +1,10 @@
-import { FC } from "react";
 import { Link } from "react-router-dom";
+import { FC } from "react";
 
 export const Footer: FC = () => {
   return (
     <footer>
-      <div className="bg-@blue grid grid-cols-1 text-md sm:grid-cols-2 lg:grid-cols-4 gap-10 px-10 sm:px-32 py-14 sm:py-32 text-white">
+      <div className="bg-@blue dark:bg-cyan-800 grid grid-cols-1 text-md sm:grid-cols-2 lg:grid-cols-4 gap-10 px-10 sm:px-32 py-14 sm:py-32 text-white">
         <div className="flex flex-col gap-5">
           <img
             src="/logo.png"
@@ -80,10 +80,10 @@ export const Footer: FC = () => {
           </div>
         </div>
       </div>
-      <div className=" px-20 hover:px-5 bottom-0 bg-@blue duration-500">
-        <div className="border-t-4 border-cyan-600 hover:border-@orange duration-500 flex w-full justify-center items-center "></div>
+      <div className=" px-20 hover:px-5 bottom-0 bg-@blue dark:bg-cyan-800 duration-500">
+        <div className="border-t-4 border-@orange duration-500 flex w-full justify-center items-center "></div>
       </div>
-      <div className="bg-@blue grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 py-7 sm:py-10 px-7 sm:px-20 text-white">
+      <div className="bg-@blue dark:bg-cyan-800 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 py-7 sm:py-10 px-7 sm:px-20 text-white">
         <div className="flex justify-center items-center">
           <p>© 2023 Education Hub. All right reserved.</p>
         </div>

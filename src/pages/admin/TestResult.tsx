@@ -1,15 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 
 import { LayoutAdmin } from "../../components/Layout";
+import { ThemeContext } from "../../utils/context";
 import { ResultDataType } from "../../utils/user";
 
 const TestResult: FC = () => {
   const [TestResult, setTestResult] = useState<ResultDataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [noData, setNoData] = useState<boolean>(true);
+
+  const contextData = useContext(ThemeContext);
+  const themeMode = contextData.theme;
 
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
@@ -46,7 +50,11 @@ const TestResult: FC = () => {
       {loading ? (
         <div className="h-screen">Loading..</div>
       ) : (
-        <div className="bg-[url('/bg-6.jpg')] bg-cover bg-center">
+        <div
+          className={` ${
+            themeMode === "dark" ? "bg-@dark" : "bg-[url(/bg-6.jpg)]"
+          } bg-cover bg-center`}
+        >
           <div className=" p-7 sm:p-20">
             {!noData ? (
               <div>

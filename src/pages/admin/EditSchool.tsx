@@ -273,8 +273,8 @@ const EditSchool: FC = () => {
   return (
     <LayoutAdmin>
       <form onSubmit={handleSubmit(handleUpdateSchool)}>
-        <div className="grid lg:grid-cols-2 px-7 sm:px-20 pt-20 gap-20 text-lg">
-          <div>
+        <div className="dark:bg-@dark dark:text-white grid lg:grid-cols-2 px-7 sm:px-20 pt-20 gap-20 text-lg">
+          <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <InputLightBlue
                 defaultValue={schoolData.npsn}
@@ -316,7 +316,7 @@ const EditSchool: FC = () => {
               error={errors.phone?.message}
             />
             <div className="flex flex-col gap-1 my-5">
-              <p>Location</p>
+              <p className="text-lg font-semibold">Location</p>
               <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
                 <div className="grid grid-cols-2 gap-10">
                   {/* provence */}
@@ -517,7 +517,7 @@ const EditSchool: FC = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 md:flex py-10 px-7 sm:px-20 sm:justify-end gap-10">
+        <div className="dark:bg-@dark grid grid-cols-2 md:flex py-10 px-7 sm:px-20 sm:justify-end gap-10">
           <ButtonCancelDelete
             label="Cancel"
             onClick={() => navigate("/admin")}

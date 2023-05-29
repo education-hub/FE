@@ -1,6 +1,6 @@
-import { FC } from "react";
 import { Disclosure, Transition } from "@headlessui/react";
 import { TbArrowUp } from "react-icons/tb";
+import { FC } from "react";
 
 interface AddFAQType {
   question: string;
