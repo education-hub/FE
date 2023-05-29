@@ -8,6 +8,7 @@ import { Layout } from "../../components/Layout";
 import Logo from "../../assets/eduhub-logo-black.png";
 import GambarA from "../../assets/Akreditasi A.png";
 import GambarB from "../../assets/logo-akreditasi-b-11.png";
+import { ButtonSubmit } from "../../components/Button";
 
 interface schoolDesc {
   accreditation: string;
@@ -22,6 +23,9 @@ const Student: FC = () => {
   const [datas, setDatas] = useState<schoolDesc[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [showAllSchools, setShowAllSchools] = useState<boolean>(true);
+  const [limit, setLimit] = useState<number>(3);
+  const [count, setCount] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>();
   const [cookie] = useCookies(["tkn"]);
 
   useEffect(() => {
@@ -30,15 +34,18 @@ const Student: FC = () => {
 
   function fetchData() {
     axios
-      .get(`https://go-event.online/schools?limit=1000&page=1&search=`, {
-        headers: {
-          Authorization: `Bearer ${cookie.tkn}`,
-        },
-      })
+      .get(
+        `https://go-event.online/schools?limit=${limit}&page=${count}&search=`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.tkn}`,
+          },
+        }
+      )
       .then((res) => {
-        const { data } = res.data.data;
+        const { data, total_page } = res.data.data;
         setDatas(data);
-        console.log(data);
+        setTotalPage(total_page);
       })
       .catch((error) => {
         alert(error.toString());
@@ -85,6 +92,37 @@ const Student: FC = () => {
     setSearchQuery("");
     fetchData();
   }
+
+  useEffect(() => {
+    const screenWidth = window.innerWidth;
+    if (screenWidth <= 768) {
+      setLimit(2);
+    } else {
+      setLimit(3);
+    }
+  }, [limit]);
+
+  useEffect(() => {
+    fetchData();
+  }, [count]);
+
+  const handleIncrement = () => {
+    if (totalPage) {
+      if (count < totalPage) {
+        setCount(count + 1);
+      } else {
+        setCount(totalPage);
+      }
+    }
+  };
+
+  const handleDecrement = () => {
+    if (count <= 1) {
+      setCount(1);
+    } else {
+      setCount(count - 1);
+    }
+  };
 
   return (
     <Layout>
@@ -182,6 +220,25 @@ const Student: FC = () => {
               </Link>
             );
           })}
+        </div>
+        <div className="bg-white dark:bg-slate-800 pb-10 flex justify-center items-center">
+          {count <= 1 ? (
+            <div className="w-36"></div>
+          ) : (
+            <div className="mx-2">
+              <ButtonSubmit label="Back" onClick={() => handleDecrement()} />
+            </div>
+          )}
+          <div>
+            <p>Page: {count}</p>
+          </div>
+          {totalPage === count ? (
+            <div className="w-36"></div>
+          ) : (
+            <div className="mx-2 flex items-center">
+              <ButtonSubmit label="Next" onClick={() => handleIncrement()} />
+            </div>
+          )}
         </div>
       </div>
     </Layout>
