@@ -31,8 +31,6 @@ const AdminProfile: FC = () => {
   const themeMode = contextData.theme;
   const checkToken = cookie.tkn;
 
-  console.log(themeMode);
-
   document.title = "Profile | Admin Role";
 
   const navigate = useNavigate();

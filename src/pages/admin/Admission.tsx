@@ -39,7 +39,6 @@ const Admission: FC = () => {
       })
       .then((response) => {
         const { data } = response;
-        console.log(data);
         setStudent(data.data);
         setNoData(false);
       })

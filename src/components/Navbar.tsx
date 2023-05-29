@@ -57,9 +57,15 @@ export const Navbar: FC = () => {
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-gray-700 hover:rounded-3xl duration-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <BiX className="block h-6 w-6" aria-hidden="true" />
+                    <BiX
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <BiMenu className="block h-6 w-6" aria-hidden="true" />
+                    <BiMenu
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   )}
                 </Disclosure.Button>
               </div>
@@ -341,9 +347,15 @@ export const NavbarAdmin: FC = () => {
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-gray-700 hover:rounded-3xl duration-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <BiX className="block h-6 w-6" aria-hidden="true" />
+                    <BiX
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <BiMenu className="block h-6 w-6" aria-hidden="true" />
+                    <BiMenu
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   )}
                 </Disclosure.Button>
               </div>
@@ -577,9 +589,15 @@ export const NavbarIndexAdmin: FC = () => {
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-gray-700 hover:rounded-3xl duration-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <BiX className="block h-6 w-6" aria-hidden="true" />
+                    <BiX
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <BiMenu className="block h-6 w-6" aria-hidden="true" />
+                    <BiMenu
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   )}
                 </Disclosure.Button>
               </div>
@@ -813,9 +831,15 @@ export const NavbarIndex: FC = () => {
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-white hover:bg-gray-700 hover:rounded-3xl duration-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
-                    <BiX className="block h-6 w-6" aria-hidden="true" />
+                    <BiX
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   ) : (
-                    <BiMenu className="block h-6 w-6" aria-hidden="true" />
+                    <BiMenu
+                      className="block h-6 w-6 text-white"
+                      aria-hidden="true"
+                    />
                   )}
                 </Disclosure.Button>
               </div>

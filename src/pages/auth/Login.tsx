@@ -42,7 +42,6 @@ const Login: FC = () => {
       })
       .then((response) => {
         const { data } = response.data;
-        console.log(data);
         Swal.fire({
           icon: "success",
           title: "Login Success!!",
