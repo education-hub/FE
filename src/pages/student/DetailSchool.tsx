@@ -148,7 +148,6 @@ const DetailSchool: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setData(data);
-        console.log(data);
         const new_string =
           data.video
             ?.split(/,|\/|=/)
