@@ -14,7 +14,7 @@ const TestResult: FC = () => {
   const [cookie] = useCookies(["tkn"]);
   const checkToken = cookie.tkn;
 
-  document.title = "Test Result | Admin Management";
+  document.title = "Test Result | Admin Role";
 
   useEffect(() => {
     fetchData();

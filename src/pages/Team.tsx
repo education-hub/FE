@@ -1,9 +1,11 @@
-import { FC } from "react";
 import { BsGithub } from "react-icons/bs";
-import { Layout } from "../components/Layout";
 import { Link } from "react-router-dom";
+import { FC } from "react";
+
+import { Layout } from "../components/Layout";
 
 const Team: FC = () => {
+  document.title = "Team | Education Hub";
   return (
     <Layout>
       <div

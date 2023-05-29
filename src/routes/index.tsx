@@ -31,8 +31,6 @@ import Home from "../pages";
 import Disclaimer from "../pages/Disclaimer";
 import { ThemeContext } from "../utils/context";
 
-axios.defaults.baseURL =
-  "https://app.swaggerhub.com/apis/ropel12/Api-Documentation/1.0.0";
 const Router = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const background = useMemo(() => ({ theme, setTheme }), [theme]);
