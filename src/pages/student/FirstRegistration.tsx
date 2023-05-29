@@ -1,13 +1,14 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useContext } from "react";
 
-import { Layout } from "../../components/Layout";
 import { ButtonCancelDelete, ButtonSubmit } from "../../components/Button";
+import { Layout } from "../../components/Layout";
 
 import { useCookies } from "react-cookie";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { string } from "zod";
+import { ThemeContext } from "../../utils/context";
 
 interface TransactionType {
   item_name: string;
@@ -144,8 +145,8 @@ const FirstRegistration: FC = () => {
   return (
     <Layout>
       {/* First Registration Payment */}
-      <div className="p-20 w-full h-full">
-        <div className="p-5 bg-@blue w-full px-10 h-full text-center">
+      <div className="dark:bg-@dark p-20 w-full h-full">
+        <div className="dark:bg-cyan-800 dark:text-white p-5 bg-@blue w-full px-10 h-full text-center">
           <p className="text-2xl font-bold tracking-wide">
             {data.type === "registration"
               ? "First Registration Payment"
@@ -154,7 +155,7 @@ const FirstRegistration: FC = () => {
               : "Payment Summary"}
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-96 bg-@light-blue p-20">
+        <div className="dark:bg-gray-600 dark:text-white grid grid-cols-2 gap-96 bg-@light-blue p-20">
           {data.type === "registration" ? (
             <div className="w-full px-10 h-full">
               <p className="text-2xl font-bold pb-80">
@@ -216,7 +217,7 @@ const FirstRegistration: FC = () => {
             </div>
           ) : null}
           {data.type === "registration" || data.type === "herregistration" ? (
-            <div className="bg-white w-full px-10 h-full text-center">
+            <div className="bg-white dark:bg-gray-300 dark:text-@dark w-full px-10 h-full text-center">
               <p className="text-2xl font-bold pb-44 pt-10 tracking-wide">
                 Detail Payment
               </p>
@@ -230,8 +231,8 @@ const FirstRegistration: FC = () => {
             </div>
           ) : (
             // ..::Payment Summary::.. //
-            <div className="col-span-2 flex justify-center">
-              <div className="bg-white py-10 w-1/2 justify-center flex">
+            <div className=" col-span-2 flex justify-center">
+              <div className="bg-white dark:bg-gray-700 py-10 w-1/2 justify-center flex">
                 <div className="grid grid-rows-4 gap-7">
                   <div className="grid grid-cols-6">
                     <p className="col-span-3 text-2xl font-bold tracking-wide">

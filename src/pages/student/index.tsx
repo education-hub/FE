@@ -126,9 +126,9 @@ const Student: FC = () => {
 
   return (
     <Layout>
-      <div>
+      <div className="dark:bg-@dark">
         <div
-          className="max-h-[600px] flex sm:justify-center"
+          className=" max-h-[600px] flex sm:justify-center"
           style={{
             backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(255, 255, 255, 0.6)),url(/education-bg-homepage.jpg)`,
             backgroundSize: "cover",
@@ -182,7 +182,7 @@ const Student: FC = () => {
             </button>
           )}
         </div>
-        <div className="max-w-sm mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:max-w-2xl md:max-w-4xl lg:max-w-6xl">
+        <div className=" max-w-sm mx-auto mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:max-w-2xl md:max-w-4xl lg:max-w-6xl">
           {/* Card */}
           {datas.map((data) => {
             const accreditationImage = getAccreditationImage(
@@ -196,7 +196,7 @@ const Student: FC = () => {
                     alt="Card 1"
                     className="w-full h-64 object-cover"
                   />
-                  <div className="px-6 py-4">
+                  <div className="dark:bg-gray-600 dark:text-white px-6 py-4">
                     <div className="font-bold text-xl mb-1">{data.name}</div>
                     <div className="grid grid-cols-2 pt-20">
                       <div>
@@ -208,7 +208,7 @@ const Student: FC = () => {
                           />
                         )}
                       </div>
-                      <div className="text-gray-700 text-base font-semibold grid justify-items-end">
+                      <div className="text-gray-700 dark:text-white text-base font-semibold grid justify-items-end">
                         <p>Location</p>
                         <p className="text-end text-clip overflow-hidden">
                           {data.location}
@@ -221,7 +221,7 @@ const Student: FC = () => {
             );
           })}
         </div>
-        <div className="bg-white dark:bg-slate-800 pb-10 flex justify-center items-center">
+        <div className="bg-white dark:text-white dark:bg-@dark pb-10 flex justify-center items-center">
           {count <= 1 ? (
             <div className="w-36"></div>
           ) : (

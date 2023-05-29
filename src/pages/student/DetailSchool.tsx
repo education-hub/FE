@@ -199,11 +199,11 @@ const DetailSchool: FC = () => {
   return (
     <Layout>
       {/* Section 1 */}
-      <div className="grid lg:grid-cols-2 p-7 sm:p-20 gap-10 md:gap-20 text-@dark">
+      <div className="dark:bg-@dark dark:text-white grid lg:grid-cols-2 p-7 sm:p-20 gap-10 md:gap-20 text-@dark">
         <div className="flex flex-col gap-10">
           <h1 className="text-5xl">{data.name}</h1>
           <p className="text-lg">{data.description}</p>
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-10">
+          <div className="dark:text-@dark grid grid-cols-2 xl:grid-cols-4 gap-10">
             <div className="bg-@light-blue text-center p-3 hover:text-white hover:bg-@blue duration-500 hover:-translate-y-2">
               <h1 className="text-3xl font-bold">{data.students}</h1>
               <p>Students</p>
@@ -239,7 +239,7 @@ const DetailSchool: FC = () => {
             alt=""
             className="relative z-10 h-auto w-full"
           />
-          <div className="flex pl-10 py-7 bg-@light-blue items-center space-x-5">
+          <div className="flex pl-10 py-7 bg-@light-blue dark:text-@dark items-center space-x-5">
             <TbMapPin className="text-3xl text-@blue" />
             <p className="text-lg font-semibold tracking-wider">
               {data.province}, {data.city}, {data.district}, {data.village}
@@ -248,8 +248,8 @@ const DetailSchool: FC = () => {
         </div>
       </div>
       {/* Section 2 */}
-      <div className="bg-gray-200 grid lg:grid-cols-2 p-7 sm:p-20 gap-20 text-@dark text-lg">
-        <div className="flex flex-col gap-10">
+      <div className="bg-gray-200 dark:bg-gray-600 dark:text-white grid lg:grid-cols-2 p-7 sm:p-20 gap-20 text-@dark text-lg">
+        <div className="dark:text-@dark flex flex-col gap-10">
           <h1 className="text-2xl font-bold">Review</h1>
           <div className="grid grid-cols-3 gap-4 pb-20">
             <div className="col-span-2">
@@ -293,7 +293,7 @@ const DetailSchool: FC = () => {
           </div>
         </div>
         <div className="flex space-x-10 h-44">
-          <div className="p-8 grid grid-rows-2 grid-flow-col gap-2 bg-@light-blue w-full px-10 h-full">
+          <div className="dark:text-@dark p-8 grid grid-rows-2 grid-flow-col gap-2 bg-@light-blue w-full px-10 h-full">
             <p>join g-meet school introduction at {data.gmeet_date}</p>
             <div className="items-center">
               <Link to={data.gmeet} className="block">
@@ -304,7 +304,7 @@ const DetailSchool: FC = () => {
         </div>
       </div>
       {/* Section 3 */}
-      <div className="bg-gray-200 p-7 sm:p-20 grid lg:grid-cols-2 gap-7 md:gap-12 lg:gap-20">
+      <div className="bg-gray-200 dark:bg-@dark p-7 sm:p-20 grid lg:grid-cols-2 gap-7 md:gap-12 lg:gap-20">
         <div className="flex flex-col gap-10">
           <div className="bg-@blue w-full px-10 h-20 uppercase justify-center items-center flex text-white">
             <p>extracurricular</p>
@@ -312,7 +312,7 @@ const DetailSchool: FC = () => {
           {data.extracurriculars &&
             data.extracurriculars.map((extracurricular) => (
               <div
-                className="bg-@light-blue p-7 sm:p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
+                className="bg-@light-blue dark:bg-gray-600 dark:text-white p-7 sm:p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
                 key={extracurricular.id}
               >
                 <div className="flex space-x-10">
@@ -338,7 +338,7 @@ const DetailSchool: FC = () => {
           {data.achievements &&
             data.achievements.map((achievements) => (
               <div
-                className="bg-@light-blue   p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
+                className="bg-@light-blue dark:bg-gray-600 dark:text-white p-10 flex flex-col gap-10 hover:-translate-y-2 hover:drop-shadow-lg duration-500"
                 key={achievements.id}
               >
                 <div className="flex space-x-10">
@@ -359,13 +359,13 @@ const DetailSchool: FC = () => {
         </div>
       </div>
       {/* Section 4 */}
-      <div className="bg-gray-200 p-20">
+      <div className="bg-gray-200 dark:bg-gray-600 p-20">
         <div className="justify-center">
           <div>
             <div className="pb-10 text-center">
               <h1 className="text-lg font-bold">ONETIME PAYMENT</h1>
             </div>
-            <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5 xl:gap-7 2xl:gap-10">
+            <div className=" grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-5 xl:gap-7 2xl:gap-10">
               {data.payments.onetime &&
                 data.payments.onetime.map((payment) => (
                   <div className="flex flex-col gap-5" key={payment.id}>

@@ -245,7 +245,7 @@ const RegistrationForm: FC = () => {
 
   return (
     <Layout>
-      <div className="p-20">
+      <div className="dark:bg-@dark dark:text-white p-20">
         <form
           onSubmit={handleSubmit(handleRegistrationForm)}
           className="space-y-4 w-full"
@@ -278,7 +278,9 @@ const RegistrationForm: FC = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-bold">Fullname</label>
+            <label className="block text-gray-700 dark:text-white font-bold">
+              Fullname
+            </label>
             <InputLightBlue
               type="text"
               name="student_name"
@@ -288,7 +290,7 @@ const RegistrationForm: FC = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-bold capitalize">
+            <label className="block text-gray-700 dark:text-white font-bold capitalize">
               place and date of birth
             </label>
             <InputLightBlue
@@ -300,7 +302,9 @@ const RegistrationForm: FC = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-bold">Gender</label>
+            <label className="block text-gray-700 dark:text-white font-bold">
+              Gender
+            </label>
             <div className="relative">
               <SelectLightBlue
                 label="Gender"
@@ -317,7 +321,9 @@ const RegistrationForm: FC = () => {
             {errors.gender && <p>{errors.gender.message}</p>}
           </div>
           <div>
-            <label className="block text-gray-700 font-bold">Religion</label>
+            <label className="block text-gray-700 dark:text-white font-bold">
+              Religion
+            </label>
             <div className="relative">
               <select
                 className="bg-@light-blue h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none w-full"
@@ -338,7 +344,7 @@ const RegistrationForm: FC = () => {
             {errors.religion && <p>{errors.religion.message}</p>}
           </div>
           <div>
-            <label className="block text-gray-700 font-bold">
+            <label className="block text-gray-700 dark:text-white font-bold">
               Graduated From
             </label>
             <InputLightBlue
@@ -350,7 +356,9 @@ const RegistrationForm: FC = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-bold">NISN</label>
+            <label className="block text-gray-700 dark:text-white font-bold">
+              NISN
+            </label>
             <InputLightBlue
               type="number"
               name="nisn"
@@ -360,7 +368,9 @@ const RegistrationForm: FC = () => {
             />
           </div>
           <div className="flex flex-col gap-1 my-5">
-            <label className="block text-gray-700 font-bold">Location</label>
+            <label className="block text-gray-700 dark:text-white font-bold">
+              Location
+            </label>
             <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
               <div className="grid grid-cols-2 gap-10">
                 {/* province */}
@@ -429,7 +439,9 @@ const RegistrationForm: FC = () => {
 
           <div className="space-y-4 mt-8 w-full">
             <div>
-              <label className="block text-gray-700 font-bold">Fullname</label>
+              <label className="block text-gray-700 dark:text-white font-bold">
+                Fullname
+              </label>
               <InputLightBlue
                 type="text"
                 name="parent_name"
@@ -439,7 +451,7 @@ const RegistrationForm: FC = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-bold">
+              <label className="block text-gray-700 dark:text-white font-bold">
                 Profession
               </label>
               <InputLightBlue
@@ -451,7 +463,9 @@ const RegistrationForm: FC = () => {
               />
             </div>
             <div>
-              <label className="block text-gray-700 font-bold">Gender</label>
+              <label className="block text-gray-700 font-bold dark:text-white">
+                Gender
+              </label>
               <div className="relative">
                 <SelectLightBlue
                   label="Gender"
@@ -468,10 +482,12 @@ const RegistrationForm: FC = () => {
               {errors.parent_gender && <p>{errors.parent_gender.message}</p>}
             </div>
             <div>
-              <label className="block text-gray-700 font-bold">Religion</label>
-              <div className="relative">
+              <label className="block text-gray-700 font-bold dark:text-white">
+                Religion
+              </label>
+              <div className="relative ">
                 <select
-                  className="bg-@light-blue h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none w-full"
+                  className="bg-@light-blue  h-16 text-md sm:text-lg md:text-xl border-2 text-@dark font-medium px-4 focus:outline-none w-full"
                   {...register("parent_religion", {
                     validate: (value) => value !== "" || "Choose 1 option",
                   })}
@@ -491,7 +507,7 @@ const RegistrationForm: FC = () => {
               )}
             </div>
             <div>
-              <label className="block text-gray-700 font-bold">
+              <label className="block text-gray-700 dark:text-white font-bold">
                 Phone Number
               </label>
               <InputLightBlue
@@ -503,7 +519,9 @@ const RegistrationForm: FC = () => {
               />
             </div>
             <div className="flex flex-col gap-1 my-5">
-              <label className="block text-gray-700 font-bold">Location</label>
+              <label className="block text-gray-700 font-bold dark:text-white">
+                Location
+              </label>
               <div className="bg-@light-blue p-10 text-md sm:text-lg border-2 text-@dark font-medium focus:outline-none">
                 <div className="grid grid-cols-2 gap-10">
                   {/* province */}
