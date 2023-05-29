@@ -84,7 +84,7 @@ const Progress: FC = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col justify-center items-center h-full bg-white p-20">
+      <div className="flex flex-col justify-center items-center h-full bg-white dark:bg-@dark dark:text-white p-20">
         <div className="w-full max-w-3xl mx-auto px-4 py-[2.2rem]">
           <h1 className="text-4xl font-bold mb-8 text-center">
             Register Steps
@@ -143,9 +143,11 @@ const Progress: FC = () => {
             </div>
             {/*  */}
           </div>
-          <div className="grid grid-cols-5 gap-36">
+          <div className=" grid grid-cols-5 gap-36">
             <div className="w-full">
-              <p className="font-bold text-black">Checking File Registration</p>
+              <p className="font-bold text-black dark:text-white">
+                Checking File Registration
+              </p>
             </div>
             <div className="w-full">
               {isProgressActive("Failed File Approved") ? (
@@ -155,15 +157,19 @@ const Progress: FC = () => {
               )}
             </div>
             <div className="w-full">
-              <p className="font-bold text-black">
+              <p className="font-bold text-black dark:text-white">
                 Send Detail Cost Registration
               </p>
             </div>
             <div className="w-full">
-              <p className="font-bold text-black">Done Payment</p>
+              <p className="font-bold text-black dark:text-white ">
+                Done Payment
+              </p>
             </div>
             <div className="w-full">
-              <p className="font-bold text-black">Send Test Link</p>
+              <p className="font-bold text-black dark:text-white">
+                Send Test Link
+              </p>
             </div>
           </div>
           {/*  */}
@@ -221,7 +227,9 @@ const Progress: FC = () => {
           </div>
           <div className="grid grid-cols-5 gap-36">
             <div className="w-full">
-              <p className="font-bold text-black">Check the Result</p>
+              <p className="font-bold text-black dark:text-white">
+                Check the Result
+              </p>
             </div>
             <div className="w-full">
               {isProgressActive("Failed Test Result") ? (
@@ -231,17 +239,17 @@ const Progress: FC = () => {
               )}
             </div>
             <div className="w-full">
-              <p className="font-bold text-black">
+              <p className="font-bold text-black dark:text-white">
                 Send Detail Cost Her-Registration
               </p>
             </div>
             <div className="w-full">
-              <p className="font-bold text-black">
+              <p className="font-bold text-black dark:text-white">
                 Already Paid Her-Registration
               </p>
             </div>
             <div className="w-full">
-              <p className="font-bold text-black">Finish</p>
+              <p className="font-bold text-black dark:text-white">Finish</p>
             </div>
           </div>
         </div>

@@ -163,7 +163,7 @@ const StudentProfile: FC = () => {
 
   return (
     <Layout>
-      <div className="p-20 grid grid-cols-2 gap-20">
+      <div className="dark:bg-@dark dark:text-white p-20 grid grid-cols-2 gap-20">
         <div>
           <div className="flex flex-col">
             <div className="w-full bg-cover bg-center">

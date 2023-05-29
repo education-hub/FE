@@ -17,6 +17,7 @@ interface RegisteredSchool {
 const RegisterSchool: FC = () => {
   const [datas, setDatas] = useState<RegisteredSchool[]>([]);
   const [noData, setNoData] = useState<boolean>(true);
+
   const [cookie] = useCookies(["tkn"]);
 
   document.title = "School Admission | Student Role";
@@ -45,7 +46,7 @@ const RegisterSchool: FC = () => {
 
   return (
     <Layout>
-      <div className="grid grid-flow-row auto-rows-max gap-10">
+      <div className="dark:bg-@dark grid grid-flow-row auto-rows-max gap-10">
         <div>
           {!noData ? (
             <div className="p-10 md:p-20 grid grid-flow-row auto-rows-max gap-10">
@@ -63,13 +64,15 @@ const RegisterSchool: FC = () => {
                       />
                     </div>
                     <div className="col-span-3 grid md:grid-rows-3">
-                      <p className="font-semibold text-gray-500">School Name</p>
+                      <p className="font-semibold text-gray-500 dark:text-white">
+                        School Name
+                      </p>
                       <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-14 md:h-full">
                         {data.school_name}
                       </div>
                     </div>
                     <div className="col-span-3 grid md:grid-rows-3">
-                      <p className="font-semibold text-gray-500">
+                      <p className="font-semibold text-gray-500 dark:text-white">
                         School Website
                       </p>
                       <div className="row-span-2 flex items-center bg-@light-blue w-full px-3 h-14 md:h-full">
