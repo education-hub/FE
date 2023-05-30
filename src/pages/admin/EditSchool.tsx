@@ -75,6 +75,7 @@ const EditSchool: FC = () => {
   const [pdfFile, setPdfFile] = useState<string | null>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [viewVideo, setViewVideo] = useState<string>("");
   const [src, setSrc] = useState("");
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
@@ -215,6 +216,12 @@ const EditSchool: FC = () => {
         setValue("staff", staff);
         setValue("video", video);
         setValue("detail", detail);
+        const new_string =
+          video
+            ?.split(/,|\/|=/)
+            .pop()
+            ?.trim() ?? "";
+        setViewVideo(new_string);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -450,7 +457,7 @@ const EditSchool: FC = () => {
                   src={
                     src
                       ? `https://www.youtube.com/embed/${src}`
-                      : "https://www.youtube.com/embed/U1QrZJGHlco"
+                      : `https://www.youtube.com/embed/${viewVideo}`
                   }
                   title="Introduction Video"
                   allowFullScreen
