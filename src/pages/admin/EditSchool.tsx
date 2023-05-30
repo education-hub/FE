@@ -165,7 +165,12 @@ const EditSchool: FC = () => {
 
   const handleSubmitVideo = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setSrc(video);
+    const new_string =
+      video
+        ?.split(/,|\/|=/)
+        .pop()
+        ?.trim() ?? "";
+    setSrc(new_string);
   };
 
   const fetchSchoolData = () => {
@@ -441,8 +446,12 @@ const EditSchool: FC = () => {
             <div className="mt-10">
               <div>
                 <iframe
-                  className="w-full h-96"
-                  src={src ? src : schoolData.video}
+                  className="h-96 w-full"
+                  src={
+                    src
+                      ? `https://www.youtube.com/embed/${src}`
+                      : "https://www.youtube.com/embed/U1QrZJGHlco"
+                  }
                   title="Introduction Video"
                   allowFullScreen
                 />
