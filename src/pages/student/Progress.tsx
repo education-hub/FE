@@ -3,18 +3,22 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
 import Pusher from "pusher-js";
+import dotenv from "dotenv";
 import { FC } from "react";
 import axios from "axios";
 
 import { Layout } from "../../components/Layout";
 import Swal from "sweetalert2";
 
-const APP_KEY = "198b35e916a3f0811a9c";
-const CLUSTER_NAME = "ap1";
+dotenv.config();
 
-const pusher = new Pusher(APP_KEY, {
-  cluster: CLUSTER_NAME,
-});
+const APP_KEY = process.env.PUSHER_APP_KEY;
+const CLUSTER_NAME = process.env.PUSHER_CLUSTER_NAME;
+
+const pusher =
+  APP_KEY && CLUSTER_NAME
+    ? new Pusher(APP_KEY, { cluster: CLUSTER_NAME })
+    : undefined;
 
 const Progress: FC = () => {
   const [pusherStatus, setPusherStatus] = useState<string>("");
@@ -29,14 +33,14 @@ const Progress: FC = () => {
   document.title = "Progress | Student Role";
 
   useEffect(() => {
-    const channel = pusher.subscribe("my-channel");
-    channel.bind("STUDENTADMISSION", (data: any) => {
+    const channel = pusher?.subscribe("my-channel");
+    channel?.bind("STUDENTADMISSION", (data: any) => {
       setPusherStatus(data.status);
       setUname(data.username);
     });
     return () => {
-      channel.unbind("STUDENTADMISSION");
-      pusher.unsubscribe("my-channel");
+      channel?.unbind("STUDENTADMISSION");
+      pusher?.unsubscribe("my-channel");
     };
   }, []);
 
